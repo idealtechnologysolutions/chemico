@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/broadsheet-eded96bf-f87d-42a4-a6ab-aff3dd21e7fd/styles.css">
+<script src="_ds/broadsheet-eded96bf-f87d-42a4-a6ab-aff3dd21e7fd/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+<style>
+  body { margin: 0; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #d7d3d3; border-radius: 6px; }
+</style>
+</helmet>
+
+<div style="display:flex;min-height:100vh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+
+  <aside style="width:250px;flex:none;padding:28px 24px 24px 30px;display:flex;flex-direction:column;gap:28px;border-right:1px solid color-mix(in srgb, var(--color-text) 10%, transparent);position:sticky;top:0;height:100vh">
+    <div>
+      <img src="chemico-logo.png" alt="The Chemico Group" style="width:152px;height:auto">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-top:10px">Customer Portal</div>
+    </div>
+
+    <div>
+      <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:3px">Facility</div>
+      <div style="font-size:14px;line-height:1.35">{{ siteName }}</div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Account {{ accountNo }}</div>
+    </div>
+
+    <nav style="display:flex;flex-direction:column;gap:2px;margin-left:-10px">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="5">
+        <button type="button" onClick="{{ item.onClick }}" style="{{ item.style }}">
+          <i class="{{ item.icon }}" style="font-size:19px"></i>
+          <span>{{ item.label }}</span>
+        </button>
+      </sc-for>
+    </nav>
+
+    <div style="margin-top:auto;display:flex;align-items:center;gap:10px">
+      <div style="width:34px;height:34px;flex:none;border-radius:50%;background:var(--color-accent-200);color:var(--color-accent-800);display:grid;place-items:center;font-family:var(--font-heading);font-weight:600;font-size:13px">{{ userInitials }}</div>
+      <div style="min-width:0">
+        <div style="font-size:13px;line-height:1.2">{{ userName }}</div>
+        <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ userRole }}</div>
+      </div>
+    </div>
+  </aside>
+
+  <main style="flex:1;min-width:0;overflow-x:auto;padding:34px 48px 72px;max-width:1340px">
+
+    <sc-if value="{{ hasBanner }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:12px;background:var(--color-accent-100);color:var(--color-accent-800);padding:12px 16px;border-radius:var(--radius-md);margin-bottom:26px;font-size:14px">
+        <i class="ph-duotone ph-check-circle" style="font-size:20px"></i>
+        <span style="flex:1">{{ bannerText }}</span>
+        <button type="button" class="btn btn-ghost" onClick="{{ onDismissBanner }}" style="font-size:12px">Dismiss</button>
+      </div>
+    </sc-if>
+
+    <!-- ══ ORDER MANAGEMENT ══ -->
+    <sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 01 — Sage ERP</div>
+        <h1 style="font-size:40px;margin:0 0 6px">Order Management</h1>
+        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:60ch">Orders placed on behalf of {{ siteName }}. Synced from Sage every 15 minutes — last sync {{ lastSync }}.</p>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;margin:26px 0 8px">
+          <div class="field" style="width:270px">
+            <label>Search orders</label>
+            <input class="input" type="search" placeholder="Order number, SKU or material" value="{{ q }}" onChange="{{ onSearch }}">
+          </div>
+          <div class="field" style="width:170px">
+            <label>Status</label>
+            <select class="input" value="{{ status }}" onChange="{{ onStatus }}">
+              <sc-for list="{{ statusOptions }}" as="s" hint-placeholder-count="5">
+                <option value="{{ s }}">{{ s }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div class="field" style="width:158px">
+            <label>Ordered from</label>
+            <input class="input" type="date" value="{{ from }}" onChange="{{ onFrom }}">
+          </div>
+          <div class="field" style="width:158px">
+            <label>Ordered to</label>
+            <input class="input" type="date" value="{{ to }}" onChange="{{ onTo }}">
+          </div>
+          <button type="button" class="btn btn-ghost" onClick="{{ onClearFilters }}" style="margin-bottom:6px">Clear</button>
+          <div style="margin-bottom:9px;margin-left:auto;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ orderCountLabel }}</div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width:120px">Order</th>
+              <th>Material</th>
+              <th style="width:104px;text-align:right">Qty</th>
+              <th style="width:110px">Ordered</th>
+              <th style="width:126px">Expected</th>
+              <th style="width:132px">Requested by</th>
+              <th style="width:140px">Status</th>
+              <th style="width:28px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ orderRows }}" as="o" hint-placeholder-count="8">
+              <tr onClick="{{ o.onOpen }}" style="cursor:pointer">
+                <td style="font-variant-numeric:tabular-nums;white-space:nowrap">
+                  <span style="color:var(--color-accent-700)">{{ o.id }}</span>
+                  <span style="{{ o.autoStyle }}" title="Raised automatically from a min/max trigger"> ⟳</span>
+                </td>
+                <td>
+                  <div>{{ o.material }}</div>
+                  <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums">{{ o.sub }}</div>
+                </td>
+                <td style="text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">{{ o.qty }}</td>
+                <td style="font-variant-numeric:tabular-nums;white-space:nowrap">{{ o.ordered }}</td>
+                <td style="font-variant-numeric:tabular-nums;white-space:nowrap">{{ o.expected }}</td>
+                <td style="white-space:nowrap">{{ o.requestedBy }}</td>
+                <td><span class="{{ o.statusClass }}">{{ o.status }}</span></td>
+                <td style="text-align:right;color:color-mix(in srgb, var(--color-text) 45%, transparent)"><i class="ph-duotone ph-caret-right"></i></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+
+        <sc-if value="{{ ordersEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:56px 0;text-align:center;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+            <i class="ph-duotone ph-package" style="font-size:34px;color:var(--color-neutral-500)"></i>
+            <div style="font-family:var(--font-heading);font-size:19px;color:var(--color-text);margin-top:8px">No orders match these filters</div>
+            <div style="font-size:13px;margin-top:2px">Widen the date range or clear the status filter.</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+          <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Other states — <b>Loading:</b> eight skeleton rows at row height, header live. <b>Empty (no orders ever):</b> as above, with the copy “No orders yet — your Chemico rep raises orders from your min/max levels and requisitions.”</p>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ══ ORDER DETAIL ══ -->
+    <sc-if value="{{ isOrderDetail }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <button type="button" class="btn btn-ghost" onClick="{{ onBackToOrders }}" style="margin:0 0 18px -5px"><i class="ph-duotone ph-arrow-left"></i> All orders</button>
+        <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Sales order</div>
+            <h1 style="font-size:40px;margin:0;font-variant-numeric:tabular-nums">{{ od.id }}</h1>
+          </div>
+          <span class="{{ od.statusClass }}" style="margin-top:34px;font-size:12px;padding:5px 12px">{{ od.status }}</span>
+        </div>
+
+        <div style="display:flex;gap:0;margin:38px 0 10px;max-width:780px">
+          <sc-for list="{{ od.steps }}" as="st" hint-placeholder-count="4">
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:0">
+                <div style="{{ st.dotStyle }}"></div>
+                <div style="{{ st.lineStyle }}"></div>
+              </div>
+              <div style="{{ st.labelStyle }}">{{ st.label }}</div>
+              <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 50%, transparent);font-variant-numeric:tabular-nums">{{ st.date }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ od.hasException }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:10px;align-items:flex-start;background:var(--color-accent-2-100);color:var(--color-accent-2-800);padding:12px 16px;border-radius:var(--radius-md);margin-top:22px;max-width:780px;font-size:13.5px">
+            <i class="ph-duotone ph-warning" style="font-size:18px"></i>
+            <span>{{ od.exception }}</span>
+          </div>
+        </sc-if>
+
+        <div style="display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:26px 30px;margin:44px 0 10px;max-width:940px">
+          <sc-for list="{{ od.meta }}" as="m" hint-placeholder-count="8">
+            <div>
+              <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:3px">{{ m.k }}</div>
+              <div style="font-size:14.5px;font-variant-numeric:tabular-nums;line-height:1.35">{{ m.v }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <h4 style="margin:44px 0 8px">Line items</h4>
+        <table class="table" style="max-width:940px">
+          <thead>
+            <tr>
+              <th style="width:56px">Line</th>
+              <th style="width:210px">SKU</th>
+              <th>Material</th>
+              <th style="width:150px;text-align:right">Quantity</th>
+              <th style="width:150px">Line status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ od.lines }}" as="l" hint-placeholder-count="2">
+              <tr>
+                <td style="color:color-mix(in srgb, var(--color-text) 50%, transparent);font-variant-numeric:tabular-nums">{{ l.no }}</td>
+                <td style="font-variant-numeric:tabular-nums">{{ l.sku }}</td>
+                <td>{{ l.name }}</td>
+                <td style="text-align:right;font-variant-numeric:tabular-nums">{{ l.qty }}</td>
+                <td><span class="{{ l.statusClass }}">{{ l.status }}</span></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;font-size:12px;color:color-mix(in srgb, var(--color-text) 48%, transparent)">Pricing is managed under your supply agreement and is not shown in the portal. For commercial questions contact your account manager.</p>
+      </div>
+    </sc-if>
+
+    <!-- ══ INVENTORY ══ -->
+    <sc-if value="{{ isInventory }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 02 — On-site stock</div>
+        <h1 style="font-size:40px;margin:0 0 6px">Customer Inventory</h1>
+        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:64ch">Material {{ companyName }} holds and manages at your facility. Every movement is barcode-scanned on a Zebra device — scanned in by your on-site rep on a TC22 handheld, scanned out by your techs at the crib kiosk.</p>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:26px 0 20px">
+          <div class="seg">
+            <label class="seg-opt"><input type="radio" name="invtab" checked="{{ tabStock }}" onChange="{{ onTabStock }}">On-site materials</label>
+            <label class="seg-opt"><input type="radio" name="invtab" checked="{{ tabScans }}" onChange="{{ onTabScans }}">Scan history</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">
+            <span class="tag tag-accent-2">{{ lowCount }} below min</span>
+            <span>·</span>
+            <span>{{ invCount }} SKUs on site</span>
+            <span>·</span>
+            <span>Last count {{ lastCount }}</span>
+          </div>
+        </div>
+
+        <sc-if value="{{ tabStock }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Material</th>
+                  <th style="width:118px">Batch</th>
+                  <th style="width:112px;text-align:right">On hand</th>
+                  <th style="width:190px">Min / max</th>
+                  <th style="width:128px">Expires</th>
+                  <th style="width:128px">Location</th>
+                  <th style="width:150px">Status</th>
+                  <th style="width:150px"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ invRows }}" as="r" hint-placeholder-count="8">
+                  <tr>
+                    <td>
+                      <div>{{ r.name }}</div>
+                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums">{{ r.sku }}</div>
+                    </td>
+                    <td style="font-variant-numeric:tabular-nums">{{ r.lot }}</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.qty }}</td>
+                    <td>
+                      <div style="position:relative;width:132px;height:7px;background:var(--color-neutral-300);border-radius:1px">
+                        <div style="{{ r.barStyle }}"></div>
+                        <div style="{{ r.minTickStyle }}"></div>
+                      </div>
+                      <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 52%, transparent);margin-top:3px;font-variant-numeric:tabular-nums">{{ r.range }}</div>
+                    </td>
+                    <td style="font-variant-numeric:tabular-nums;{{ r.expStyle }}">{{ r.expires }}</td>
+                    <td style="font-size:13px">{{ r.location }}</td>
+                    <td><span class="{{ r.statusClass }}">{{ r.statusLabel }}</span></td>
+                    <td style="text-align:right">
+                      <button type="button" class="{{ r.btnClass }}" onClick="{{ r.onReorder }}" style="font-size:12.5px">Request reorder</button>
+                    </td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+              <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Other states — <b>Loading:</b> skeleton rows with the min/max bar rendered flat. <b>Empty:</b> “No material on site yet — stock appears here once your rep completes the first scan-in.”</p>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ tabScans }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <table class="table" style="max-width:1120px">
+              <thead>
+                <tr>
+                  <th style="width:168px">Timestamp</th>
+                  <th style="width:112px">Direction</th>
+                  <th>Material</th>
+                  <th style="width:118px">Batch</th>
+                  <th style="width:92px;text-align:right">Qty</th>
+                  <th style="width:216px">Scanned by</th>
+                  <th style="width:150px">Reference</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ scanRows }}" as="s" hint-placeholder-count="10">
+                  <tr>
+                    <td style="font-variant-numeric:tabular-nums;white-space:nowrap">{{ s.ts }}</td>
+                    <td><span class="{{ s.dirClass }}">{{ s.dir }}</span></td>
+                    <td>
+                      <div>{{ s.name }}</div>
+                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums">{{ s.sku }}</div>
+                    </td>
+                    <td style="font-variant-numeric:tabular-nums">{{ s.lot }}</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">{{ s.qty }}</td>
+                    <td style="font-size:13px">{{ s.by }}</td>
+                    <td style="font-size:13px;font-variant-numeric:tabular-nums">{{ s.ref }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+              <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Other states — <b>Loading:</b> ten skeleton rows. <b>Empty:</b> “No scan events in this period.”</p>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ══ REQUISITIONS ══ -->
+    <sc-if value="{{ isReq }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">
+          <div style="flex:1;min-width:340px">
+            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 03 — Requests</div>
+            <h1 style="font-size:40px;margin:0 0 6px">Requisitions</h1>
+            <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:60ch">Every request you have raised, and what happened to it. No more emailing the branch.</p>
+          </div>
+          <button type="button" class="btn btn-primary" onClick="{{ onNewSpot }}" style="margin-top:30px"><i class="ph-duotone ph-plus"></i> New request</button>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:28px 0 8px">
+          <div class="field" style="width:170px">
+            <label>Status</label>
+            <select class="input" value="{{ reqStatus }}" onChange="{{ onReqStatus }}">
+              <sc-for list="{{ reqStatusOptions }}" as="s" hint-placeholder-count="4">
+                <option value="{{ s }}">{{ s }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div class="field" style="width:170px">
+            <label>Type</label>
+            <select class="input" value="{{ reqType }}" onChange="{{ onReqType }}">
+              <sc-for list="{{ reqTypeOptions }}" as="t" hint-placeholder-count="3">
+                <option value="{{ t }}">{{ t }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div style="margin-bottom:9px;margin-left:auto;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ reqCountLabel }}</div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width:140px">Requisition</th>
+              <th style="width:118px">Type</th>
+              <th>Material</th>
+              <th style="width:110px;text-align:right">Qty</th>
+              <th style="width:120px">Needed by</th>
+              <th style="width:120px">Submitted</th>
+              <th style="width:132px">Status</th>
+              <th style="width:132px">Sage order</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ reqRows }}" as="r" hint-placeholder-count="6">
+              <tr>
+                <td style="font-variant-numeric:tabular-nums;color:var(--color-accent-700)">{{ r.id }}</td>
+                <td><span class="{{ r.typeClass }}">{{ r.type }}</span></td>
+                <td>
+                  <div>{{ r.name }}</div>
+                  <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums">{{ r.sku }}</div>
+                </td>
+                <td style="text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.qty }}</td>
+                <td style="font-variant-numeric:tabular-nums">{{ r.neededBy }}</td>
+                <td style="font-variant-numeric:tabular-nums">{{ r.submitted }}</td>
+                <td><span class="{{ r.statusClass }}">{{ r.status }}</span></td>
+                <td style="font-variant-numeric:tabular-nums;font-size:13px">{{ r.order }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+
+        <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+          <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Other states — <b>Loading:</b> six skeleton rows. <b>Empty:</b> “No requisitions yet” with the two entry buttons repeated inline.</p>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ══ REQUEST FORM ══ -->
+    <sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:900px">
+        <button type="button" class="btn btn-ghost" onClick="{{ onCancelForm }}" style="margin:0 0 18px -5px"><i class="ph-duotone ph-arrow-left"></i> Back</button>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 03 — New request</div>
+        <h1 style="font-size:40px;margin:0 0 6px">{{ formTitle }}</h1>
+        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:58ch">{{ formBlurb }}</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0 34px">
+          <button type="button" onClick="{{ onModeReorder }}" style="{{ reorderCardStyle }}">
+            <i class="ph-duotone ph-arrows-clockwise" style="font-size:24px;color:var(--color-accent)"></i>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:17px;margin-top:8px">Reorder request</div>
+            <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent);line-height:1.4">Pre-filled from a min/max trigger on stock already at your site.</div>
+          </button>
+          <button type="button" onClick="{{ onModeSpot }}" style="{{ spotCardStyle }}">
+            <i class="ph-duotone ph-magnifying-glass" style="font-size:24px;color:var(--color-accent-2)"></i>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:17px;margin-top:8px">Spot-buy request</div>
+            <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent);line-height:1.4">Anything from the catalogue, built by hand — one-off or off-contract.</div>
+          </button>
+        </div>
+
+        <sc-if value="{{ hasPrefill }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:34px;background:var(--color-accent-100);padding:16px 20px;border-radius:var(--radius-md);margin-bottom:30px">
+            <sc-for list="{{ prefillMeta }}" as="m" hint-placeholder-count="4">
+              <div>
+                <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:2px">{{ m.k }}</div>
+                <div style="font-size:14.5px;font-variant-numeric:tabular-nums;color:var(--color-accent-900)">{{ m.v }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="display:grid;grid-template-columns:1fr 160px 190px;gap:18px;align-items:end">
+          <div class="field">
+            <label>Material</label>
+            <select class="input" value="{{ fSku }}" onChange="{{ onFormSku }}">
+              <option value="">Select a material…</option>
+              <sc-for list="{{ materialOptions }}" as="m" hint-placeholder-count="6">
+                <option value="{{ m.sku }}">{{ m.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div class="field">
+            <label>Quantity ({{ fUom }})</label>
+            <input class="input" type="number" min="1" value="{{ fQty }}" onChange="{{ onFormQty }}">
+          </div>
+          <div class="field">
+            <label>Needed by</label>
+            <input class="input" type="date" value="{{ fDate }}" onChange="{{ onFormDate }}">
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:18px">
+          <label>Notes for the branch (optional)</label>
+          <textarea class="input" placeholder="Delivery window, work order, dock or tank instructions…" value="{{ fNotes }}" onChange="{{ onFormNotes }}"></textarea>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:14px;margin-top:26px">
+          <button type="button" class="btn btn-primary" disabled="{{ submitDisabled }}" onClick="{{ onSubmit }}"><i class="ph-duotone ph-paper-plane-tilt"></i> Submit requisition</button>
+          <button type="button" class="btn btn-secondary" onClick="{{ onCancelForm }}">Cancel</button>
+          <span style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ submitHint }}</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ══ CATALOGUE ══ -->
+    <sc-if value="{{ isCat }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 04 — Approved list</div>
+        <h1 style="font-size:40px;margin:0 0 6px">Material Catalogue</h1>
+        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:62ch">Everything {{ siteName }} is approved to order. Pick an item to start a requisition.</p>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;margin:26px 0 16px">
+          <div class="field" style="width:290px">
+            <label>Search catalogue</label>
+            <input class="input" type="search" placeholder="Name or SKU" value="{{ catQ }}" onChange="{{ onCatSearch }}">
+          </div>
+          <div class="seg" style="margin-bottom:1px">
+            <label class="seg-opt"><input type="radio" name="cattab" checked="{{ catAll }}" onChange="{{ onCatAll }}">All items</label>
+            <label class="seg-opt"><input type="radio" name="cattab" checked="{{ catPrev }}" onChange="{{ onCatPrev }}">Previously ordered</label>
+            <label class="seg-opt"><input type="radio" name="cattab" checked="{{ catFreq }}" onChange="{{ onCatFreq }}">Frequently ordered</label>
+          </div>
+          <div style="margin-bottom:9px;margin-left:auto;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ catCountLabel }}</div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px">
+          <sc-for list="{{ catChips }}" as="c" hint-placeholder-count="7">
+            <button type="button" onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(296px, 1fr));gap:16px">
+          <sc-for list="{{ catCards }}" as="m" hint-placeholder-count="9">
+            <div class="card" style="gap:12px">
+              <div style="display:flex;gap:14px;align-items:flex-start">
+                <div style="width:52px;height:52px;flex:none;border-radius:var(--radius-md);background:var(--color-neutral-100);display:grid;place-items:center">
+                  <i class="{{ m.icon }}" style="font-size:26px;color:var(--color-accent-700)"></i>
+                </div>
+                <div style="min-width:0;flex:1">
+                  <div class="card-title" style="font-size:15.5px">{{ m.name }}</div>
+                  <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums;margin-top:2px">{{ m.sku }} · {{ m.uom }}</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span class="{{ m.typeClass }}">{{ m.type }}</span>
+                <span style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ m.history }}</span>
+              </div>
+              <button type="button" class="btn btn-secondary btn-block" onClick="{{ m.onAdd }}" style="font-size:13px">Add to request</button>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ catEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:56px 0;text-align:center;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+            <i class="ph-duotone ph-flask" style="font-size:34px;color:var(--color-neutral-500)"></i>
+            <div style="font-family:var(--font-heading);font-size:19px;color:var(--color-text);margin-top:8px">Nothing matches “{{ catQ }}”</div>
+            <div style="font-size:13px;margin-top:2px">Try a shorter term, or ask your rep to add the item to your approved list.</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+          <p style="margin-top:30px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Other states — <b>Loading:</b> nine skeleton cards at card height. <b>Empty:</b> shown above when a search or filter returns nothing.</p>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ══ ANALYTICS ══ -->
+    <sc-if value="{{ isAnalytics }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 05 — Reporting</div>
+        <h1 style="font-size:40px;margin:0 0 6px">Reporting &amp; Analytics</h1>
+        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:64ch">Consumption, stock health and service performance for {{ siteName }} — quantities and days only, never cost.</p>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;margin:26px 0 30px">
+          <div class="field" style="width:190px">
+            <label>Period</label>
+            <select class="input" value="{{ period }}" onChange="{{ onPeriod }}">
+              <sc-for list="{{ periodOptions }}" as="p" hint-placeholder-count="3">
+                <option value="{{ p }}">{{ p }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div class="field" style="width:190px">
+            <label>Category</label>
+            <select class="input" value="{{ anCat }}" onChange="{{ onAnCat }}">
+              <sc-for list="{{ anCatOptions }}" as="c" hint-placeholder-count="7">
+                <option value="{{ c }}">{{ c }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <button type="button" class="btn btn-secondary" style="margin-bottom:1px"><i class="ph-duotone ph-download-simple"></i> Export CSV</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:30px;max-width:1060px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div>
+              <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:6px">{{ k.label }}</div>
+              <div style="{{ k.valueStyle }}">{{ k.value }}</div>
+              <div style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin-top:2px">{{ k.note }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.45fr 1fr;gap:48px;margin-top:52px;max-width:1120px">
+          <div>
+            <h4 style="margin:0 0 4px">Consumption by month</h4>
+            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 18px">Units scanned out at the crib, all approved categories.</p>
+            <div style="display:flex;align-items:flex-end;gap:16px;height:210px">
+              <sc-for list="{{ months }}" as="m" hint-placeholder-count="6">
+                <div style="flex:1;display:flex;flex-direction:column;height:100%;gap:7px">
+                  <div style="font-size:11.5px;font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--color-text) 55%, transparent);text-align:center">{{ m.v }}</div>
+                  <div style="flex:1;min-height:0;display:flex;align-items:flex-end">
+                    <div style="{{ m.barStyle }}"></div>
+                  </div>
+                  <div style="font-size:11.5px;text-align:center;color:color-mix(in srgb, var(--color-text) 62%, transparent)">{{ m.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <h4 style="margin:0 0 4px">Stock health today</h4>
+            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 18px">Across {{ invCount }} SKUs held on site.</p>
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <sc-for list="{{ health }}" as="h" hint-placeholder-count="4">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px">
+                    <span>{{ h.label }}</span>
+                    <span style="font-variant-numeric:tabular-nums">{{ h.n }}</span>
+                  </div>
+                  <div style="height:8px;background:var(--color-neutral-200);border-radius:1px">
+                    <div style="{{ h.barStyle }}"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="margin:52px 0 4px">Most consumed materials</h4>
+        <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 14px">“Cover at rate” is how long today’s on-hand quantity lasts at the current burn rate.</p>
+        <table class="table" style="max-width:1120px">
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th style="width:150px">Category</th>
+              <th style="width:130px;text-align:right">Scanned out</th>
+              <th style="width:130px;text-align:right">Avg / week</th>
+              <th style="width:130px;text-align:right">On hand</th>
+              <th style="width:150px">Cover at rate</th>
+              <th style="width:120px">Trend</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ topRows }}" as="t" hint-placeholder-count="6">
+              <tr>
+                <td>
+                  <div>{{ t.name }}</div>
+                  <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums">{{ t.sku }}</div>
+                </td>
+                <td style="font-size:13px">{{ t.cat }}</td>
+                <td style="text-align:right;font-variant-numeric:tabular-nums">{{ t.out }}</td>
+                <td style="text-align:right;font-variant-numeric:tabular-nums">{{ t.wk }}</td>
+                <td style="text-align:right;font-variant-numeric:tabular-nums">{{ t.onHand }}</td>
+                <td><span class="{{ t.coverClass }}">{{ t.cover }}</span></td>
+                <td style="font-size:13px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">{{ t.trend }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+
+        <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+          <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Other states — <b>Loading:</b> KPI figures as skeleton bars, chart area blank at full height. <b>Empty (new site, &lt; 30 days of data):</b> “Not enough history yet — reporting begins after your first month of scan activity.” Every figure here derives from data the other four modules already hold.</p>
+        </sc-if>
+      </div>
+    </sc-if>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;companyName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;The Chemico Group&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;siteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ashcroft Forge &amp; Machine — Plant 4, Findlay OH&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;orders&quot;,&quot;inventory&quot;,&quot;requisitions&quot;,&quot;catalogue&quot;,&quot;analytics&quot;],&quot;default&quot;:&quot;orders&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showStateNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const M = (sku, name, cat, uom, type, last, freq) => ({ sku, name, cat, uom, type, last, freq });
+    this.MAT = [
+      M('SLV-IPA-99-05', 'Isopropyl Alcohol 99%', 'Solvents', '5 gal pail', 'Contract', '2026-08-14', 14),
+      M('SLV-ACET-TECH-55', 'Acetone, Technical Grade', 'Solvents', '55 gal drum', 'Contract', '2026-08-05', 9),
+      M('SLV-MEK-05', 'Methyl Ethyl Ketone', 'Solvents', '5 gal pail', 'Spot buy', '2026-06-11', 2),
+      M('SLV-DGRS-AQ-275', 'Aqueous Degreaser Concentrate', 'Solvents', '275 gal IBC', 'Contract', '2026-07-22', 6),
+      M('SLV-MINSPIR-05', 'Mineral Spirits, Low Odour', 'Solvents', '5 gal pail', 'Contract', '2026-05-28', 5),
+      M('SLV-PARTSCLN-12', 'Non-Chlorinated Parts Cleaner', 'Solvents', '12 × 14 oz', 'Contract', '2026-08-19', 11),
+      M('LUB-HYD-AW46-55', 'Hydraulic Oil AW-46', 'Lubricants', '55 gal drum', 'Contract', '2026-08-07', 12),
+      M('LUB-WAY-68-05', 'Way Lube ISO 68', 'Lubricants', '5 gal pail', 'Contract', '2026-07-02', 8),
+      M('LUB-GEAR-EP220-55', 'EP Gear Oil ISO 220', 'Lubricants', '55 gal drum', 'Contract', '2026-06-18', 4),
+      M('LUB-GRS-LI2-400', 'Lithium Complex Grease NLGI 2', 'Lubricants', '10 × 400 g', 'Contract', '2026-08-11', 10),
+      M('LUB-COMP-PAG46-05', 'Compressor Oil PAG 46', 'Lubricants', '5 gal pail', 'Spot buy', '2026-03-17', 2),
+      M('LUB-CHAIN-HT-12', 'High-Temp Chain Lubricant', 'Lubricants', '12 × 400 ml', 'Contract', '2026-07-30', 7),
+      M('CLT-SEMI-SS-275', 'Semi-Synthetic Cutting Fluid', 'Coolants', '275 gal IBC', 'Contract', '2026-08-14', 15),
+      M('CLT-SYNTH-05', 'Full Synthetic Coolant', 'Coolants', '5 gal pail', 'Contract', '2026-08-17', 9),
+      M('CLT-QUENCH-FAST-55', 'Fast Quench Oil', 'Coolants', '55 gal drum', 'Spot buy', '2026-04-24', 1),
+      M('CLT-GLY-INH-55', 'Inhibited Glycol Coolant 50/50', 'Coolants', '55 gal drum', 'Contract', '2026-06-30', 5),
+      M('CLT-TRAMP-BIO-05', 'Tramp Oil Biocide', 'Coolants', '5 gal pail', 'Contract', '2026-08-18', 8),
+      M('COT-PRIME-EPOX-05', 'Two-Pack Epoxy Primer, Grey', 'Coatings', '5 gal kit', 'Contract', '2026-07-16', 6),
+      M('COT-TOP-PU-05', 'Polyurethane Topcoat, Machine Grey', 'Coatings', '5 gal kit', 'Contract', '2026-07-16', 6),
+      M('COT-RUSTPREV-WAX-20', 'Rust Preventive Wax Coating', 'Coatings', '20 L pail', 'Contract', '2026-08-13', 7),
+      M('COT-THIN-PU-05', 'Polyurethane Thinner', 'Coatings', '5 gal pail', 'Contract', '2026-07-16', 5),
+      M('COT-MARKPNT-12', 'Layout Marking Paint, White', 'Coatings', '12 × 17 oz', 'Spot buy', null, 0),
+      M('CLN-ALK-WASH-275', 'Alkaline Wash Concentrate', 'Cleaning', '275 gal IBC', 'Contract', '2026-08-10', 8),
+      M('CLN-FLR-DEG-05', 'Industrial Floor Degreaser', 'Cleaning', '5 gal pail', 'Contract', '2026-08-19', 12),
+      M('CLN-ABSORB-GRAN-40', 'Oil Absorbent Granules', 'Cleaning', '40 lb bag', 'Contract', '2026-08-17', 13),
+      M('CLN-SPILLKIT-95', 'Universal Spill Kit, 95 gal', 'Cleaning', 'each', 'Contract', '2026-05-06', 3),
+      M('CLN-WIPE-HD-150', 'Heavy-Duty Solvent Wipes', 'Cleaning', '150 ct tub', 'Contract', '2026-08-20', 16),
+      M('CLN-DRUMLINER-55', 'Drum Liner, 55 gal, 6 mil', 'Cleaning', '50 pk', 'Spot buy', '2026-07-09', 2),
+      M('SAF-GLV-NITR-LG', 'Nitrile Chemical Gloves, 15 mil — L', 'Safety', '12 pr', 'Contract', '2026-08-11', 14),
+      M('SAF-GOG-CHEM', 'Chemical Splash Goggles, Anti-Fog', 'Safety', '12 pk', 'Contract', '2026-08-17', 9),
+      M('SAF-APRON-PVC-45', 'PVC Chemical Apron, 45 in', 'Safety', 'each', 'Contract', '2026-06-24', 4),
+      M('SAF-CART-OV-P95', 'Respirator Cartridge, OV / P95', 'Safety', '10 pk', 'Contract', '2026-08-04', 8),
+      M('SAF-EYEWASH-16', 'Emergency Eyewash Refill', 'Safety', '2 × 16 oz', 'Spot buy', '2026-02-25', 1),
+      M('SAF-FACESHLD-8', 'Face Shield, 8 in Polycarbonate', 'Safety', 'each', 'Spot buy', null, 0)
+    ];
+    this.CAT_ICON = {
+      Solvents: 'ph-duotone ph-flask', Lubricants: 'ph-duotone ph-drop',
+      Coolants: 'ph-duotone ph-snowflake', Coatings: 'ph-duotone ph-paint-roller',
+      Cleaning: 'ph-duotone ph-spray-bottle', Safety: 'ph-duotone ph-hard-hat'
+    };
+    const O = (id, lines, ordered, expected, status, carrier, tracking, by, req, auto, exception) =>
+      ({ id, lines, ordered, expected, status, carrier, tracking, by, req, auto, exception });
+    this.ORDERS = [
+      O('SO-0148361', [['CLT-QUENCH-FAST-55', 2]], '2026-08-20', '2026-08-27', 'Placed', 'Chemico Tanker Fleet', 'Route RT-4418', 'M. Okafor', 'REQ-2026-0146', false, ''),
+      O('SO-0148355', [['CLN-WIPE-HD-150', 12]], '2026-08-19', '2026-08-26', 'Placed', 'UPS Ground', '1Z8R4E770342121077', 'D. Reyes', null, false, ''),
+      O('SO-0148340', [['CLT-TRAMP-BIO-05', 6]], '2026-08-18', '2026-08-25', 'Placed', 'Old Dominion', 'PRO 4772118940', 'Min/max trigger', 'REQ-2026-0143', true, ''),
+      O('SO-0148322', [['SAF-GOG-CHEM', 10], ['SAF-CART-OV-P95', 8]], '2026-08-17', '2026-08-21', 'Out for Delivery', 'UPS Ground', '1Z8R4E770342119334', 'K. Duffy', null, false, ''),
+      O('SO-0148318', [['CLN-ABSORB-GRAN-40', 24]], '2026-08-17', '2026-08-24', 'Placed', 'ABF Freight', 'PRO 8813405117', 'Min/max trigger', null, true, ''),
+      O('SO-0148301', [['CLT-SEMI-SS-275', 1], ['CLT-SYNTH-05', 8]], '2026-08-14', '2026-08-21', 'In Transit', 'Old Dominion', 'PRO 4772115204', 'M. Okafor', 'REQ-2026-0128', false, ''),
+      O('SO-0148288', [['COT-RUSTPREV-WAX-20', 10], ['COT-THIN-PU-05', 4]], '2026-08-13', '2026-08-20', 'Delayed', 'XPO Logistics', 'PRO 6621907780', 'D. Reyes', null, false, 'Carrier reported a dock delay at the Toledo terminal. Revised delivery 24 Aug 2026 — hazmat paperwork is unaffected and your rep has been notified.'),
+      O('SO-0148277', [['SLV-IPA-99-05', 16]], '2026-08-12', '2026-08-19', 'Delivered', 'Chemico Tanker Fleet', 'Route RT-4409', 'Min/max trigger', null, true, ''),
+      O('SO-0148262', [['SAF-GLV-NITR-LG', 18]], '2026-08-11', '2026-08-18', 'Delivered', 'UPS Ground', '1Z8R4E770342118896', 'K. Duffy', 'REQ-2026-0139', false, ''),
+      O('SO-0148251', [['LUB-GRS-LI2-400', 12]], '2026-08-11', '2026-08-18', 'Delivered', 'FedEx Freight', '8811 2277 4410', 'J. Alvarez', null, false, ''),
+      O('SO-0148240', [['CLN-ALK-WASH-275', 1]], '2026-08-10', '2026-08-17', 'Delivered', 'XPO Logistics', 'PRO 6621903415', 'J. Alvarez', null, false, ''),
+      O('SO-0148231', [['LUB-HYD-AW46-55', 3]], '2026-08-07', '2026-08-14', 'Delivered', 'Chemico Tanker Fleet', 'Route RT-4396', 'M. Okafor', null, false, ''),
+      O('SO-0148212', [['SLV-ACET-TECH-55', 2]], '2026-08-05', '2026-08-12', 'Delivered', 'ABF Freight', 'PRO 8813400271', 'Min/max trigger', 'REQ-2026-0121', true, ''),
+      O('SO-0148190', [['SLV-DGRS-AQ-275', 1], ['CLN-FLR-DEG-05', 6]], '2026-07-22', '2026-07-29', 'Delivered', 'Old Dominion', 'PRO 4772109833', 'M. Okafor', 'REQ-2026-0118', false, '')
+    ];
+    const I = (sku, lot, qty, min, max, expires, location, wk) => ({ sku, lot, qty, min, max, expires, location, wk });
+    this.INV = [
+      I('SLV-IPA-99-05', 'B-260714-A', 4, 8, 24, '2028-07-14', 'Chem store / Bay 1', 3.1),
+      I('SLV-ACET-TECH-55', 'B-260602-C', 3, 2, 8, '2028-06-02', 'Flammables locker', 0.8),
+      I('SLV-PARTSCLN-12', 'B-260810-F', 9, 6, 24, '2027-08-10', 'Crib A / Shelf 3', 2.4),
+      I('LUB-HYD-AW46-55', 'B-260518-B', 2, 2, 6, '2029-05-18', 'Fluid room', 0.5),
+      I('LUB-WAY-68-05', 'B-260429-D', 11, 6, 20, '2029-04-29', 'Fluid room', 1.6),
+      I('LUB-GRS-LI2-400', 'B-260722-A', 14, 8, 30, '2028-07-22', 'Crib A / Bin 6', 2.2),
+      I('CLT-SEMI-SS-275', 'B-260805-E', 1, 1, 3, '2027-02-14', 'Coolant bay / IBC 2', 0.3),
+      I('CLT-SYNTH-05', 'B-260721-B', 7, 6, 18, '2027-05-30', 'Coolant bay', 2.0),
+      I('CLT-TRAMP-BIO-05', 'B-260311-A', 3, 4, 12, '2026-09-12', 'Coolant bay', 0.9),
+      I('COT-PRIME-EPOX-05', 'B-260616-C', 5, 4, 12, '2026-12-16', 'Paint store', 1.1),
+      I('COT-RUSTPREV-WAX-20', 'B-260803-A', 8, 6, 20, '2027-08-03', 'Paint store', 1.8),
+      I('CLN-ABSORB-GRAN-40', 'B-260615-G', 12, 10, 36, null, 'Dock 1 / Staging', 4.0),
+      I('CLN-WIPE-HD-150', 'B-260728-B', 6, 8, 28, null, 'Crib A / Shelf 1', 3.6),
+      I('SAF-GLV-NITR-LG', 'B-260630-D', 10, 12, 36, null, 'Crib A / Shelf 2', 3.4),
+      I('SAF-GOG-CHEM', 'B-260630-E', 16, 8, 30, null, 'Crib A / Shelf 2', 1.2)
+    ];
+    const S = (ts, dir, sku, lot, qty, by, ref) => ({ ts, dir, sku, lot, qty, by, ref });
+    const REP = 'T. Voss — Chemico rep · Zebra TC22';
+    const CRIB = 'Crib kiosk · Zebra DS2278 — badge 4471';
+    this.SCANS = [
+      S('21 Aug 2026, 07:12', 'Scan out', 'CLN-WIPE-HD-150', 'B-260728-B', 3, CRIB, 'WO-88231'),
+      S('21 Aug 2026, 06:48', 'Scan out', 'SLV-IPA-99-05', 'B-260714-A', 2, 'Crib kiosk · Zebra DS2278 — badge 2210', 'WO-88229'),
+      S('20 Aug 2026, 15:31', 'Scan in', 'SAF-GOG-CHEM', 'B-260630-E', 10, REP, 'SO-0148322 / L1'),
+      S('20 Aug 2026, 15:26', 'Scan in', 'SAF-CART-OV-P95', 'B-260630-F', 8, REP, 'SO-0148322 / L2'),
+      S('20 Aug 2026, 11:05', 'Scan out', 'SAF-GLV-NITR-LG', 'B-260630-D', 4, CRIB, 'WO-88214'),
+      S('20 Aug 2026, 09:40', 'Scan out', 'CLT-TRAMP-BIO-05', 'B-260311-A', 1, 'Crib kiosk · Zebra DS2278 — badge 3098', 'WO-88210'),
+      S('19 Aug 2026, 14:22', 'Scan out', 'CLN-ABSORB-GRAN-40', 'B-260615-G', 6, CRIB, 'WO-88198'),
+      S('19 Aug 2026, 08:15', 'Scan in', 'CLT-SYNTH-05', 'B-260721-B', 8, REP, 'SO-0148301 / L2'),
+      S('18 Aug 2026, 16:02', 'Scan out', 'LUB-WAY-68-05', 'B-260429-D', 2, 'Crib kiosk · Zebra DS2278 — badge 2210', 'WO-88186'),
+      S('18 Aug 2026, 10:44', 'Cycle count', 'CLT-SEMI-SS-275', 'B-260805-E', 1, REP, 'Count CC-0819'),
+      S('18 Aug 2026, 10:31', 'Scan in', 'CLT-SEMI-SS-275', 'B-260805-E', 1, REP, 'SO-0148301 / L1'),
+      S('17 Aug 2026, 13:50', 'Scan out', 'LUB-GRS-LI2-400', 'B-260722-A', 3, CRIB, 'WO-88171'),
+      S('17 Aug 2026, 07:58', 'Scan in', 'COT-RUSTPREV-WAX-20', 'B-260803-A', 10, REP, 'SO-0148288 / L1'),
+      S('16 Aug 2026, 12:19', 'Scan out', 'SLV-PARTSCLN-12', 'B-260810-F', 4, 'Crib kiosk · Zebra DS2278 — badge 3098', 'WO-88160')
+    ];
+    const R = (id, type, sku, qty, neededBy, submitted, status, order) => ({ id, type, sku, qty, neededBy, submitted, status, order });
+    this.state = {
+      view: null, orderId: null, invTab: 'stock',
+      q: '', status: 'All statuses', from: '', to: '',
+      reqStatus: 'All statuses', reqType: 'All types',
+      catQ: '', catCat: 'All', catTab: 'all',
+      period: 'Last 6 months', anCat: 'All categories',
+      form: null, banner: null, seq: 147,
+      reqs: [
+        R('REQ-2026-0146', 'Spot buy', 'CLT-QUENCH-FAST-55', 2, '2026-08-27', '2026-08-19', 'Processing', 'SO-0148361'),
+        R('REQ-2026-0143', 'Reorder', 'CLT-TRAMP-BIO-05', 6, '2026-08-25', '2026-08-18', 'Processing', 'SO-0148340'),
+        R('REQ-2026-0139', 'Reorder', 'SAF-GLV-NITR-LG', 18, '2026-08-18', '2026-08-11', 'Fulfilled', 'SO-0148262'),
+        R('REQ-2026-0134', 'Spot buy', 'CLN-DRUMLINER-55', 4, '2026-08-14', '2026-08-08', 'Fulfilled', 'SO-0148295'),
+        R('REQ-2026-0128', 'Reorder', 'CLT-SEMI-SS-275', 1, '2026-08-21', '2026-08-14', 'Fulfilled', 'SO-0148301'),
+        R('REQ-2026-0121', 'Reorder', 'SLV-ACET-TECH-55', 2, '2026-08-12', '2026-08-05', 'Fulfilled', 'SO-0148212')
+      ]
+    };
+    this.MONTHS = [
+      { label: 'Mar', v: 918 }, { label: 'Apr', v: 1042 }, { label: 'May', v: 874 },
+      { label: 'Jun', v: 1196 }, { label: 'Jul', v: 1103 }, { label: 'Aug', v: 1284 }
+    ];
+    this.MONTHS12 = [
+      { label: 'Sep', v: 802 }, { label: 'Oct', v: 861 }, { label: 'Nov', v: 749 },
+      { label: 'Dec', v: 612 }, { label: 'Jan', v: 933 }, { label: 'Feb', v: 887 }
+    ].concat(this.MONTHS);
+    this.CONS = [
+      { sku: 'CLN-WIPE-HD-150', out: 402, trend: '↑ 12% vs prev' },
+      { sku: 'SLV-IPA-99-05', out: 268, trend: '↑ 8% vs prev' },
+      { sku: 'SAF-GLV-NITR-LG', out: 244, trend: '→ flat' },
+      { sku: 'CLN-ABSORB-GRAN-40', out: 196, trend: '↑ 21% vs prev' },
+      { sku: 'CLT-SYNTH-05', out: 148, trend: '↓ 6% vs prev' },
+      { sku: 'LUB-GRS-LI2-400', out: 131, trend: '→ flat' },
+      { sku: 'SLV-PARTSCLN-12', out: 118, trend: '↑ 5% vs prev' },
+      { sku: 'COT-RUSTPREV-WAX-20', out: 96, trend: '↓ 9% vs prev' }
+    ];
+  }
+
+  mat(sku) { return this.MAT.find(m => m.sku === sku) || { sku, name: sku, uom: 'ea', cat: 'Solvents', type: 'Spot buy' }; }
+  fmt(d) {
+    if (!d) return '—';
+    const mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const p = d.split('-');
+    return Number(p[2]) + ' ' + mo[Number(p[1]) - 1] + ' ' + p[0];
+  }
+  unit(uom, n) {
+    const u = String(uom).toLowerCase();
+    const pick = (s, p) => (Number(n) === 1 ? s : p);
+    if (u.indexOf('ibc') >= 0) return pick('IBC', 'IBCs');
+    if (u.indexOf('drum') >= 0) return pick('drum', 'drums');
+    if (u.indexOf('pail') >= 0) return pick('pail', 'pails');
+    if (u.indexOf('kit') >= 0) return pick('kit', 'kits');
+    if (u.indexOf('bag') >= 0) return pick('bag', 'bags');
+    if (u.indexOf('tub') >= 0) return pick('tub', 'tubs');
+    if (u.indexOf('box') >= 0) return pick('box', 'boxes');
+    if (u === 'each') return 'each';
+    if (u.indexOf('×') >= 0 || /\b(pk|pr|ct)\b/.test(u)) return pick('case', 'cases');
+    return pick('unit', 'units');
+  }
+  statusClass(s) {
+    if (s === 'Delayed') return 'tag tag-accent-2';
+    if (s === 'Delivered' || s === 'Fulfilled') return 'tag tag-neutral';
+    if (s === 'Placed' || s === 'Submitted') return 'tag tag-outline';
+    return 'tag tag-accent';
+  }
+  go(view) { this.setState({ view, orderId: null, banner: null }); }
+  startReorder(inv) {
+    const m = this.mat(inv.sku);
+    this.setState({
+      view: 'form', banner: null,
+      form: { mode: 'reorder', sku: inv.sku, qty: String(inv.max - inv.qty), date: '2026-08-28', notes: '', ctx: inv, name: m.name }
+    });
+  }
+  startSpot(sku) {
+    this.setState({ view: 'form', banner: null, form: { mode: 'spot', sku: sku || '', qty: '1', date: '', notes: '', ctx: null } });
+  }
+  submitForm() {
+    const f = this.state.form, m = this.mat(f.sku);
+    const n = this.state.seq + 1;
+    const id = 'REQ-2026-0' + n;
+    const rec = {
+      id, type: f.mode === 'reorder' ? 'Reorder' : 'Spot buy', sku: f.sku,
+      qty: Number(f.qty), neededBy: f.date, submitted: '2026-08-21', status: 'Submitted', order: '—'
+    };
+    this.setState({
+      seq: n, reqs: [rec, ...this.state.reqs], view: 'requisitions', form: null,
+      reqStatus: 'All statuses', reqType: 'All types',
+      banner: id + ' submitted — ' + rec.qty + ' × ' + m.name + ' needed by ' + this.fmt(f.date) + '. Your branch has it; the Sage order number appears here once it is raised.'
+    });
+  }
+
+  renderVals() {
+    const P = this.props, S = this.state, self = this;
+    const view = S.view || P.defaultView || 'orders';
+    const companyName = P.companyName ?? 'The Chemico Group';
+    const siteName = P.siteName ?? 'Ashcroft Forge & Machine — Plant 4, Findlay OH';
+    const showNotes = P.showStateNotes ?? true;
+
+    const nav = [
+      ['orders', 'Order Management', 'ph-duotone ph-truck'],
+      ['inventory', 'Customer Inventory', 'ph-duotone ph-warehouse'],
+      ['requisitions', 'Requisitions', 'ph-duotone ph-clipboard-text'],
+      ['catalogue', 'Material Catalogue', 'ph-duotone ph-books'],
+      ['analytics', 'Reporting & Analytics', 'ph-duotone ph-chart-line-up']
+    ];
+    const active = view === 'orderDetail' ? 'orders' : (view === 'form' ? 'requisitions' : view);
+    const navItems = nav.map(([key, label, icon]) => {
+      const on = key === active;
+      return {
+        key, label, icon,
+        style: 'display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;background:' +
+          (on ? 'color-mix(in srgb, var(--color-accent) 12%, transparent)' : 'transparent') +
+          ';border:0;border-left:2px solid ' + (on ? 'var(--color-accent)' : 'transparent') +
+          ';padding:9px 10px;border-radius:0 var(--radius-md) var(--radius-md) 0;font-family:var(--font-heading);font-weight:600;font-size:14px;color:' +
+          (on ? 'var(--color-accent-800)' : 'color-mix(in srgb, var(--color-text) 74%, transparent)'),
+        onClick: () => self.go(key)
+      };
+    });
+
+    // ── Orders ────────────────────────────────────────────
+    const statusOptions = ['All statuses', 'Placed', 'In Transit', 'Out for Delivery', 'Delivered', 'Delayed'];
+    const q = S.q.trim().toLowerCase();
+    const filtered = this.ORDERS.filter(o => {
+      if (S.status !== 'All statuses' && o.status !== S.status) return false;
+      if (S.from && o.ordered < S.from) return false;
+      if (S.to && o.ordered > S.to) return false;
+      if (!q) return true;
+      const hay = (o.id + ' ' + o.lines.map(l => l[0] + ' ' + self.mat(l[0]).name).join(' ')).toLowerCase();
+      return hay.indexOf(q) >= 0;
+    });
+    const orderRows = filtered.map(o => {
+      const m = self.mat(o.lines[0][0]);
+      const extra = o.lines.length - 1;
+      return {
+        id: o.id,
+        autoStyle: 'color:var(--color-accent);font-size:13px;display:' + (o.auto ? 'inline' : 'none'),
+        material: m.name,
+        sub: o.lines[0][0] + (extra > 0 ? '  +' + extra + ' more line' + (extra > 1 ? 's' : '') : ''),
+        qty: o.lines[0][1] + ' ' + self.unit(m.uom, o.lines[0][1]),
+        ordered: self.fmt(o.ordered), expected: self.fmt(o.expected),
+        requestedBy: o.by, status: o.status, statusClass: self.statusClass(o.status),
+        onOpen: () => self.setState({ view: 'orderDetail', orderId: o.id, banner: null })
+      };
+    });
+
+    // ── Order detail ──────────────────────────────────────
+    const o = this.ORDERS.find(x => x.id === S.orderId) || this.ORDERS[0];
+    const stageIdx = { 'Placed': 0, 'In Transit': 1, 'Delayed': 1, 'Out for Delivery': 2, 'Delivered': 3 }[o.status];
+    const stageDates = [o.ordered, '2026-08-15', '2026-08-18', o.expected];
+    const od = {
+      id: o.id, status: o.status, statusClass: self.statusClass(o.status),
+      hasException: !!o.exception, exception: o.exception,
+      steps: ['Placed', 'Shipped', 'Out for Delivery', 'Delivered'].map((label, i) => {
+        const done = i <= stageIdx;
+        const late = o.status === 'Delayed' && i === stageIdx;
+        const ink = late ? 'var(--color-accent-2)' : 'var(--color-accent)';
+        return {
+          label,
+          date: i === 0 ? self.fmt(o.ordered)
+            : (i < stageIdx || stageIdx === 3 ? self.fmt(stageDates[i])
+              : (i === stageIdx ? 'In progress' : 'Expected ' + self.fmt(o.expected))),
+          dotStyle: 'width:13px;height:13px;flex:none;border-radius:50%;background:' + (done ? ink : 'var(--color-neutral-300)'),
+          lineStyle: i === 3 ? 'display:none' : 'flex:1;height:2px;background:' + (i < stageIdx ? ink : 'var(--color-neutral-300)'),
+          labelStyle: 'font-family:var(--font-heading);font-weight:600;font-size:14px;margin-top:9px;color:' + (done ? 'var(--color-text)' : 'color-mix(in srgb, var(--color-text) 45%, transparent)')
+        };
+      }),
+      meta: [
+        { k: 'Order date', v: self.fmt(o.ordered) },
+        { k: 'Expected delivery', v: self.fmt(o.expected) },
+        { k: 'Carrier', v: o.carrier },
+        { k: 'Tracking', v: o.tracking },
+        { k: 'Requested by', v: o.by },
+        { k: 'Source requisition', v: o.req || 'Raised by branch' },
+        { k: 'Ship to', v: siteName },
+        { k: 'Sage document', v: 'SOP / ' + o.id.replace('SO-', '') }
+      ],
+      lines: o.lines.map((l, i) => {
+        const m = self.mat(l[0]);
+        const ls = o.status === 'Delayed' && i === 0 ? 'Delayed' : o.status;
+        return { no: String(i + 1).padStart(2, '0'), sku: l[0], name: m.name, qty: l[1] + ' × ' + m.uom, status: ls, statusClass: self.statusClass(ls) };
+      })
+    };
+
+    // ── Inventory ─────────────────────────────────────────
+    const invRows = this.INV.map(r => {
+      const m = self.mat(r.sku);
+      const low = r.qty < r.min, atMin = r.qty === r.min;
+      const pct = Math.max(4, Math.min(100, Math.round((r.qty / r.max) * 100)));
+      const minPct = Math.round((r.min / r.max) * 100);
+      const expSoon = r.expires && r.expires < '2026-11-01';
+      const label = low ? 'Reorder needed' : (atMin ? 'At minimum' : (expSoon ? 'Expiring soon' : 'In range'));
+      return {
+        sku: r.sku, name: m.name, lot: r.lot,
+        qty: r.qty + ' ' + self.unit(m.uom, r.qty),
+        range: 'min ' + r.min + ' · max ' + r.max,
+        barStyle: 'position:absolute;left:0;top:0;bottom:0;border-radius:1px;width:' + pct + '%;background:' + (low ? 'var(--color-accent-2)' : (atMin ? 'var(--color-accent-2-400)' : 'var(--color-accent)')),
+        minTickStyle: 'position:absolute;top:-3px;bottom:-3px;width:1.5px;background:var(--color-text);left:' + minPct + '%',
+        expires: r.expires ? self.fmt(r.expires) : '—',
+        expStyle: expSoon ? 'color:var(--color-accent-2-700)' : '',
+        location: r.location,
+        statusLabel: label,
+        statusClass: low || atMin || expSoon ? 'tag tag-accent-2' : 'tag tag-neutral',
+        btnClass: low || atMin ? 'btn btn-primary' : 'btn btn-ghost',
+        onReorder: () => self.startReorder(r)
+      };
+    });
+    const scanRows = this.SCANS.map(s => ({
+      ts: s.ts, dir: s.dir, sku: s.sku, name: self.mat(s.sku).name, lot: s.lot,
+      qty: s.qty, by: s.by, ref: s.ref,
+      dirClass: s.dir === 'Scan in' ? 'tag tag-accent' : (s.dir === 'Scan out' ? 'tag tag-neutral' : 'tag tag-outline')
+    }));
+
+    // ── Requisitions ──────────────────────────────────────
+    const reqStatusOptions = ['All statuses', 'Submitted', 'Processing', 'Fulfilled'];
+    const reqTypeOptions = ['All types', 'Reorder', 'Spot buy'];
+    const reqRows = this.state.reqs
+      .filter(r => (S.reqStatus === 'All statuses' || r.status === S.reqStatus) && (S.reqType === 'All types' || r.type === S.reqType))
+      .map(r => {
+        const m = self.mat(r.sku);
+        return {
+          id: r.id, type: r.type, typeClass: r.type === 'Reorder' ? 'tag tag-accent' : 'tag tag-accent-2',
+          name: m.name, sku: r.sku, qty: r.qty + ' ' + self.unit(m.uom, r.qty),
+          neededBy: self.fmt(r.neededBy), submitted: self.fmt(r.submitted),
+          status: r.status, statusClass: self.statusClass(r.status), order: r.order
+        };
+      });
+
+    // ── Form ──────────────────────────────────────────────
+    const f = S.form || { mode: 'spot', sku: '', qty: '1', date: '', notes: '', ctx: null };
+    const fm = f.sku ? self.mat(f.sku) : null;
+    const setF = (k, v) => self.setState({ form: Object.assign({}, f, { [k]: v }) });
+    const prefillMeta = f.ctx ? [
+      { k: 'Batch on site', v: f.ctx.lot },
+      { k: 'Current quantity', v: f.ctx.qty + ' of min ' + f.ctx.min },
+      { k: 'Suggested reorder', v: (f.ctx.max - f.ctx.qty) + ' to reach max ' + f.ctx.max },
+      { k: 'Location', v: f.ctx.location }
+    ] : [];
+    const submitDisabled = !(f.sku && Number(f.qty) > 0 && f.date);
+
+    // ── Catalogue ─────────────────────────────────────────
+    const cq = S.catQ.trim().toLowerCase();
+    const cats = ['All', 'Solvents', 'Lubricants', 'Coolants', 'Coatings', 'Cleaning', 'Safety'];
+    const catChips = cats.map(c => {
+      const on = S.catCat === c;
+      return {
+        label: c === 'All' ? 'All categories' : c,
+        style: 'cursor:pointer;font-family:var(--font-body);font-size:12.5px;padding:5px 13px;border-radius:var(--radius-md);border:1px solid ' +
+          (on ? 'var(--color-accent)' : 'color-mix(in srgb, var(--color-text) 16%, transparent)') +
+          ';background:' + (on ? 'var(--color-accent)' : 'transparent') + ';color:' + (on ? 'var(--color-bg)' : 'var(--color-text)'),
+        onClick: () => self.setState({ catCat: c })
+      };
+    });
+    const catList = this.MAT.filter(m => {
+      if (S.catCat !== 'All' && m.cat !== S.catCat) return false;
+      if (S.catTab === 'prev' && !m.last) return false;
+      if (S.catTab === 'freq' && m.freq < 8) return false;
+      if (!cq) return true;
+      return (m.name + ' ' + m.sku).toLowerCase().indexOf(cq) >= 0;
+    });
+    const catCards = catList.map(m => ({
+      sku: m.sku, name: m.name, uom: m.uom, type: m.type === 'Contract' ? 'Contract item' : 'Spot-buy item',
+      icon: self.CAT_ICON[m.cat],
+      typeClass: m.type === 'Contract' ? 'tag tag-accent' : 'tag tag-outline',
+      history: m.last ? 'Last ordered ' + self.fmt(m.last) + ' · ' + m.freq + '× in 12 mo' : 'Not ordered at this site',
+      onAdd: () => self.startSpot(m.sku)
+    }));
+
+    // ── Analytics ─────────────────────────────────────────
+    const months = (S.period === 'Last 12 months' ? this.MONTHS12 : (S.period === 'Last 3 months' ? this.MONTHS.slice(3) : this.MONTHS));
+    const maxV = Math.max.apply(null, months.map(m => m.v));
+    const monthRows = months.map((m, i) => ({
+      label: m.label, v: m.v.toLocaleString(),
+      barStyle: 'width:100%;height:' + Math.round((m.v / maxV) * 100) + '%;border-radius:1px 1px 0 0;background:' +
+        (i === months.length - 1 ? 'var(--color-accent)' : 'var(--color-accent-200)')
+    }));
+    const belowMin = this.INV.filter(r => r.qty < r.min).length;
+    const atMinN = this.INV.filter(r => r.qty === r.min).length;
+    const inRange = this.INV.length - belowMin - atMinN;
+    const expiring = this.INV.filter(r => r.expires && r.expires < '2026-11-01').length;
+    const healthMax = this.INV.length;
+    const health = [
+      ['In range', inRange, 'var(--color-accent)'],
+      ['At minimum', atMinN, 'var(--color-accent-2-400)'],
+      ['Below minimum', belowMin, 'var(--color-accent-2)'],
+      ['Expiring within 60 days', expiring, 'var(--color-neutral-500)']
+    ].map(([label, n, col]) => ({
+      label, n,
+      barStyle: 'height:8px;border-radius:1px;background:' + col + ';width:' + Math.max(3, Math.round((n / healthMax) * 100)) + '%'
+    }));
+    const kpis = [
+      { label: 'Consumed this month', value: '1,284', note: 'units scanned out at the crib' },
+      { label: 'On-time delivery', value: '94%', note: '38 of 40 orders, last 90 days' },
+      { label: 'Requisition → order', value: '6.4 h', note: 'median time to a Sage number' },
+      { label: 'Below minimum', value: String(belowMin), note: 'SKUs needing reorder right now', accent: true }
+    ].map(k => ({
+      label: k.label, value: k.value, note: k.note,
+      valueStyle: 'font-family:var(--font-heading);font-weight:600;font-size:40px;line-height:1;letter-spacing:-0.02em;color:' +
+        (k.accent ? 'var(--color-accent-2-700)' : 'var(--color-text)')
+    }));
+    const topRows = this.CONS
+      .filter(c => S.anCat === 'All categories' || self.mat(c.sku).cat === S.anCat)
+      .map(c => {
+        const m = self.mat(c.sku);
+        const inv = self.INV.find(r => r.sku === c.sku);
+        const wk = inv ? inv.wk : Math.round(c.out / 26 * 10) / 10;
+        const weeks = inv ? Math.round((inv.qty / wk) * 10) / 10 : null;
+        const tight = weeks !== null && weeks < 2;
+        return {
+          sku: c.sku, name: m.name, cat: m.cat, out: c.out.toLocaleString(),
+          wk: wk.toFixed(1), onHand: inv ? inv.qty + ' ' + self.unit(m.uom, inv.qty) : 'not stocked',
+          cover: weeks === null ? '—' : (weeks < 1 ? 'under 1 week' : weeks + ' weeks'),
+          coverClass: tight ? 'tag tag-accent-2' : 'tag tag-neutral',
+          trend: c.trend
+        };
+      });
+
+    return {
+      companyName, siteName, showNotes, navItems,
+      accountNo: 'C-40218', userName: 'Marcus Okafor', userInitials: 'MO', userRole: 'Maintenance Supervisor',
+      lastSync: '21 Aug 2026, 08:45', lastCount: '18 Aug 2026',
+      isOrders: view === 'orders', isOrderDetail: view === 'orderDetail', isInventory: view === 'inventory',
+      isReq: view === 'requisitions', isForm: view === 'form', isCat: view === 'catalogue', isAnalytics: view === 'analytics',
+      hasBanner: !!S.banner, bannerText: S.banner, onDismissBanner: () => self.setState({ banner: null }),
+
+      q: S.q, status: S.status, from: S.from, to: S.to, statusOptions,
+      onSearch: e => self.setState({ q: e.target.value }),
+      onStatus: e => self.setState({ status: e.target.value }),
+      onFrom: e => self.setState({ from: e.target.value }),
+      onTo: e => self.setState({ to: e.target.value }),
+      onClearFilters: () => self.setState({ q: '', status: 'All statuses', from: '', to: '' }),
+      orderRows, ordersEmpty: orderRows.length === 0,
+      orderCountLabel: filtered.length + ' of ' + this.ORDERS.length + ' orders',
+      onBackToOrders: () => self.setState({ view: 'orders' }),
+      od,
+
+      tabStock: S.invTab === 'stock', tabScans: S.invTab === 'scans',
+      onTabStock: () => self.setState({ invTab: 'stock' }), onTabScans: () => self.setState({ invTab: 'scans' }),
+      invRows, scanRows, invCount: this.INV.length,
+      lowCount: this.INV.filter(r => r.qty < r.min).length,
+
+      reqRows, reqStatus: S.reqStatus, reqType: S.reqType, reqStatusOptions, reqTypeOptions,
+      reqCountLabel: reqRows.length + ' of ' + this.state.reqs.length + ' requisitions',
+      onReqStatus: e => self.setState({ reqStatus: e.target.value }),
+      onReqType: e => self.setState({ reqType: e.target.value }),
+      onNewSpot: () => self.startSpot(''),
+
+      formTitle: f.mode === 'reorder' ? 'Reorder request' : 'Spot-buy request',
+      formBlurb: f.mode === 'reorder'
+        ? 'Pre-filled from the min/max trigger on your on-site stock. Adjust the quantity if you need more.'
+        : 'Pick the material, say how many and when you need it. Two fields and a date — no email required.',
+      reorderCardStyle: 'text-align:left;cursor:pointer;padding:18px;border-radius:var(--radius-md);background:' +
+        (f.mode === 'reorder' ? 'var(--color-accent-100)' : 'var(--color-surface)') +
+        ';border:1px solid ' + (f.mode === 'reorder' ? 'var(--color-accent)' : 'transparent') + ';font-family:var(--font-body);color:var(--color-text)',
+      spotCardStyle: 'text-align:left;cursor:pointer;padding:18px;border-radius:var(--radius-md);background:' +
+        (f.mode === 'spot' ? 'var(--color-accent-2-100)' : 'var(--color-surface)') +
+        ';border:1px solid ' + (f.mode === 'spot' ? 'var(--color-accent-2)' : 'transparent') + ';font-family:var(--font-body);color:var(--color-text)',
+      onModeReorder: () => self.startReorder(f.ctx || self.INV.find(r => r.qty <= r.min)),
+      onModeSpot: () => self.setState({ form: { mode: 'spot', sku: f.sku, qty: f.qty, date: f.date, notes: f.notes, ctx: null } }),
+      hasPrefill: f.mode === 'reorder' && !!f.ctx, prefillMeta,
+      materialOptions: this.MAT.slice().sort((a, b) => a.name.localeCompare(b.name)).map(m => ({ sku: m.sku, label: m.name + ' — ' + m.sku })),
+      fSku: f.sku, fQty: f.qty, fDate: f.date, fNotes: f.notes, fUom: fm ? fm.uom : 'units',
+      onFormSku: e => setF('sku', e.target.value),
+      onFormQty: e => setF('qty', e.target.value),
+      onFormDate: e => setF('date', e.target.value),
+      onFormNotes: e => setF('notes', e.target.value),
+      submitDisabled,
+      submitHint: submitDisabled ? 'Material, quantity and a needed-by date are required.' : 'Goes straight to your branch — no pricing approval needed on contract items.',
+      onSubmit: () => self.submitForm(),
+      onCancelForm: () => self.setState({ view: 'requisitions', form: null }),
+
+      catQ: S.catQ, catChips, catCards, catEmpty: catCards.length === 0,
+      catAll: S.catTab === 'all', catPrev: S.catTab === 'prev', catFreq: S.catTab === 'freq',
+      onCatAll: () => self.setState({ catTab: 'all' }),
+      onCatPrev: () => self.setState({ catTab: 'prev' }),
+      onCatFreq: () => self.setState({ catTab: 'freq' }),
+      onCatSearch: e => self.setState({ catQ: e.target.value }),
+      catCountLabel: catCards.length + ' of ' + this.MAT.length + ' approved items',
+
+      period: S.period, periodOptions: ['Last 3 months', 'Last 6 months', 'Last 12 months'],
+      anCat: S.anCat, anCatOptions: ['All categories', 'Solvents', 'Lubricants', 'Coolants', 'Coatings', 'Cleaning', 'Safety'],
+      onPeriod: e => self.setState({ period: e.target.value }),
+      onAnCat: e => self.setState({ anCat: e.target.value }),
+      kpis, months: monthRows, health, topRows
+    };
+  }
+}
+</script>
+</body>
+</html>

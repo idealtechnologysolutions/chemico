@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap">
+<style>
+body{margin:0;background:#f0eee9;font-family:system-ui,-apple-system,sans-serif}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}
+.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.dv-opt:target .dv-oid{background:#0088b0;color:#fff}
+.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}
+a{color:#0088b0}
+
+.wf{display:flex;min-height:520px;color:#2b2b2b}
+.rail{width:158px;flex:none;border-right:1px dashed #c6c2bb;padding:16px 13px;display:flex;flex-direction:column;gap:7px;background:#fbfaf8}
+.logo{height:26px;border:1px dashed #c6c2bb;border-radius:3px;display:grid;place-items:center;font:600 9px system-ui;color:#9a958d;margin-bottom:10px}
+.nv{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:3px;font-size:11px;color:#6c6862}
+.nv b{font-weight:600}
+.nv i{width:12px;height:12px;border:1.5px solid #b5b0a8;border-radius:2px;flex:none;display:block}
+.nv-on{background:#e4f2f7;color:#0a5a72;border-left:2px solid #0088b0;border-radius:0 3px 3px 0}
+.nv-on i{border-color:#0088b0}
+.main{flex:1;min-width:0;padding:18px 20px 22px}
+.h1{font:600 19px/1.15 system-ui;margin:0 0 3px}
+.sub{font-size:11px;color:#8d8880;margin-bottom:16px}
+.row{display:flex;align-items:center;gap:9px}
+.fld{height:28px;border:1px solid #cdc9c2;border-radius:3px;display:flex;align-items:center;padding:0 8px;font-size:10.5px;color:#98938b;background:#fff}
+.btnw{border:1.5px solid #3b3b3b;border-radius:3px;padding:5px 11px;font:600 10.5px system-ui;display:inline-flex;align-items:center;gap:5px;background:#fff}
+.btnf{background:#0088b0;border-color:#0088b0;color:#fff}
+.gr{display:grid;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid #ecebe8;font-size:10.5px}
+.th{font:600 8.5px system-ui;letter-spacing:.09em;text-transform:uppercase;color:#9a958d;border-bottom:1px solid #d8d4cd;padding-bottom:7px}
+.bar{height:8px;background:#e6e4e0;border-radius:2px}
+.pill{border:1px solid #b5b0a8;border-radius:10px;padding:1px 8px;font-size:9px;color:#6c6862;display:inline-block;white-space:nowrap}
+.pill-on{border-color:#0088b0;background:#0088b0;color:#fff}
+.pill-warn{border-color:#d6006c;color:#d6006c}
+.card{border:1px dashed #c6c2bb;border-radius:4px;padding:11px;display:flex;flex-direction:column;gap:8px}
+.thumb{width:42px;height:42px;border:1px dashed #c6c2bb;border-radius:3px;display:grid;place-items:center;font-size:8px;color:#a8a39b;flex:none}
+.note{font:500 15px/1.25 Caveat,cursive;color:#0088b0}
+.cap{display:flex;gap:7px;align-items:flex-start;font:500 14px/1.3 Caveat,cursive;color:#3b3b3b}
+.num{width:16px;height:16px;flex:none;border-radius:50%;background:#0088b0;color:#fff;font:600 9px system-ui;display:grid;place-items:center;margin-top:1px}
+.caps{display:flex;flex-direction:column;gap:6px;padding:12px 16px 14px;background:#fbfaf8;border-top:1px dashed #d8d4cd}
+.mk{width:16px;height:16px;border-radius:50%;background:#0088b0;color:#fff;font:600 9px system-ui;display:inline-grid;place-items:center;vertical-align:middle}
+.mmbar{position:relative;height:6px;background:#e6e4e0;border-radius:2px;width:88px}
+.mmfill{position:absolute;left:0;top:0;bottom:0;border-radius:2px;background:#b5b0a8}
+.mmlow{background:#d6006c}
+.tick{position:absolute;top:-3px;bottom:-3px;width:1.5px;background:#3b3b3b}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Chemico customer portal — the four modules, wireframed</span></div>
+
+  <div class="dv-opts">
+
+    <!-- 1a ORDERS -->
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Order Management — list, with drill-in to a tracked detail</div>
+      <div class="dv-card" style="width:900px">
+        <div class="wf">
+          <div class="rail">
+            <div class="logo">CLIENT LOGO</div>
+            <div class="nv nv-on"><i></i><b>Orders</b></div>
+            <div class="nv"><i></i>Inventory</div>
+            <div class="nv"><i></i>Requisitions</div>
+            <div class="nv"><i></i>Catalogue</div>
+            <div style="margin-top:auto;display:flex;align-items:center;gap:7px"><div style="width:22px;height:22px;border-radius:50%;border:1px dashed #c6c2bb"></div><div style="font-size:10px;color:#8d8880">User · site</div></div>
+          </div>
+          <div class="main">
+            <div class="h1">Order Management</div>
+            <div class="sub">Orders placed on your behalf · synced from Sage</div>
+
+            <div class="row" style="margin-bottom:14px">
+              <div class="fld" style="width:210px">Search order no. / SKU</div>
+              <div class="fld" style="width:120px">Status ▾</div>
+              <div class="fld" style="width:108px">Date from</div>
+              <div class="fld" style="width:108px">Date to</div>
+              <div style="margin-left:auto;font-size:10px;color:#9a958d">14 orders</div>
+            </div>
+
+            <div class="gr th" style="grid-template-columns:88px 1fr 60px 74px 82px 96px 90px 14px">
+              <div>Order</div><div>Material</div><div>Qty</div><div>Ordered</div><div>Expected</div><div>Requested by</div><div>Status</div><div></div>
+            </div>
+            <div class="gr" style="grid-template-columns:88px 1fr 60px 74px 82px 96px 90px 14px">
+              <div style="color:#0088b0">SO-0148361</div><div><div class="bar" style="width:78%"></div></div><div class="bar" style="width:70%"></div><div class="bar"></div><div class="bar"></div><div class="bar" style="width:80%"></div><div><span class="pill">Placed</span></div><div style="color:#c6c2bb">›</div>
+            </div>
+            <div class="gr" style="grid-template-columns:88px 1fr 60px 74px 82px 96px 90px 14px">
+              <div style="color:#0088b0">SO-0148340 <span style="color:#0088b0">⟳</span></div><div><div class="bar" style="width:64%"></div></div><div class="bar" style="width:70%"></div><div class="bar"></div><div class="bar"></div><div class="bar" style="width:66%"></div><div><span class="pill pill-on">In transit</span></div><div style="color:#c6c2bb">›</div>
+            </div>
+            <div class="gr" style="grid-template-columns:88px 1fr 60px 74px 82px 96px 90px 14px">
+              <div style="color:#0088b0">SO-0148288</div><div><div class="bar" style="width:86%"></div></div><div class="bar" style="width:70%"></div><div class="bar"></div><div class="bar"></div><div class="bar" style="width:74%"></div><div><span class="pill pill-warn">Delayed</span></div><div style="color:#c6c2bb">›</div>
+            </div>
+            <div class="gr" style="grid-template-columns:88px 1fr 60px 74px 82px 96px 90px 14px">
+              <div style="color:#0088b0">SO-0148270</div><div><div class="bar" style="width:58%"></div></div><div class="bar" style="width:70%"></div><div class="bar"></div><div class="bar"></div><div class="bar" style="width:60%"></div><div><span class="pill">Delivered</span></div><div style="color:#c6c2bb">›</div>
+            </div>
+            <div class="gr" style="grid-template-columns:88px 1fr 60px 74px 82px 96px 90px 14px">
+              <div style="color:#0088b0">SO-0148244</div><div><div class="bar" style="width:72%"></div></div><div class="bar" style="width:70%"></div><div class="bar"></div><div class="bar"></div><div class="bar" style="width:52%"></div><div><span class="pill">Delivered</span></div><div style="color:#c6c2bb">›</div>
+            </div>
+
+            <div style="margin-top:22px;border:1px dashed #c6c2bb;border-radius:4px;padding:14px 16px">
+              <div style="display:flex;align-items:baseline;gap:10px"><div style="font:600 14px system-ui">SO-0148288</div><span class="pill pill-warn">Delayed</span><span class="note" style="margin-left:auto">detail view — same data, expanded <span class="mk">2</span></span></div>
+              <div class="row" style="margin:16px 0 4px;gap:0;width:560px">
+                <div style="flex:1"><div style="display:flex;align-items:center"><div style="width:11px;height:11px;border-radius:50%;background:#0088b0"></div><div style="flex:1;height:2px;background:#0088b0"></div></div><div style="font-size:10px;margin-top:6px">Placed</div></div>
+                <div style="flex:1"><div style="display:flex;align-items:center"><div style="width:11px;height:11px;border-radius:50%;background:#d6006c"></div><div style="flex:1;height:2px;background:#e6e4e0"></div></div><div style="font-size:10px;margin-top:6px">Shipped</div></div>
+                <div style="flex:1"><div style="display:flex;align-items:center"><div style="width:11px;height:11px;border-radius:50%;background:#e6e4e0"></div><div style="flex:1;height:2px;background:#e6e4e0"></div></div><div style="font-size:10px;margin-top:6px;color:#a8a39b">Out for delivery</div></div>
+                <div style="flex:1"><div style="display:flex;align-items:center"><div style="width:11px;height:11px;border-radius:50%;background:#e6e4e0"></div></div><div style="font-size:10px;margin-top:6px;color:#a8a39b">Delivered</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px">
+                <div><div class="th" style="border:0;padding:0">Carrier</div><div class="bar" style="margin-top:5px"></div></div>
+                <div><div class="th" style="border:0;padding:0">Tracking no.</div><div class="bar" style="margin-top:5px"></div></div>
+                <div><div class="th" style="border:0;padding:0">Requested by</div><div class="bar" style="margin-top:5px"></div></div>
+                <div><div class="th" style="border:0;padding:0">Source requisition</div><div class="bar" style="margin-top:5px;background:#cde8f1"></div></div>
+              </div>
+              <div class="note" style="margin-top:14px">no price, no subtotal, no cost — anywhere <span class="mk">3</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="caps">
+          <div class="cap"><span class="num">1</span><span>⟳ marks orders the rep raised automatically off a min/max trigger — the customer didn't ask for it, so it needs explaining in the row.</span></div>
+          <div class="cap"><span class="num">2</span><span>Row click opens the detail on the same page (no route change) — progress rail, carrier + tracking, line items.</span></div>
+          <div class="cap"><span class="num">3</span><span>Cost fields are absent by construction, not hidden — the customer view never receives them.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1b INVENTORY -->
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Customer Inventory — on-site stock, with scan history behind a tab</div>
+      <div class="dv-card" style="width:900px">
+        <div class="wf">
+          <div class="rail">
+            <div class="logo">CLIENT LOGO</div>
+            <div class="nv"><i></i>Orders</div>
+            <div class="nv nv-on"><i></i><b>Inventory</b></div>
+            <div class="nv"><i></i>Requisitions</div>
+            <div class="nv"><i></i>Catalogue</div>
+          </div>
+          <div class="main">
+            <div class="h1">Customer Inventory</div>
+            <div class="sub">Material held and managed at your facility</div>
+
+            <div class="row" style="margin-bottom:16px">
+              <div style="display:flex;border:1px solid #cdc9c2;border-radius:3px;overflow:hidden">
+                <div style="padding:6px 12px;font-size:10.5px;background:#0088b0;color:#fff">On-site materials</div>
+                <div style="padding:6px 12px;font-size:10.5px;border-left:1px solid #cdc9c2;color:#8d8880">Scan history</div>
+              </div>
+              <span class="pill pill-warn">4 below min</span>
+              <span style="font-size:10px;color:#9a958d">14 SKUs · last count 18 Aug</span>
+            </div>
+
+            <div class="gr th" style="grid-template-columns:1fr 74px 62px 100px 74px 84px 92px">
+              <div>Material / SKU</div><div>Lot</div><div>On hand</div><div>Min / max</div><div>Expires</div><div>Location</div><div>Status</div>
+            </div>
+            <div class="gr" style="grid-template-columns:1fr 74px 62px 100px 74px 84px 92px">
+              <div><div class="bar" style="width:70%"></div><div class="bar" style="width:42%;margin-top:4px;height:6px"></div></div><div class="bar"></div><div class="bar" style="width:60%"></div>
+              <div><div class="mmbar"><div class="mmfill mmlow" style="width:20%"></div><div class="tick" style="left:33%"></div></div></div>
+              <div class="bar" style="width:70%"></div><div class="bar"></div><div><span class="pill pill-warn">Reorder needed</span></div>
+            </div>
+            <div class="gr" style="grid-template-columns:1fr 74px 62px 100px 74px 84px 92px">
+              <div><div class="bar" style="width:82%"></div><div class="bar" style="width:38%;margin-top:4px;height:6px"></div></div><div class="bar"></div><div class="bar" style="width:60%"></div>
+              <div><div class="mmbar"><div class="mmfill" style="width:62%"></div><div class="tick" style="left:30%"></div></div></div>
+              <div class="bar" style="width:70%"></div><div class="bar"></div><div><span class="pill">In range</span></div>
+            </div>
+            <div class="gr" style="grid-template-columns:1fr 74px 62px 100px 74px 84px 92px">
+              <div><div class="bar" style="width:64%"></div><div class="bar" style="width:44%;margin-top:4px;height:6px"></div></div><div class="bar"></div><div class="bar" style="width:60%"></div>
+              <div><div class="mmbar"><div class="mmfill" style="width:45%"></div><div class="tick" style="left:25%"></div></div></div>
+              <div style="color:#d6006c;font-size:10px">12 Sep 2026</div><div class="bar"></div><div><span class="pill pill-warn">Expiring soon</span></div>
+            </div>
+            <div class="gr" style="grid-template-columns:1fr 74px 62px 100px 74px 84px 92px">
+              <div><div class="bar" style="width:76%"></div><div class="bar" style="width:40%;margin-top:4px;height:6px"></div></div><div class="bar"></div><div class="bar" style="width:60%"></div>
+              <div><div class="mmbar"><div class="mmfill mmlow" style="width:26%"></div><div class="tick" style="left:34%"></div></div></div>
+              <div class="bar" style="width:70%"></div><div class="bar"></div><div><span class="pill pill-warn">Reorder needed</span></div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+              <span class="note">low rows carry the only filled button on the screen <span class="mk">1</span></span>
+              <div class="btnw btnf">Request reorder</div>
+            </div>
+
+            <div style="margin-top:22px;border:1px dashed #c6c2bb;border-radius:4px;padding:12px 14px">
+              <div style="font:600 12px system-ui;margin-bottom:9px">Scan history <span class="note" style="font-size:13px">— second tab, same table grammar <span class="mk">2</span></span></div>
+              <div class="gr th" style="grid-template-columns:110px 64px 1fr 56px 120px 84px">
+                <div>Timestamp</div><div>Direction</div><div>Material</div><div>Qty</div><div>Scanned by</div><div>Reference</div>
+              </div>
+              <div class="gr" style="grid-template-columns:110px 64px 1fr 56px 120px 84px"><div class="bar"></div><div><span class="pill pill-on">IN</span></div><div class="bar" style="width:70%"></div><div class="bar" style="width:50%"></div><div class="bar"></div><div class="bar"></div></div>
+              <div class="gr" style="grid-template-columns:110px 64px 1fr 56px 120px 84px"><div class="bar"></div><div><span class="pill">OUT</span></div><div class="bar" style="width:82%"></div><div class="bar" style="width:50%"></div><div class="bar"></div><div class="bar"></div></div>
+              <div class="gr" style="grid-template-columns:110px 64px 1fr 56px 120px 84px;border:0"><div class="bar"></div><div><span class="pill">OUT</span></div><div class="bar" style="width:60%"></div><div class="bar" style="width:50%"></div><div class="bar"></div><div class="bar"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="caps">
+          <div class="cap"><span class="num">1</span><span>Min/max is a bar with a tick at the minimum — reads at a glance across 14 rows, no mental arithmetic.</span></div>
+          <div class="cap"><span class="num">2</span><span>Scan log is a tab, not a separate screen: rep scan-in and crib scan-out in one stream, referenced to an order or work order.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1c REQUISITION -->
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Requisition — two entry paths, one short form, history below</div>
+      <div class="dv-card" style="width:900px">
+        <div class="wf">
+          <div class="rail">
+            <div class="logo">CLIENT LOGO</div>
+            <div class="nv"><i></i>Orders</div>
+            <div class="nv"><i></i>Inventory</div>
+            <div class="nv nv-on"><i></i><b>Requisitions</b></div>
+            <div class="nv"><i></i>Catalogue</div>
+          </div>
+          <div class="main">
+            <div class="h1">New request</div>
+            <div class="sub">Replaces the email to the branch</div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+              <div class="card" style="border:1.5px solid #0088b0;background:#f2fafd">
+                <div style="font:600 13px system-ui">Reorder request</div>
+                <div style="font-size:10.5px;color:#7d786f;line-height:1.35">Pre-filled from a min/max trigger on stock already on site.</div>
+              </div>
+              <div class="card">
+                <div style="font:600 13px system-ui;color:#6c6862">Spot-buy request</div>
+                <div style="font-size:10.5px;color:#9a958d;line-height:1.35">Built by hand from the catalogue — one-off or off-contract.</div>
+              </div>
+            </div>
+            <div class="note" style="margin:-8px 0 14px">the two paths are the whole choice — no wizard <span class="mk">1</span></div>
+
+            <div style="background:#eef7fb;border-radius:3px;padding:11px 14px;display:flex;gap:26px;margin-bottom:16px">
+              <div><div class="th" style="border:0;padding:0">Lot on site</div><div class="bar" style="margin-top:5px;width:64px"></div></div>
+              <div><div class="th" style="border:0;padding:0">Current qty</div><div class="bar" style="margin-top:5px;width:64px"></div></div>
+              <div><div class="th" style="border:0;padding:0">Suggested reorder</div><div class="bar" style="margin-top:5px;width:80px;background:#9fd4e6"></div></div>
+              <div style="align-self:center"><span class="note">carried in from Inventory <span class="mk">2</span></span></div>
+            </div>
+
+            <div class="row" style="align-items:flex-end;gap:12px">
+              <div style="flex:1"><div class="th" style="border:0;padding:0 0 4px">Material</div><div class="fld">Select a material… ▾</div></div>
+              <div style="width:96px"><div class="th" style="border:0;padding:0 0 4px">Quantity</div><div class="fld">24</div></div>
+              <div style="width:130px"><div class="th" style="border:0;padding:0 0 4px">Needed by</div><div class="fld">28 Aug 2026</div></div>
+            </div>
+            <div style="margin-top:12px"><div class="th" style="border:0;padding:0 0 4px">Notes (optional)</div><div class="fld" style="height:52px;align-items:flex-start;padding-top:7px">Dock instructions, work order…</div></div>
+            <div class="row" style="margin-top:14px"><div class="btnw btnf">Submit requisition</div><div class="btnw">Cancel</div><span class="note">four fields, one screen <span class="mk">3</span></span></div>
+
+            <div style="margin-top:24px">
+              <div style="font:600 12px system-ui;margin-bottom:8px">Requisition history</div>
+              <div class="gr th" style="grid-template-columns:104px 74px 1fr 56px 78px 86px 84px">
+                <div>Requisition</div><div>Type</div><div>Material</div><div>Qty</div><div>Needed</div><div>Status</div><div>Sage order</div>
+              </div>
+              <div class="gr" style="grid-template-columns:104px 74px 1fr 56px 78px 86px 84px"><div style="color:#0088b0">REQ-2026-0146</div><div><span class="pill">Spot buy</span></div><div class="bar" style="width:70%"></div><div class="bar" style="width:50%"></div><div class="bar"></div><div><span class="pill pill-on">Processing</span></div><div class="bar"></div></div>
+              <div class="gr" style="grid-template-columns:104px 74px 1fr 56px 78px 86px 84px"><div style="color:#0088b0">REQ-2026-0143</div><div><span class="pill">Reorder</span></div><div class="bar" style="width:84%"></div><div class="bar" style="width:50%"></div><div class="bar"></div><div><span class="pill pill-on">Processing</span></div><div class="bar"></div></div>
+              <div class="gr" style="grid-template-columns:104px 74px 1fr 56px 78px 86px 84px;border:0"><div style="color:#0088b0">REQ-2026-0139</div><div><span class="pill">Reorder</span></div><div class="bar" style="width:62%"></div><div class="bar" style="width:50%"></div><div class="bar"></div><div><span class="pill">Fulfilled</span></div><div class="bar" style="width:70%"></div></div>
+              <div class="note" style="margin-top:10px">history answers “did anyone see my email?” <span class="mk">4</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="caps">
+          <div class="cap"><span class="num">1</span><span>Both paths land on the same form — only the prefill differs, so there is one thing to learn.</span></div>
+          <div class="cap"><span class="num">2</span><span>Reorder context strip proves the suggestion: lot, current quantity, suggested amount to reach max.</span></div>
+          <div class="cap"><span class="num">3</span><span>Submit is enabled only with material + quantity + needed-by date.</span></div>
+          <div class="cap"><span class="num">4</span><span>The Sage order number appears against the requisition once the branch raises it — the loop the email process never closed.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1d CATALOGUE -->
+    <div class="dv-opt" id="1d">
+      <div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Material Catalogue — approved list, card grid, straight into a request</div>
+      <div class="dv-card" style="width:900px">
+        <div class="wf">
+          <div class="rail">
+            <div class="logo">CLIENT LOGO</div>
+            <div class="nv"><i></i>Orders</div>
+            <div class="nv"><i></i>Inventory</div>
+            <div class="nv"><i></i>Requisitions</div>
+            <div class="nv nv-on"><i></i><b>Catalogue</b></div>
+          </div>
+          <div class="main">
+            <div class="h1">Material Catalogue</div>
+            <div class="sub">Everything this facility is approved to order</div>
+
+            <div class="row" style="margin-bottom:12px">
+              <div class="fld" style="width:230px">Search name or SKU</div>
+              <div style="display:flex;border:1px solid #cdc9c2;border-radius:3px;overflow:hidden">
+                <div style="padding:6px 11px;font-size:10.5px;background:#0088b0;color:#fff">All items</div>
+                <div style="padding:6px 11px;font-size:10.5px;border-left:1px solid #cdc9c2;color:#8d8880">Previously ordered</div>
+                <div style="padding:6px 11px;font-size:10.5px;border-left:1px solid #cdc9c2;color:#8d8880">Frequently ordered</div>
+              </div>
+              <span class="note" style="margin-left:auto">reorder speed lives in these two tabs <span class="mk">1</span></span>
+            </div>
+            <div class="row" style="gap:6px;margin-bottom:16px">
+              <span class="pill pill-on">All categories</span><span class="pill">Category A</span><span class="pill">Category B</span><span class="pill">Category C</span><span class="pill">Category D</span><span class="pill">Category E</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+              <div class="card"><div style="display:flex;gap:10px"><div class="thumb">IMG</div><div style="flex:1"><div class="bar" style="width:88%"></div><div class="bar" style="width:56%;margin-top:5px;height:6px"></div></div></div><div class="row" style="gap:6px"><span class="pill pill-on">Contract item</span><span style="font-size:9px;color:#9a958d">12× in 12 mo</span></div><div class="btnw" style="justify-content:center">Add to request</div></div>
+              <div class="card"><div style="display:flex;gap:10px"><div class="thumb">IMG</div><div style="flex:1"><div class="bar" style="width:70%"></div><div class="bar" style="width:60%;margin-top:5px;height:6px"></div></div></div><div class="row" style="gap:6px"><span class="pill">Spot-buy item</span><span style="font-size:9px;color:#9a958d">Not ordered here</span></div><div class="btnw" style="justify-content:center">Add to request</div></div>
+              <div class="card"><div style="display:flex;gap:10px"><div class="thumb">IMG</div><div style="flex:1"><div class="bar" style="width:80%"></div><div class="bar" style="width:48%;margin-top:5px;height:6px"></div></div></div><div class="row" style="gap:6px"><span class="pill pill-on">Contract item</span><span style="font-size:9px;color:#9a958d">9× in 12 mo</span></div><div class="btnw" style="justify-content:center">Add to request</div></div>
+              <div class="card"><div style="display:flex;gap:10px"><div class="thumb">IMG</div><div style="flex:1"><div class="bar" style="width:84%"></div><div class="bar" style="width:52%;margin-top:5px;height:6px"></div></div></div><div class="row" style="gap:6px"><span class="pill pill-on">Contract item</span><span style="font-size:9px;color:#9a958d">6× in 12 mo</span></div><div class="btnw" style="justify-content:center">Add to request</div></div>
+              <div class="card"><div style="display:flex;gap:10px"><div class="thumb">IMG</div><div style="flex:1"><div class="bar" style="width:64%"></div><div class="bar" style="width:58%;margin-top:5px;height:6px"></div></div></div><div class="row" style="gap:6px"><span class="pill">Spot-buy item</span><span style="font-size:9px;color:#9a958d">3× in 12 mo</span></div><div class="btnw" style="justify-content:center">Add to request</div></div>
+              <div class="card"><div style="display:flex;gap:10px"><div class="thumb">IMG</div><div style="flex:1"><div class="bar" style="width:76%"></div><div class="bar" style="width:44%;margin-top:5px;height:6px"></div></div></div><div class="row" style="gap:6px"><span class="pill pill-on">Contract item</span><span style="font-size:9px;color:#9a958d">15× in 12 mo</span></div><div class="btnw" style="justify-content:center">Add to request</div></div>
+            </div>
+            <div class="note" style="margin-top:14px">“Add to request” hands the SKU to the spot-buy form — catalogue → requisition in two clicks <span class="mk">2</span></div>
+          </div>
+        </div>
+        <div class="caps">
+          <div class="cap"><span class="num">1</span><span>Contract vs spot-buy is a badge on every card — the customer sees what is on agreement without seeing a price.</span></div>
+          <div class="cap"><span class="num">2</span><span>Cards, not rows: a thumbnail matters when someone is matching a drum label they are holding.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1e ANALYTICS -->
+    <div class="dv-opt" id="1e">
+      <div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Reporting &amp; Analytics — consumption and service, no spend</div>
+      <div class="dv-card" style="width:900px">
+        <div class="wf">
+          <div class="rail">
+            <div class="logo">CLIENT LOGO</div>
+            <div class="nv"><i></i>Orders</div>
+            <div class="nv"><i></i>Inventory</div>
+            <div class="nv"><i></i>Requisitions</div>
+            <div class="nv"><i></i>Catalogue</div>
+            <div class="nv nv-on"><i></i><b>Analytics</b></div>
+          </div>
+          <div class="main">
+            <div class="h1">Reporting &amp; Analytics</div>
+            <div class="sub">Consumption, stock health and service performance for this facility</div>
+
+            <div class="row" style="margin-bottom:16px">
+              <div class="fld" style="width:150px">Last 6 months ▾</div>
+              <div class="fld" style="width:130px">All categories ▾</div>
+              <div class="btnw" style="margin-left:auto">Export CSV</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
+              <div class="card" style="gap:5px"><div class="th" style="border:0;padding:0">Consumed this month</div><div style="font:600 22px system-ui">1,284</div><div style="font-size:9.5px;color:#9a958d">units scanned out</div></div>
+              <div class="card" style="gap:5px"><div class="th" style="border:0;padding:0">On-time delivery</div><div style="font:600 22px system-ui">94%</div><div style="font-size:9.5px;color:#9a958d">38 of 40 orders</div></div>
+              <div class="card" style="gap:5px"><div class="th" style="border:0;padding:0">Requisition → order</div><div style="font:600 22px system-ui">6.4 h</div><div style="font-size:9.5px;color:#9a958d">median, last 90 days</div></div>
+              <div class="card" style="gap:5px"><div class="th" style="border:0;padding:0">Stockouts</div><div style="font:600 22px system-ui;color:#d6006c">2</div><div style="font-size:9.5px;color:#9a958d">SKUs hit zero</div></div>
+            </div>
+            <div class="note" style="margin:-8px 0 16px">quantities, days and percentages — never cost <span class="mk">1</span></div>
+
+            <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:16px">
+              <div class="card">
+                <div style="font:600 12px system-ui">Consumption by month</div>
+                <div style="display:flex;align-items:flex-end;gap:12px;height:118px;padding-top:6px">
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:4px"><div style="height:52%;background:#cfe9f2;border-radius:2px 2px 0 0"></div><div style="font-size:8.5px;color:#9a958d;text-align:center">Mar</div></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:4px"><div style="height:64%;background:#cfe9f2;border-radius:2px 2px 0 0"></div><div style="font-size:8.5px;color:#9a958d;text-align:center">Apr</div></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:4px"><div style="height:47%;background:#cfe9f2;border-radius:2px 2px 0 0"></div><div style="font-size:8.5px;color:#9a958d;text-align:center">May</div></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:4px"><div style="height:78%;background:#cfe9f2;border-radius:2px 2px 0 0"></div><div style="font-size:8.5px;color:#9a958d;text-align:center">Jun</div></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:4px"><div style="height:70%;background:#cfe9f2;border-radius:2px 2px 0 0"></div><div style="font-size:8.5px;color:#9a958d;text-align:center">Jul</div></div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:4px"><div style="height:88%;background:#0088b0;border-radius:2px 2px 0 0"></div><div style="font-size:8.5px;color:#9a958d;text-align:center">Aug</div></div>
+                </div>
+              </div>
+              <div class="card">
+                <div style="font:600 12px system-ui">Stock health today</div>
+                <div style="display:flex;flex-direction:column;gap:9px;padding-top:6px">
+                  <div><div style="display:flex;justify-content:space-between;font-size:10px"><span>In range</span><span>9</span></div><div class="bar" style="margin-top:4px;width:100%"><div style="height:8px;width:64%;background:#b5b0a8;border-radius:2px"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:10px"><span>At minimum</span><span>1</span></div><div class="bar" style="margin-top:4px;width:100%"><div style="height:8px;width:12%;background:#ff90b1;border-radius:2px"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:10px"><span>Below minimum</span><span>3</span></div><div class="bar" style="margin-top:4px;width:100%"><div style="height:8px;width:26%;background:#d6006c;border-radius:2px"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;font-size:10px"><span>Expiring in 60 days</span><span>1</span></div><div class="bar" style="margin-top:4px;width:100%"><div style="height:8px;width:12%;background:#0088b0;border-radius:2px"></div></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:18px">
+              <div style="font:600 12px system-ui;margin-bottom:8px">Most consumed materials <span class="note" style="font-size:13px">— clicks through to that item's scan log <span class="mk">2</span></span></div>
+              <div class="gr th" style="grid-template-columns:1fr 90px 90px 120px 110px">
+                <div>Material / SKU</div><div>Scanned out</div><div>Avg / week</div><div>Cover at rate</div><div>Trend</div>
+              </div>
+              <div class="gr" style="grid-template-columns:1fr 90px 90px 120px 110px"><div class="bar" style="width:64%"></div><div class="bar" style="width:50%"></div><div class="bar" style="width:44%"></div><div style="font-size:10px;color:#d6006c">4 days</div><div class="bar" style="width:70%"></div></div>
+              <div class="gr" style="grid-template-columns:1fr 90px 90px 120px 110px"><div class="bar" style="width:78%"></div><div class="bar" style="width:50%"></div><div class="bar" style="width:44%"></div><div style="font-size:10px">3 weeks</div><div class="bar" style="width:60%"></div></div>
+              <div class="gr" style="grid-template-columns:1fr 90px 90px 120px 110px;border:0"><div class="bar" style="width:56%"></div><div class="bar" style="width:50%"></div><div class="bar" style="width:44%"></div><div style="font-size:10px">6 weeks</div><div class="bar" style="width:52%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="caps">
+          <div class="cap"><span class="num">1</span><span>Analytics obeys the same rule as every other screen: quantities and service metrics only, no spend, no unit cost.</span></div>
+          <div class="cap"><span class="num">2</span><span>“Cover at rate” — how long stock lasts at the current burn — is the number that turns the report into a reorder.</span></div>
+          <div class="cap"><span class="num">3</span><span>Every figure here is derivable from data the other four modules already hold; nothing new is asked of the customer.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1f FLOW -->
+    <div class="dv-opt" id="1f">
+      <div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>How the five modules connect</div>
+      <div class="dv-card" style="width:900px">
+        <div style="padding:24px 26px 8px">
+          <div style="font:600 15px system-ui;margin-bottom:4px">Two journeys the prototype has to carry</div>
+          <div style="font-size:11px;color:#8d8880;margin-bottom:22px">Everything else is browsing.</div>
+
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+            <div class="card" style="width:150px;gap:3px"><div style="font:600 11.5px system-ui">Catalogue</div><div style="font-size:10px;color:#8d8880">find the item</div></div>
+            <div style="font-size:15px;color:#0088b0">→</div>
+            <div class="card" style="width:150px;gap:3px;border-color:#0088b0"><div style="font:600 11.5px system-ui">Spot-buy form</div><div style="font-size:10px;color:#8d8880">SKU pre-selected</div></div>
+            <div style="font-size:15px;color:#0088b0">→</div>
+            <div class="card" style="width:150px;gap:3px"><div style="font:600 11.5px system-ui">Requisition history</div><div style="font-size:10px;color:#8d8880">status: Submitted</div></div>
+            <div style="font-size:15px;color:#0088b0">→</div>
+            <div class="card" style="width:150px;gap:3px"><div style="font:600 11.5px system-ui">Orders</div><div style="font-size:10px;color:#8d8880">Sage number appears</div></div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <div class="card" style="width:150px;gap:3px;border-color:#d6006c"><div style="font:600 11.5px system-ui">Inventory — low stock</div><div style="font-size:10px;color:#8d8880">below min flag</div></div>
+            <div style="font-size:15px;color:#d6006c">→</div>
+            <div class="card" style="width:150px;gap:3px"><div style="font:600 11.5px system-ui">Reorder form</div><div style="font-size:10px;color:#8d8880">qty pre-filled to max</div></div>
+            <div style="font-size:15px;color:#d6006c">→</div>
+            <div class="card" style="width:150px;gap:3px"><div style="font:600 11.5px system-ui">Requisition history</div><div style="font-size:10px;color:#8d8880">status: Submitted</div></div>
+            <div style="font-size:15px;color:#d6006c">→</div>
+            <div class="card" style="width:150px;gap:3px"><div style="font:600 11.5px system-ui">Analytics</div><div style="font-size:10px;color:#8d8880">stockout avoided</div></div>
+          </div>
+
+          <div class="note">Order Management stands alone — it is where the customer goes to answer “where is my delivery?”</div>
+        </div>
+        <div class="caps">
+          <div class="cap"><span class="num">1</span><span>One shared left rail across all five modules; no screen is reachable only from another screen.</span></div>
+          <div class="cap"><span class="num">2</span><span>Empty and loading states are noted per screen in the prototype rather than drawn here.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="dv-next">Try next: “build <a class="dv-oid" href="#1c">1c</a> as the live prototype” · “show the analytics in <a class="dv-oid" href="#1e">1e</a> with real chemical consumption data” · “try the inventory table denser than <a class="dv-oid" href="#1b">1b</a>”</p>
+</section>
+</x-dc>
+</body>
+</html>
