@@ -18,6 +18,15 @@
 </style>
 </helmet>
 
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="120" fill="#0088b0"></rect>
+    <circle cx="60" cy="60" r="27" fill="none" stroke="#f3f2f2" stroke-width="9"></circle>
+    <rect x="60" y="52" width="26" height="16" fill="#0088b0"></rect>
+    <text x="60" y="72" font-family="Georgia, serif" font-size="40" font-weight="700" fill="#f3f2f2" text-anchor="middle">C</text>
+  </svg>
+</template>
+
 <div style="display:flex;min-height:100vh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
 
   <aside style="width:250px;flex:none;padding:28px 24px 24px 30px;display:flex;flex-direction:column;gap:28px;border-right:1px solid color-mix(in srgb, var(--color-text) 10%, transparent);position:sticky;top:0;height:100vh">
@@ -41,11 +50,22 @@
       </sc-for>
     </nav>
 
-    <div style="margin-top:auto;display:flex;align-items:center;gap:10px">
-      <div style="width:34px;height:34px;flex:none;border-radius:50%;background:var(--color-accent-200);color:var(--color-accent-800);display:grid;place-items:center;font-family:var(--font-heading);font-weight:600;font-size:13px">{{ userInitials }}</div>
-      <div style="min-width:0">
-        <div style="font-size:13px;line-height:1.2">{{ userName }}</div>
-        <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ userRole }}</div>
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;flex:none;border-radius:50%;background:var(--color-accent-200);color:var(--color-accent-800);display:grid;place-items:center;font-family:var(--font-heading);font-weight:600;font-size:13px">{{ userInitials }}</div>
+        <div style="min-width:0">
+          <div style="font-size:13px;line-height:1.2">{{ userName }}</div>
+          <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ userRole }}</div>
+        </div>
+      </div>
+      <div class="field" style="margin:0">
+        <label style="font-size:9.5px">Signed in as</label>
+        <select class="input" style="font-size:12px;padding:6px 8px" value="{{ viewAsValue }}" onChange="{{ onViewAs }}">
+          <option value="super">Rachel Sundberg — super admin</option>
+          <sc-for list="{{ viewAsOptions }}" as="v" hint-placeholder-count="6">
+            <option value="{{ v.id }}">{{ v.label }}</option>
+          </sc-for>
+        </select>
       </div>
     </div>
   </aside>
@@ -57,6 +77,87 @@
         <i class="ph-duotone ph-check-circle" style="font-size:20px"></i>
         <span style="flex:1">{{ bannerText }}</span>
         <button type="button" class="btn btn-ghost" onClick="{{ onDismissBanner }}" style="font-size:12px">Dismiss</button>
+      </div>
+    </sc-if>
+
+    <!-- ══ TODAY ══ -->
+    <sc-if value="{{ isToday }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">{{ greeting }}</div>
+        <h1 style="font-size:40px;margin:0 0 6px">Today</h1>
+        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:62ch">{{ scopeLine }}</p>
+
+        <h4 style="margin:40px 0 4px">Needs you now</h4>
+        <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 20px">{{ todoCount }}</p>
+
+        <sc-if value="{{ todoEmpty }}" hint-placeholder-val="{{ false }}">
+          <p style="font-size:15px;max-width:60ch">Stock is inside every min/max, chemistry is in band and no delivery is late. Nothing for you here today.</p>
+        </sc-if>
+
+        <div style="display:flex;flex-direction:column;gap:0;max-width:1040px;border-top:1px solid var(--color-neutral-200)">
+          <sc-for list="{{ todoRows }}" as="t" hint-placeholder-count="4">
+            <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px 20px;padding:18px 0;border-bottom:1px solid var(--color-neutral-200)">
+              <span class="{{ t.kindClass }}" style="white-space:nowrap;width:96px;text-align:center">{{ t.kind }}</span>
+              <div style="flex:1;min-width:260px">
+                <div style="font-size:15.5px">{{ t.title }}</div>
+                <div style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 58%, transparent);margin-top:2px">{{ t.detail }}</div>
+              </div>
+              <button type="button" class="btn btn-secondary" style="white-space:nowrap;font-size:12.5px" onClick="{{ t.onAction }}">{{ t.action }}</button>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:16px 0 0;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ moreLine }}</p>
+        </sc-if>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:44px;margin-top:48px;max-width:1040px">
+          <sc-if value="{{ hasInflight }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <h4 style="margin:0 0 16px">Arriving</h4>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <sc-for list="{{ inflight }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onOpen }}" style="display:flex;align-items:baseline;gap:12px;background:transparent;border:0;padding:0;cursor:pointer;text-align:left;font-family:var(--font-body);color:var(--color-text)">
+                    <span style="font-size:13px;font-variant-numeric:tabular-nums;color:var(--color-accent-700);white-space:nowrap">{{ o.id }}</span>
+                    <span style="flex:1;min-width:0">
+                      <span style="display:block;font-size:14px">{{ o.what }}</span>
+                      <span style="display:block;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ o.meta }}</span>
+                    </span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hasOpenReqs }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <h4 style="margin:0 0 16px">Open requests</h4>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <sc-for list="{{ openReqs }}" as="r" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ r.onOpen }}" style="display:flex;align-items:baseline;gap:12px;background:transparent;border:0;padding:0;cursor:pointer;text-align:left;font-family:var(--font-body);color:var(--color-text)">
+                    <span style="font-size:13px;font-variant-numeric:tabular-nums;color:var(--color-accent-700);white-space:nowrap">{{ r.id }}</span>
+                    <span style="flex:1;min-width:0">
+                      <span style="display:block;font-size:14px">{{ r.what }}</span>
+                      <span style="display:block;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ r.meta }}</span>
+                    </span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:38px;margin-top:48px">
+          <sc-for list="{{ pulse }}" as="p" hint-placeholder-count="3">
+            <div>
+              <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:3px">{{ p.k }}</div>
+              <div style="font-size:14px;font-variant-numeric:tabular-nums">{{ p.v }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+          <p style="margin-top:44px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">This page is built from the signed-in user’s permissions — switch “Signed in as” in the sidebar and the list changes: a crib attendant sees only stock, a quality engineer only chemistry. No spend or consumption charts here; those stay in Reporting.</p>
+        </sc-if>
       </div>
     </sc-if>
 
@@ -259,7 +360,12 @@
                         <div style="{{ r.barStyle }}"></div>
                         <div style="{{ r.minTickStyle }}"></div>
                       </div>
-                      <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 52%, transparent);margin-top:3px;font-variant-numeric:tabular-nums">{{ r.range }}</div>
+                      <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
+                        <input type="text" value="{{ r.minVal }}" onChange="{{ r.onMin }}" style="width:52px;text-align:right;padding:4px 6px;font-family:var(--font-body);font-size:12.5px;font-variant-numeric:tabular-nums;border:1px solid var(--color-neutral-300);border-radius:var(--radius-sm);background:var(--color-surface);color:var(--color-text)">
+                        <span style="font-size:11px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">–</span>
+                        <input type="text" value="{{ r.maxVal }}" onChange="{{ r.onMax }}" style="width:52px;text-align:right;padding:4px 6px;font-family:var(--font-body);font-size:12.5px;font-variant-numeric:tabular-nums;border:1px solid var(--color-neutral-300);border-radius:var(--radius-sm);background:var(--color-surface);color:var(--color-text)">
+                        <span style="font-size:10.5px;color:var(--color-accent-2-800);white-space:nowrap">{{ r.editNote }}</span>
+                      </div>
                     </td>
                     <td style="font-variant-numeric:tabular-nums;{{ r.expStyle }}">{{ r.expires }}</td>
                     <td style="font-size:13px">{{ r.location }}</td>
@@ -271,6 +377,10 @@
                 </sc-for>
               </tbody>
             </table>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:24px">
+              <button type="button" class="btn btn-primary" style="white-space:nowrap" onClick="{{ onSaveLevels }}"><i class="ph-duotone ph-floppy-disk"></i> Save min/max levels</button>
+              <span style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);max-width:60ch">Levels are per item, per crib location. Changing them re-evaluates the reorder flags on the next scan.</span>
+            </div>
             <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
               <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Other states — <b>Loading:</b> skeleton rows with the min/max bar rendered flat. <b>Empty:</b> “No material on site yet — stock appears here once your rep completes the first scan-in.”</p>
             </sc-if>
@@ -357,8 +467,10 @@
               <th style="width:110px;text-align:right">Qty</th>
               <th style="width:120px">Needed by</th>
               <th style="width:120px">Submitted</th>
+              <th style="width:160px">Requested by</th>
               <th style="width:132px">Status</th>
               <th style="width:132px">Sage order</th>
+              <th style="width:96px"></th>
             </tr>
           </thead>
           <tbody>
@@ -373,8 +485,14 @@
                 <td style="text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.qty }}</td>
                 <td style="font-variant-numeric:tabular-nums">{{ r.neededBy }}</td>
                 <td style="font-variant-numeric:tabular-nums">{{ r.submitted }}</td>
-                <td><span class="{{ r.statusClass }}">{{ r.status }}</span></td>
+                <td style="font-size:13px">{{ r.by }}</td>
+                <td><span class="{{ r.statusClass }}" style="white-space:nowrap">{{ r.status }}</span></td>
                 <td style="font-variant-numeric:tabular-nums;font-size:13px">{{ r.order }}</td>
+                <td style="text-align:right">
+                  <sc-if value="{{ r.canCancel }}" hint-placeholder-val="{{ true }}">
+                    <button type="button" class="btn btn-ghost" style="white-space:nowrap;font-size:12.5px;color:var(--color-accent-2-800)" onClick="{{ r.onCancel }}">Cancel</button>
+                  </sc-if>
+                </td>
               </tr>
             </sc-for>
           </tbody>
@@ -436,6 +554,15 @@
             <label>Needed by</label>
             <input class="input" type="date" value="{{ fDate }}" onChange="{{ onFormDate }}">
           </div>
+        </div>
+
+        <div class="field" style="margin-top:18px;max-width:330px">
+          <label>Requested by</label>
+          <select class="input" value="{{ fBy }}" onChange="{{ onFormBy }}">
+            <sc-for list="{{ requesterOptions }}" as="p" hint-placeholder-count="4">
+              <option value="{{ p.name }}">{{ p.label }}</option>
+            </sc-for>
+          </select>
         </div>
 
         <div class="field" style="margin-top:18px">
@@ -622,10 +749,385 @@
       </div>
     </sc-if>
 
+    <!-- ══ FLUID ANALYTICS ══ -->
+    <sc-if value="{{ isFluid }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 06 — Chemical Management</div>
+        <h1 style="font-size:40px;margin:0 0 6px">Fluid Analytics</h1>
+        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:66ch">Concentration and pH for every coolant system and washer on site — logged by your Chemico chemist on the walk, charted against control limits, and alerting before a drift becomes damage to tooling or parts.</p>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:26px 0 20px">
+          <div class="seg">
+            <label class="seg-opt"><input type="radio" name="fltab" checked="{{ fReadings }}" onChange="{{ onFReadings }}">Readings</label>
+            <label class="seg-opt"><input type="radio" name="fltab" checked="{{ fTrends }}" onChange="{{ onFTrends }}">Trends</label>
+            <label class="seg-opt"><input type="radio" name="fltab" checked="{{ fAlerts }}" onChange="{{ onFAlerts }}">Alerts</label>
+          </div>
+          <div class="field" style="width:150px;margin:0">
+            <label>Area</label>
+            <select class="input" value="{{ fArea }}" onChange="{{ onFArea }}">
+              <sc-for list="{{ fAreaOptions }}" as="a" hint-placeholder-count="3">
+                <option value="{{ a }}">{{ a }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div class="field" style="width:190px;margin:0">
+            <label>System type</label>
+            <select class="input" value="{{ fType }}" onChange="{{ onFType }}">
+              <sc-for list="{{ fTypeOptions }}" as="t" hint-placeholder-count="3">
+                <option value="{{ t }}">{{ t }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div style="margin-left:auto;font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ fluidCount }} systems in view · <span style="color:var(--color-accent-2-800)">{{ outCount }} out of band</span></div>
+        </div>
+
+        <sc-if value="{{ fReadings }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:16px">
+              <div style="font-size:13.5px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">{{ roundLabel }}</div>
+              <sc-if value="{{ roundDone }}" hint-placeholder-val="{{ false }}">
+                <span class="tag tag-accent">Round complete — submitted</span>
+              </sc-if>
+            </div>
+            <table class="table" style="max-width:1180px">
+              <thead>
+                <tr>
+                  <th style="width:200px">Equipment</th>
+                  <th>Product in tank</th>
+                  <th style="width:110px;text-align:right">Tank volume</th>
+                  <th style="width:150px;text-align:right">Concentration</th>
+                  <th style="width:140px;text-align:right">pH</th>
+                  <th style="width:130px">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ readRows }}" as="r" hint-placeholder-count="8">
+                  <tr>
+                    <td>
+                      <div style="font-variant-numeric:tabular-nums">{{ r.id }}</div>
+                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ r.area }} · {{ r.type }}</div>
+                    </td>
+                    <td>
+                      <div style="font-size:14px">{{ r.product }}</div>
+                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums">{{ r.sku }}</div>
+                    </td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.vol }}</td>
+                    <td style="text-align:right">
+                      <input type="text" value="{{ r.conc }}" onChange="{{ r.onConc }}" style="{{ r.concStyle }}">
+                      <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-top:4px;font-variant-numeric:tabular-nums">{{ r.concRange }}</div>
+                    </td>
+                    <td style="text-align:right">
+                      <input type="text" value="{{ r.ph }}" onChange="{{ r.onPh }}" style="{{ r.phStyle }}">
+                      <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-top:4px;font-variant-numeric:tabular-nums">{{ r.phRange }}</div>
+                    </td>
+                    <td><span class="{{ r.statusClass }}">{{ r.status }}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:24px">
+              <button type="button" class="btn btn-primary" onClick="{{ onCompleteRound }}"><i class="ph-duotone ph-check-square-offset"></i> Mark round complete</button>
+              <span style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);max-width:62ch">Completing the round files the readings, redraws the trend charts and raises an alert on every system outside its band.</span>
+            </div>
+            <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+              <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Try it — type a value outside the range under any field and the row flags immediately. On a handheld this sheet is one system per screen with the last reading pre-filled. <b>Empty:</b> “No systems configured for this area yet.”</p>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ fTrends }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px;margin-bottom:8px">
+              <div class="seg">
+                <label class="seg-opt"><input type="radio" name="flmetric" checked="{{ metricConc }}" onChange="{{ onMetricConc }}">Concentration</label>
+                <label class="seg-opt"><input type="radio" name="flmetric" checked="{{ metricPh }}" onChange="{{ onMetricPh }}">pH</label>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:8px">
+                <button type="button" class="btn btn-ghost" style="white-space:nowrap" onClick="{{ onSelectAll }}">Plot six</button>
+                <button type="button" class="btn btn-ghost" style="white-space:nowrap" onClick="{{ onSelectNone }}">Clear</button>
+                <button type="button" class="btn btn-secondary" style="white-space:nowrap"><i class="ph-duotone ph-download-simple"></i> Export report</button>
+              </div>
+            </div>
+            <h4 style="margin:26px 0 4px">{{ chartTitle }}</h4>
+            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 6px;max-width:70ch">Nine rounds, 2 May to 22 Aug 2026. The tinted band is the control range; any point outside its own band prints magenta.</p>
+            <p style="font-size:12.5px;color:var(--color-accent-2-800);margin:0 0 18px;max-width:70ch">{{ bandNote }}</p>
+
+            <svg width="760" height="288" viewBox="0 0 760 288" preserveAspectRatio="xMidYMid meet" style="max-width:100%;display:block">
+              <sc-if value="{{ bandShown }}" hint-placeholder-val="{{ true }}">
+                <g>
+                  <rect x="{{ band.x }}" y="{{ band.y }}" width="{{ band.w }}" height="{{ band.h }}" style="fill:var(--color-accent-100)"></rect>
+                  <line x1="{{ band.x }}" x2="748" y1="{{ band.hiY }}" y2="{{ band.hiY }}" style="stroke:var(--color-accent-400);stroke-width:1;stroke-dasharray:3 3"></line>
+                  <line x1="{{ band.x }}" x2="748" y1="{{ band.loY }}" y2="{{ band.loY }}" style="stroke:var(--color-accent-400);stroke-width:1;stroke-dasharray:3 3"></line>
+                  <text x="748" y="{{ band.hiTextY }}" style="text-anchor:end;font-size:10.5px;fill:var(--color-accent-700)">{{ band.hiLabel }}</text>
+                  <text x="748" y="{{ band.loTextY }}" style="text-anchor:end;font-size:10.5px;fill:var(--color-accent-700)">{{ band.loLabel }}</text>
+                </g>
+              </sc-if>
+              <sc-for list="{{ ticks }}" as="t" hint-placeholder-count="5">
+                <g>
+                  <line x1="52" x2="748" y1="{{ t.y }}" y2="{{ t.y }}" style="stroke:var(--color-neutral-200);stroke-width:1"></line>
+                  <text x="44" y="{{ t.ty }}" style="text-anchor:end;font-size:11px;fill:color-mix(in srgb, var(--color-text) 55%, transparent);font-variant-numeric:tabular-nums">{{ t.label }}</text>
+                </g>
+              </sc-for>
+              <sc-for list="{{ chartLines }}" as="l" hint-placeholder-count="4">
+                <g>
+                  <polyline points="{{ l.points }}" style="{{ l.lineStyle }}"></polyline>
+                  <sc-for list="{{ l.dots }}" as="d" hint-placeholder-count="9">
+                    <circle cx="{{ d.cx }}" cy="{{ d.cy }}" r="3" style="{{ d.style }}"></circle>
+                  </sc-for>
+                </g>
+              </sc-for>
+              <sc-for list="{{ xLabels }}" as="x" hint-placeholder-count="9">
+                <text x="{{ x.x }}" y="276" style="text-anchor:middle;font-size:10.5px;fill:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ x.label }}</text>
+              </sc-for>
+            </svg>
+
+            <div style="display:flex;flex-wrap:wrap;gap:10px 34px;margin-top:18px;max-width:820px">
+              <sc-for list="{{ chartLines }}" as="l" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+                  <span style="{{ l.swatchStyle }}"></span>
+                  <span>{{ l.name }}</span>
+                  <span style="font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ l.last }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <h4 style="margin:44px 0 4px">Systems on the chart</h4>
+            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 16px">{{ selNote }} Equipment names are on the chart legend above.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;max-width:1000px">
+              <sc-for list="{{ chips }}" as="c" hint-placeholder-count="10">
+                <button type="button" style="{{ c.style }}" onClick="{{ c.onToggle }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+              <p style="margin-top:30px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">This is the chart the current tool cannot draw — several machines overlaid on one set of axes, grouped however the plant wants to group them. Saved groupings (“Gen 5 coolant”, “CSS washers”) come next.</p>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ fAlerts }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <p style="font-size:13.5px;color:color-mix(in srgb, var(--color-text) 62%, transparent);margin:0 0 26px;max-width:70ch">{{ alertCount }} systems are outside their control band as of the 22 Aug round. Each alert already went to your Chemico chemist — dispatching here puts a site visit on the schedule and stamps the reading.</p>
+            <div style="display:flex;flex-direction:column;gap:0;max-width:1060px;border-top:1px solid var(--color-neutral-200)">
+              <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="4">
+                <div style="display:flex;flex-direction:column;gap:14px;padding:26px 0 30px;border-bottom:1px solid var(--color-neutral-200)">
+                  <div>
+                    <div style="font-size:16px;font-variant-numeric:tabular-nums">{{ a.id }}</div>
+                    <div style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ a.name }}</div>
+                    <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 48%, transparent);margin-top:2px">{{ a.area }} · {{ a.type }}</div>
+                  </div>
+                  <div>
+                    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+                      <span style="font-family:var(--font-heading);font-size:26px;color:var(--color-accent-2-800);font-variant-numeric:tabular-nums">{{ a.value }}</span>
+                      <span style="font-size:13.5px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ a.param }} · {{ a.limit }}</span>
+                      <span class="{{ a.dirClass }}" style="white-space:nowrap">{{ a.dir }}</span>
+                    </div>
+                    <div style="font-size:14px;margin-top:8px;max-width:52ch">{{ a.risk }}</div>
+                    <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-top:4px">{{ a.runs }}</div>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center">
+                    <button type="button" class="btn btn-secondary" style="white-space:nowrap" onClick="{{ a.onDispatch }}"><i class="ph-duotone ph-user-focus"></i> Dispatch a chemist</button>
+                    <sc-if value="{{ a.showRequest }}" hint-placeholder-val="{{ false }}">
+                      <button type="button" class="btn btn-ghost" style="white-space:nowrap" onClick="{{ a.onRequest }}"><i class="ph-duotone ph-clipboard-text"></i> Request concentrate</button>
+                    </sc-if>
+                    <sc-if value="{{ a.sent }}" hint-placeholder-val="{{ false }}">
+                      <span class="tag tag-accent" style="white-space:nowrap">Chemist dispatched</span>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ alertsEmpty }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:15px">Every system is inside its control band. Nothing needs attention today.</p>
+            </sc-if>
+            <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+              <p style="margin-top:34px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Alerts fire on the round that breaches, not on a monthly report — the point is to catch a leak or an open valve before it stains a part or eats a tool. Escalation rules (who, after how many rounds) are configurable per site.</p>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ══ USERS & ACCESS ══ -->
+    <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 07 — Administration</div>
+        <h1 style="font-size:40px;margin:0 0 6px">Users &amp; Access</h1>
+        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:68ch">One super admin decides who sees what. Every user is scoped to the sites they work at and the modules their job needs — a crib attendant counts stock, a quality engineer keeps the coolant in band, a buyer raises requisitions. Nobody sees a site that isn’t theirs.</p>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:26px 0 22px">
+          <div class="seg">
+            <label class="seg-opt"><input type="radio" name="atab" checked="{{ aUsers }}" onChange="{{ onAUsers }}">Users</label>
+            <label class="seg-opt"><input type="radio" name="atab" checked="{{ aRoles }}" onChange="{{ onARoles }}">Roles</label>
+          </div>
+          <button type="button" class="btn btn-primary" style="white-space:nowrap" onClick="{{ onNewUser }}"><i class="ph-duotone ph-user-plus"></i> Invite a user</button>
+          <div style="margin-left:auto;font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ userCount }}</div>
+        </div>
+
+        <sc-if value="{{ editPanel.open }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);padding:26px 28px;margin-bottom:34px;max-width:1000px">
+            <h4 style="margin:0 0 4px">{{ editPanel.title }}</h4>
+            <p style="font-size:13px;color:color-mix(in srgb, var(--color-text) 58%, transparent);margin:0 0 22px">{{ editPanel.subtitle }}</p>
+
+            <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:26px">
+              <div class="field" style="width:230px;margin:0">
+                <label>Name</label>
+                <input class="input" type="text" value="{{ editPanel.name }}" onChange="{{ onDraftName }}">
+              </div>
+              <div class="field" style="width:210px;margin:0">
+                <label>Job title</label>
+                <input class="input" type="text" value="{{ editPanel.title2 }}" onChange="{{ onDraftTitle }}">
+              </div>
+              <div class="field" style="width:280px;margin:0">
+                <label>Work email</label>
+                <input class="input" type="text" value="{{ editPanel.email }}" onChange="{{ onDraftEmail }}">
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:30px">
+              <div>
+                <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent);margin-bottom:10px">Role template</div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ editPanel.roleOptions }}" as="r" hint-placeholder-count="5">
+                    <button type="button" style="{{ r.style }}" onClick="{{ r.onPick }}">
+                      <div style="font-family:var(--font-heading);font-weight:600;font-size:14px">{{ r.name }}</div>
+                      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">{{ r.note }}</div>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent);margin-bottom:10px">Sites they can see</div>
+                <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:26px">
+                  <sc-for list="{{ editPanel.siteBoxes }}" as="s" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ s.onToggle }}" style="display:flex;align-items:center;gap:10px;background:transparent;border:0;padding:0;cursor:pointer;text-align:left;font-family:var(--font-body);font-size:13.5px;color:var(--color-text)">
+                      <span style="{{ s.boxStyle }}">{{ s.mark }}</span>
+                      <span>{{ s.name }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent);margin-bottom:10px">Modules</div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <sc-for list="{{ editPanel.modBoxes }}" as="m" hint-placeholder-count="7">
+                    <button type="button" onClick="{{ m.onToggle }}" style="display:flex;align-items:center;gap:10px;background:transparent;border:0;padding:0;cursor:pointer;text-align:left;font-family:var(--font-body);font-size:13.5px;color:var(--color-text)">
+                      <span style="{{ m.boxStyle }}">{{ m.mark }}</span>
+                      <span>{{ m.label }}</span>
+                      <span style="font-size:11px;color:var(--color-accent-2-800)">{{ m.note }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:28px">
+              <button type="button" class="btn btn-primary" style="white-space:nowrap" onClick="{{ editPanel.onSave }}">{{ editPanel.saveLabel }}</button>
+              <button type="button" class="btn btn-ghost" style="white-space:nowrap" onClick="{{ editPanel.onCancel }}">Cancel</button>
+              <sc-if value="{{ editPanel.showSuspend }}" hint-placeholder-val="{{ false }}">
+                <button type="button" class="btn btn-ghost" style="white-space:nowrap;color:var(--color-accent-2-800)" onClick="{{ editPanel.onSuspend }}">{{ editPanel.suspendLabel }}</button>
+              </sc-if>
+              <span style="margin-left:auto;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ editPanel.count }}</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ aUsers }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <table class="table" style="max-width:1220px">
+              <thead>
+                <tr>
+                  <th style="width:230px">User</th>
+                  <th style="width:150px">Role</th>
+                  <th style="width:180px">Sites</th>
+                  <th>Module access</th>
+                  <th style="width:120px">Status</th>
+                  <th style="width:170px"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ userRows }}" as="u" hint-placeholder-count="7">
+                  <tr>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:10px">
+                        <div style="width:30px;height:30px;flex:none;border-radius:50%;background:var(--color-neutral-200);display:grid;place-items:center;font-family:var(--font-heading);font-weight:600;font-size:12px">{{ u.initials }}</div>
+                        <div style="min-width:0">
+                          <div style="font-size:14px">{{ u.name }}</div>
+                          <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ u.title }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="font-size:13.5px">{{ u.role }}</td>
+                    <td>
+                      <div style="font-size:13px">{{ u.sites }}</div>
+                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ u.siteCount }}</div>
+                    </td>
+                    <td>
+                      <div style="display:flex;flex-wrap:wrap;gap:5px">
+                        <sc-for list="{{ u.modTags }}" as="t" hint-placeholder-count="3">
+                          <span class="tag tag-neutral" style="font-size:11px;white-space:nowrap">{{ t.label }}</span>
+                        </sc-for>
+                      </div>
+                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);margin-top:5px">{{ u.modCount }}</div>
+                    </td>
+                    <td>
+                      <span class="{{ u.statusClass }}" style="white-space:nowrap">{{ u.status }}</span>
+                      <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-top:5px">{{ u.seen }}</div>
+                    </td>
+                    <td>
+                      <div style="display:flex;flex-wrap:wrap;gap:8px">
+                        <button type="button" class="btn btn-ghost" style="white-space:nowrap;font-size:12.5px" onClick="{{ u.onEdit }}">Edit access</button>
+                        <button type="button" class="btn btn-ghost" style="white-space:nowrap;font-size:12.5px" onClick="{{ u.onActAs }}">View as</button>
+                      </div>
+                    </td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+              <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">“View as” switches the whole portal into that user’s permissions — the sidebar loses the modules they can’t reach and the facility line shows their site. Use the “Signed in as” control at the bottom of the sidebar to come back. <b>Empty:</b> “No users yet — invite the first one.”</p>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ aRoles }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <p style="font-size:13.5px;color:color-mix(in srgb, var(--color-text) 62%, transparent);margin:0 0 26px;max-width:70ch">Role templates set the default modules for a new user. Tick a cell to change the template — existing users keep the access they already have until you edit them.</p>
+            <table class="table" style="max-width:1220px">
+              <thead>
+                <tr>
+                  <th style="width:250px">Role</th>
+                  <sc-for list="{{ moduleHeads }}" as="h" hint-placeholder-count="7">
+                    <th style="text-align:center;font-size:11.5px">{{ h.label }}</th>
+                  </sc-for>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ matrix }}" as="r" hint-placeholder-count="5">
+                  <tr>
+                    <td>
+                      <div style="font-size:14px">{{ r.name }}</div>
+                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);max-width:34ch">{{ r.note }}</div>
+                      <div style="font-size:11.5px;color:var(--color-accent-700);margin-top:3px">{{ r.users }}</div>
+                    </td>
+                    <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="7">
+                      <td style="text-align:center;padding:6px 4px">
+                        <button type="button" style="{{ c.style }}" onClick="{{ c.onToggle }}">{{ c.mark }}</button>
+                      </td>
+                    </sc-for>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+              <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Only the super admin and plant admins reach this screen. A Chemico rep can hold several sites but never user administration.</p>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;companyName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;The Chemico Group&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;siteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ashcroft Forge &amp; Machine — Plant 4, Findlay OH&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;orders&quot;,&quot;inventory&quot;,&quot;requisitions&quot;,&quot;catalogue&quot;,&quot;analytics&quot;],&quot;default&quot;:&quot;orders&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showStateNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;companyName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;The Chemico Group&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;siteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ashcroft Forge &amp; Machine — Plant 4, Findlay OH&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;today&quot;,&quot;orders&quot;,&quot;inventory&quot;,&quot;requisitions&quot;,&quot;catalogue&quot;,&quot;analytics&quot;,&quot;fluid&quot;,&quot;admin&quot;],&quot;default&quot;:&quot;today&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showStateNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -689,6 +1191,66 @@ class Component extends DCLogic {
       O('SO-0148212', [['SLV-ACET-TECH-55', 2]], '2026-08-05', '2026-08-12', 'Delivered', 'ABF Freight', 'PRO 8813400271', 'Min/max trigger', 'REQ-2026-0121', true, ''),
       O('SO-0148190', [['SLV-DGRS-AQ-275', 1], ['CLN-FLR-DEG-05', 6]], '2026-07-22', '2026-07-29', 'Delivered', 'Old Dominion', 'PRO 4772109833', 'M. Okafor', 'REQ-2026-0118', false, '')
     ];
+    this.SITES = [
+      { id: 's1', name: 'Ashcroft Forge & Machine — Plant 4, Findlay OH', acct: 'C-40218' },
+      { id: 's2', name: 'Ashcroft Forge & Machine — Plant 2, Lima OH', acct: 'C-40219' },
+      { id: 's3', name: 'Ashcroft Precision — Bowling Green KY', acct: 'C-41077' }
+    ];
+    this.MODULES = [
+      ['orders', 'Order Management'], ['inventory', 'Customer Inventory'], ['requisitions', 'Requisitions'],
+      ['catalogue', 'Material Catalogue'], ['analytics', 'Reporting & Analytics'], ['fluid', 'Fluid Analytics'],
+      ['admin', 'Users & Access']
+    ];
+    this.ROLE_DEFS = [
+      { id: 'buyer', name: 'Site buyer', note: 'Raises requisitions and tracks what is coming in.', mods: ['orders', 'requisitions', 'catalogue'] },
+      { id: 'crib', name: 'Crib attendant', note: 'Counts and scans stock; cannot raise orders.', mods: ['inventory', 'catalogue'] },
+      { id: 'fluids', name: 'Fluids & quality', note: 'Owns coolant and washer chemistry for their site.', mods: ['inventory', 'fluid', 'analytics'] },
+      { id: 'plant', name: 'Plant admin', note: 'Everything for their own site, including user access.', mods: ['orders', 'inventory', 'requisitions', 'catalogue', 'analytics', 'fluid', 'admin'] },
+      { id: 'rep', name: 'Chemico rep', note: 'Chemico staff — read and log across every site they serve.', mods: ['orders', 'inventory', 'catalogue', 'analytics', 'fluid'] }
+    ];
+    const U = (id, name, title, email, sites, role, mods, status, seen) =>
+      ({ id, name, title, email, sites, role, mods, status, seen });
+    this.USERS = [
+      U('u1', 'Marcus Okafor', 'Maintenance supervisor', 'm.okafor@ashcroftforge.com', ['s1'], 'buyer', ['orders', 'requisitions', 'catalogue'], 'Active', '22 Aug, 07:12'),
+      U('u2', 'Priya Raman', 'Quality engineer', 'p.raman@ashcroftforge.com', ['s2'], 'fluids', ['inventory', 'fluid', 'analytics'], 'Active', '21 Aug, 16:40'),
+      U('u3', 'Dale Whitcomb', 'Crib attendant', 'd.whitcomb@ashcroftforge.com', ['s1'], 'crib', ['inventory', 'catalogue'], 'Active', '22 Aug, 06:02'),
+      U('u4', 'Sandra Klein', 'Plant manager', 's.klein@ashcroftforge.com', ['s1', 's2'], 'plant', ['orders', 'inventory', 'requisitions', 'catalogue', 'analytics', 'fluid', 'admin'], 'Active', '20 Aug, 11:25'),
+      U('u5', 'Erin Boyle', 'Purchasing', 'e.boyle@ashcroftprecision.com', ['s3'], 'buyer', ['orders', 'requisitions', 'catalogue', 'analytics'], 'Active', '19 Aug, 14:08'),
+      U('u6', 'T. Voss', 'Chemico rep & chemist', 't.voss@chemicogroup.com', ['s1', 's2', 's3'], 'rep', ['orders', 'inventory', 'catalogue', 'analytics', 'fluid'], 'Active', '22 Aug, 08:31'),
+      U('u7', 'Ken Iwata', 'Reliability tech', 'k.iwata@ashcroftforge.com', ['s2'], 'crib', ['inventory'], 'Invited', 'Invite sent 21 Aug')
+    ];
+    const FE = (id, name, area, type, sku, vol, conc, cmin, cmax, ph, pmin, pmax) =>
+      ({ id, name, area, type, sku, vol, conc, cmin, cmax, ph, pmin, pmax });
+    this.FLUID = [
+      FE('BT-474027', 'Head line — rough mill', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 1850, 7.2, 6.0, 9.0, 8.9, 8.5, 9.5),
+      FE('BT-474028', 'Block line — finish bore', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 2100, 5.4, 6.0, 9.0, 8.4, 8.5, 9.5),
+      FE('BT-474031', 'Crank grind cell 3', 'Gen 5', 'Coolant system', 'CLT-SYNTH-05', 900, 8.1, 6.0, 9.0, 9.1, 8.5, 9.5),
+      FE('BT-474035', 'Rod mill cell 1', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 1400, 9.6, 6.0, 9.0, 9.7, 8.5, 9.5),
+      FE('BT-474042', 'Valve seat machining', 'Gen 5', 'Coolant system', 'CLT-SYNTH-05', 620, 7.6, 6.0, 9.0, 8.8, 8.5, 9.5),
+      FE('BT-474048', 'Cam line — transfer', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 1150, 6.9, 6.0, 9.0, 8.7, 8.5, 9.5),
+      FE('BT-474055', 'Gear hob cell 2', 'Gen 5', 'Coolant system', 'CLT-SYNTH-05', 780, 7.4, 6.0, 9.0, 8.6, 8.5, 9.5),
+      FE('WS-2210', 'Block washer 1', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 640, 2.8, 2.0, 4.0, 10.2, 9.5, 11.0),
+      FE('WS-2211', 'Block washer 2', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 640, 3.1, 2.0, 4.0, 10.4, 9.5, 11.0),
+      FE('WS-2214', 'Head washer', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 520, 1.7, 2.0, 4.0, 9.3, 9.5, 11.0),
+      FE('WS-2219', 'Final wash — pre-assembly', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 880, 3.6, 2.0, 4.0, 10.8, 9.5, 11.0),
+      FE('WS-2223', 'Rotor wash', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 410, 4.3, 2.0, 4.0, 11.2, 9.5, 11.0),
+      FE('WS-2227', 'Parts washer — repair bay', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 300, 2.5, 2.0, 4.0, 10.1, 9.5, 11.0)
+    ];
+    this.ROUNDS = ['2 May', '16 May', '30 May', '13 Jun', '27 Jun', '11 Jul', '25 Jul', '8 Aug', '22 Aug'];
+    this.SERIES_STYLE = [
+      ['var(--color-accent)', 'none'], ['var(--color-accent-800)', 'none'], ['var(--color-neutral-700)', 'none'],
+      ['var(--color-accent)', '7 4'], ['var(--color-accent-800)', '2 3'], ['var(--color-neutral-700)', '7 4']
+    ];
+    this.RISK = {
+      'Coolant system:high:conc': 'Residue and staining on machined surfaces; filter loading.',
+      'Coolant system:low:conc': 'Running lean — tool wear and corrosion on ways.',
+      'Coolant system:high:ph': 'Paint and seal attack; operator skin irritation.',
+      'Coolant system:low:ph': 'Bacterial growth, sump odour, corrosion.',
+      'Washer:high:conc': 'Chemical carry-over into rinse; part discolouration.',
+      'Washer:low:conc': 'Cleanliness failures at final inspection.',
+      'Washer:high:ph': 'Etching risk on wash-sensitive aluminium.',
+      'Washer:low:ph': 'Soil redeposition — tank turning over.'
+    };
     const I = (sku, lot, qty, min, max, expires, location, wk) => ({ sku, lot, qty, min, max, expires, location, wk });
     this.INV = [
       I('SLV-IPA-99-05', 'B-260714-A', 4, 8, 24, '2028-07-14', 'Chem store / Bay 1', 3.1),
@@ -785,12 +1347,61 @@ class Component extends DCLogic {
     return pick('unit', 'units');
   }
   statusClass(s) {
-    if (s === 'Delayed') return 'tag tag-accent-2';
+    if (s === 'Delayed' || s === 'Cancelled') return 'tag tag-accent-2';
     if (s === 'Delivered' || s === 'Fulfilled') return 'tag tag-neutral';
     if (s === 'Placed' || s === 'Submitted') return 'tag tag-outline';
     return 'tag tag-accent';
   }
   go(view) { this.setState({ view, orderId: null, banner: null }); }
+  users() { return this.state.users || this.USERS; }
+  roleName(id) { const r = this.ROLE_DEFS.find(x => x.id === id); return r ? r.name : id; }
+  roleMods(id) { const s = this.state.roleMods || {}; if (s[id]) return s[id]; const r = this.ROLE_DEFS.find(x => x.id === id); return r ? r.mods : []; }
+  actAs(id) {
+    if (!id) { this.setState({ actingAs: null, view: 'admin', banner: null, editUser: null }); return; }
+    const u = this.users().find(x => x.id === id);
+    if (!u) return;
+    const v = (this.state.view === 'today' || u.mods.indexOf(this.state.view) > -1) ? this.state.view : 'today';
+    this.setState({ actingAs: id, view: v || 'today', orderId: null, editUser: null, banner: 'Now viewing the portal as ' + u.name + ' — ' + u.mods.length + ' of 7 modules and ' + (u.sites.length === 1 ? 'one site' : u.sites.length + ' sites') + '.' });
+  }
+  openUser(id) {
+    const u = this.users().find(x => x.id === id);
+    this.setState({ editUser: id, banner: null, draft: { name: u.name, title: u.title, email: u.email, role: u.role, sites: u.sites.slice(), mods: u.mods.slice() } });
+  }
+  newUser() {
+    this.setState({ editUser: 'new', banner: null, draft: { name: '', title: '', email: '', role: 'buyer', sites: ['s1'], mods: this.roleMods('buyer').slice() } });
+  }
+  setDraft(k, v) { this.setState({ draft: Object.assign({}, this.state.draft, { [k]: v }) }); }
+  pickRole(role) {
+    this.setState({ draft: Object.assign({}, this.state.draft, { role, mods: this.roleMods(role).slice() }) });
+  }
+  toggleDraft(k, v) {
+    const d = this.state.draft, cur = d[k] || [];
+    const next = cur.indexOf(v) > -1 ? cur.filter(x => x !== v) : cur.concat([v]);
+    this.setState({ draft: Object.assign({}, d, { [k]: next }) });
+  }
+  saveUser() {
+    const d = this.state.draft, id = this.state.editUser;
+    const list = this.users().slice();
+    if (id === 'new') {
+      const nid = 'u' + (list.length + 1);
+      list.unshift({ id: nid, name: d.name || 'New user', title: d.title || '—', email: d.email || '—', sites: d.sites, role: d.role, mods: d.mods, status: 'Invited', seen: 'Invite sent 22 Aug' });
+      this.setState({ users: list, editUser: null, draft: null, banner: 'Invite sent to ' + (d.email || d.name) + ' — ' + this.roleName(d.role) + ', ' + d.mods.length + ' modules.' });
+    } else {
+      const i = list.findIndex(u => u.id === id);
+      list[i] = Object.assign({}, list[i], { name: d.name, title: d.title, email: d.email, sites: d.sites, role: d.role, mods: d.mods });
+      this.setState({ users: list, editUser: null, draft: null, banner: 'Access updated for ' + d.name + ' — ' + this.roleName(d.role) + ', ' + d.mods.length + ' of 7 modules.' });
+    }
+  }
+  suspendUser(id) {
+    const list = this.users().map(u => u.id === id ? Object.assign({}, u, { status: u.status === 'Suspended' ? 'Active' : 'Suspended' }) : u);
+    const u = list.find(x => x.id === id);
+    this.setState({ users: list, editUser: null, draft: null, banner: u.name + ' is now ' + u.status.toLowerCase() + '.' });
+  }
+  toggleRoleMod(roleId, mod) {
+    const cur = this.roleMods(roleId);
+    const next = cur.indexOf(mod) > -1 ? cur.filter(x => x !== mod) : cur.concat([mod]);
+    this.setState({ roleMods: Object.assign({}, this.state.roleMods || {}, { [roleId]: next }) });
+  }
   startReorder(inv) {
     const m = this.mat(inv.sku);
     this.setState({
@@ -798,8 +1409,36 @@ class Component extends DCLogic {
       form: { mode: 'reorder', sku: inv.sku, qty: String(inv.max - inv.qty), date: '2026-08-28', notes: '', ctx: inv, name: m.name }
     });
   }
+  setFluid(id, k, v) {
+    const e = Object.assign({}, this.state.fluidEdits || {});
+    e[id + ':' + k] = v;
+    this.setState({ fluidEdits: e, roundDone: false });
+  }
+  toggleFluid(id) {
+    const cur = this.state.fluidSel || this.FLUID.filter(x => x.type === 'Coolant system').slice(0, 4).map(x => x.id);
+    const next = cur.indexOf(id) > -1 ? cur.filter(x => x !== id) : cur.concat([id]);
+    this.setState({ fluidSel: next });
+  }
+  dispatchTech(aid, eq) {
+    const d = Object.assign({}, this.state.dispatched || {});
+    d[aid] = true;
+    this.setState({ dispatched: d, banner: 'Chemico notified — a chemist is scheduled for ' + eq + ' and the reading is on your rep’s dashboard.' });
+  }
   startSpot(sku) {
     this.setState({ view: 'form', banner: null, form: { mode: 'spot', sku: sku || '', qty: '1', date: '', notes: '', ctx: null } });
+  }
+  setMinMax(sku, k, v) {
+    const e = Object.assign({}, this.state.invEdits || {});
+    e[sku + ':' + k] = v;
+    this.setState({ invEdits: e });
+  }
+  saveMinMax() {
+    const n = Object.keys(this.state.invEdits || {}).length;
+    this.setState({ banner: n === 0 ? 'No min/max changes to save.' : n + ' min/max ' + (n === 1 ? 'level' : 'levels') + ' saved — reorder triggers use the new levels from the next scan.' });
+  }
+  cancelReq(id) {
+    const reqs = this.state.reqs.map(r => r.id === id ? Object.assign({}, r, { status: 'Cancelled', order: '—' }) : r);
+    this.setState({ reqs, banner: id + ' cancelled — the branch has been notified and no order will be raised.' });
   }
   submitForm() {
     const f = this.state.form, m = this.mat(f.sku);
@@ -807,7 +1446,8 @@ class Component extends DCLogic {
     const id = 'REQ-2026-0' + n;
     const rec = {
       id, type: f.mode === 'reorder' ? 'Reorder' : 'Spot buy', sku: f.sku,
-      qty: Number(f.qty), neededBy: f.date, submitted: '2026-08-21', status: 'Submitted', order: '—'
+      qty: Number(f.qty), neededBy: f.date, submitted: '2026-08-21', status: 'Submitted', order: '—',
+      by: f.by || 'Marcus Okafor'
     };
     this.setState({
       seq: n, reqs: [rec, ...this.state.reqs], view: 'requisitions', form: null,
@@ -818,18 +1458,30 @@ class Component extends DCLogic {
 
   renderVals() {
     const P = this.props, S = this.state, self = this;
-    const view = S.view || P.defaultView || 'orders';
+    const view = S.view || P.defaultView || 'today';
     const companyName = P.companyName ?? 'The Chemico Group';
-    const siteName = P.siteName ?? 'Ashcroft Forge & Machine — Plant 4, Findlay OH';
     const showNotes = P.showStateNotes ?? true;
 
+    const userList = this.users();
+    const acting = S.actingAs ? userList.find(u => u.id === S.actingAs) : null;
+    const allowed = acting ? acting.mods : this.MODULES.map(m => m[0]);
+    const actSite = acting ? this.SITES.find(s => s.id === acting.sites[0]) : this.SITES[0];
+    const siteName = acting
+      ? actSite.name + (acting.sites.length > 1 ? ' + ' + (acting.sites.length - 1) + ' more' : '')
+      : (P.siteName ?? this.SITES[0].name);
+    const accountNo = acting ? actSite.acct : (this.SITES[0].acct);
+    const initials = n => n.split(/[\s.]+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
     const nav = [
+      ['today', 'Today', 'ph-duotone ph-house-line'],
       ['orders', 'Order Management', 'ph-duotone ph-truck'],
       ['inventory', 'Customer Inventory', 'ph-duotone ph-warehouse'],
       ['requisitions', 'Requisitions', 'ph-duotone ph-clipboard-text'],
       ['catalogue', 'Material Catalogue', 'ph-duotone ph-books'],
-      ['analytics', 'Reporting & Analytics', 'ph-duotone ph-chart-line-up']
-    ];
+      ['analytics', 'Reporting & Analytics', 'ph-duotone ph-chart-line-up'],
+      ['fluid', 'Fluid Analytics', 'ph-duotone ph-test-tube'],
+      ['admin', 'Users & Access', 'ph-duotone ph-shield-check']
+    ].filter(n => n[0] === 'today' || allowed.indexOf(n[0]) > -1);
     const active = view === 'orderDetail' ? 'orders' : (view === 'form' ? 'requisitions' : view);
     const navItems = nav.map(([key, label, icon]) => {
       const on = key === active;
@@ -909,17 +1561,30 @@ class Component extends DCLogic {
     };
 
     // ── Inventory ─────────────────────────────────────────
+    const invEdits = S.invEdits || {};
+    const lvl = (r, k) => {
+      const v = invEdits[r.sku + ':' + k];
+      const n = v === undefined ? r[k] : parseFloat(v);
+      return isNaN(n) ? r[k] : n;
+    };
     const invRows = this.INV.map(r => {
       const m = self.mat(r.sku);
-      const low = r.qty < r.min, atMin = r.qty === r.min;
-      const pct = Math.max(4, Math.min(100, Math.round((r.qty / r.max) * 100)));
-      const minPct = Math.round((r.min / r.max) * 100);
+      const rmin = lvl(r, 'min'), rmax = Math.max(lvl(r, 'max'), rmin + 1);
+      const low = r.qty < rmin, atMin = r.qty === rmin;
+      const pct = Math.max(4, Math.min(100, Math.round((r.qty / rmax) * 100)));
+      const minPct = Math.min(100, Math.round((rmin / rmax) * 100));
+      const edited = invEdits[r.sku + ':min'] !== undefined || invEdits[r.sku + ':max'] !== undefined;
       const expSoon = r.expires && r.expires < '2026-11-01';
       const label = low ? 'Reorder needed' : (atMin ? 'At minimum' : (expSoon ? 'Expiring soon' : 'In range'));
       return {
         sku: r.sku, name: m.name, lot: r.lot,
         qty: r.qty + ' ' + self.unit(m.uom, r.qty),
-        range: 'min ' + r.min + ' · max ' + r.max,
+        range: 'min ' + rmin + ' · max ' + rmax,
+        minVal: invEdits[r.sku + ':min'] === undefined ? String(r.min) : invEdits[r.sku + ':min'],
+        maxVal: invEdits[r.sku + ':max'] === undefined ? String(r.max) : invEdits[r.sku + ':max'],
+        onMin: e => self.setMinMax(r.sku, 'min', e.target.value),
+        onMax: e => self.setMinMax(r.sku, 'max', e.target.value),
+        editNote: edited ? 'Unsaved' : '',
         barStyle: 'position:absolute;left:0;top:0;bottom:0;border-radius:1px;width:' + pct + '%;background:' + (low ? 'var(--color-accent-2)' : (atMin ? 'var(--color-accent-2-400)' : 'var(--color-accent)')),
         minTickStyle: 'position:absolute;top:-3px;bottom:-3px;width:1.5px;background:var(--color-text);left:' + minPct + '%',
         expires: r.expires ? self.fmt(r.expires) : '—',
@@ -928,7 +1593,7 @@ class Component extends DCLogic {
         statusLabel: label,
         statusClass: low || atMin || expSoon ? 'tag tag-accent-2' : 'tag tag-neutral',
         btnClass: low || atMin ? 'btn btn-primary' : 'btn btn-ghost',
-        onReorder: () => self.startReorder(r)
+        onReorder: () => self.startReorder(Object.assign({}, r, { min: rmin, max: rmax }))
       };
     });
     const scanRows = this.SCANS.map(s => ({
@@ -948,7 +1613,10 @@ class Component extends DCLogic {
           id: r.id, type: r.type, typeClass: r.type === 'Reorder' ? 'tag tag-accent' : 'tag tag-accent-2',
           name: m.name, sku: r.sku, qty: r.qty + ' ' + self.unit(m.uom, r.qty),
           neededBy: self.fmt(r.neededBy), submitted: self.fmt(r.submitted),
-          status: r.status, statusClass: self.statusClass(r.status), order: r.order
+          by: r.by || (acting ? acting.name : 'Marcus Okafor'),
+          status: r.status, statusClass: self.statusClass(r.status), order: r.order,
+          canCancel: r.status === 'Submitted' || r.status === 'Processing',
+          onCancel: () => self.cancelReq(r.id)
         };
       });
 
@@ -1041,9 +1709,355 @@ class Component extends DCLogic {
         };
       });
 
+    // ── Fluid analytics ───────────────────────────────────
+    const fTab = S.fluidTab || 'readings';
+    const fArea = S.fluidArea || 'All areas';
+    const fType = S.fluidType || 'All system types';
+    const fMetric = S.fluidMetric || 'conc';
+    const fEdits = S.fluidEdits || {};
+    const fDone = !!S.roundDone;
+    const dispatched = S.dispatched || {};
+    const rawVal = (e, k) => { const v = fEdits[e.id + ':' + k]; return v === undefined ? String(e[k]) : v; };
+    const numVal = (e, k) => { const v = parseFloat(rawVal(e, k)); return isNaN(v) ? null : v; };
+    const limOf = (e, k) => k === 'conc' ? [e.cmin, e.cmax] : [e.pmin, e.pmax];
+    const stateOf = (e, k) => {
+      const v = numVal(e, k); if (v === null) return 'none';
+      const l = limOf(e, k);
+      return v > l[1] ? 'high' : (v < l[0] ? 'low' : 'ok');
+    };
+    const hist = (e, k) => {
+      const l = limOf(e, k), mid = (l[0] + l[1]) / 2, span = l[1] - l[0];
+      let h = 0; const seed = e.id + k;
+      for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 99991;
+      let v = numVal(e, k); if (v === null) v = mid;
+      const out = new Array(this.ROUNDS.length);
+      for (let i = out.length - 1; i >= 0; i--) {
+        out[i] = Math.round(v * 100) / 100;
+        h = (h * 1103515 + 12345) % 2147483647;
+        v = v + (mid - v) * 0.24 + (((h % 1000) / 1000) - 0.5) * span * 0.13;
+      }
+      return out;
+    };
+    const fList = this.FLUID.filter(e =>
+      (fArea === 'All areas' || e.area === fArea) &&
+      (fType === 'All system types' || e.type + 's' === fType));
+    const rowStyle = st => 'width:74px;text-align:right;font-variant-numeric:tabular-nums;padding:6px 8px;' +
+      'font-family:var(--font-body);font-size:14px;border-radius:var(--radius-sm);color:' +
+      (st === 'ok' ? 'var(--color-text)' : 'var(--color-accent-2-800)') + ';background:' +
+      (st === 'ok' ? 'var(--color-surface)' : 'var(--color-accent-2-100)') + ';border:1px solid ' +
+      (st === 'ok' ? 'var(--color-neutral-200)' : 'var(--color-accent-2)');
+    const readRows = fList.map(e => {
+      const cs = stateOf(e, 'conc'), ps = stateOf(e, 'ph');
+      const bad = [cs, ps].filter(s => s === 'high' || s === 'low');
+      return {
+        id: e.id, name: e.name, area: e.area, type: e.type,
+        product: self.mat(e.sku).name, sku: e.sku,
+        vol: e.vol.toLocaleString() + ' gal',
+        conc: rawVal(e, 'conc'), ph: rawVal(e, 'ph'),
+        concRange: e.cmin.toFixed(1) + '–' + e.cmax.toFixed(1) + '%',
+        phRange: e.pmin.toFixed(1) + '–' + e.pmax.toFixed(1),
+        concStyle: rowStyle(cs), phStyle: rowStyle(ps),
+        status: bad.length === 0 ? 'In control' : (bad.indexOf('high') > -1 ? 'Above limit' : 'Below limit'),
+        statusClass: bad.length === 0 ? 'tag tag-accent' : 'tag tag-accent-2',
+        onConc: ev => self.setFluid(e.id, 'conc', ev.target.value),
+        onPh: ev => self.setFluid(e.id, 'ph', ev.target.value)
+      };
+    });
+    const outCount = readRows.filter(r => r.status !== 'In control').length;
+
+    const fSel = S.fluidSel || this.FLUID.filter(e => e.type === 'Coolant system').slice(0, 4).map(e => e.id);
+    const chips = fList.map(e => {
+      const on = fSel.indexOf(e.id) > -1;
+      return {
+        id: e.id, label: e.id, sub: e.name, on,
+        style: 'cursor:pointer;white-space:nowrap;font-family:var(--font-body);font-size:13px;font-variant-numeric:tabular-nums;padding:6px 12px;border-radius:999px;' +
+          'background:' + (on ? 'var(--color-accent)' : 'transparent') + ';color:' +
+          (on ? 'var(--color-bg)' : 'var(--color-text)') + ';border:1px solid ' +
+          (on ? 'var(--color-accent)' : 'var(--color-neutral-300)'),
+        onToggle: () => self.toggleFluid(e.id)
+      };
+    });
+    const plotted = fSel.map(id => self.FLUID.find(e => e.id === id)).filter(Boolean).slice(0, 6);
+    const key = fMetric === 'conc' ? 'conc' : 'ph';
+    const allVals = [];
+    const series = plotted.map((e, i) => ({ e, vals: hist(e, key) }));
+    series.forEach(s => { s.vals.forEach(v => allVals.push(v)); limOf(s.e, key).forEach(v => allVals.push(v)); });
+    const lo0 = allVals.length ? Math.min.apply(null, allVals) : 0;
+    const hi0 = allVals.length ? Math.max.apply(null, allVals) : 1;
+    const pad = Math.max((hi0 - lo0) * 0.16, 0.2);
+    const dLo = lo0 - pad, dHi = hi0 + pad;
+    const X0 = 52, X1 = 748, Y0 = 20, Y1 = 254;
+    const yOf = v => Y1 - ((v - dLo) / (dHi - dLo)) * (Y1 - Y0);
+    const xOf = i => X0 + (i * (X1 - X0)) / (this.ROUNDS.length - 1);
+    const sameLim = plotted.length > 0 && plotted.every(e =>
+      limOf(e, key)[0] === limOf(plotted[0], key)[0] && limOf(e, key)[1] === limOf(plotted[0], key)[1]);
+    const bl = plotted.length ? limOf(plotted[0], key) : [0, 0];
+    const band = sameLim ? {
+      x: X0, w: X1 - X0, y: yOf(bl[1]), h: Math.max(2, yOf(bl[0]) - yOf(bl[1])),
+      loY: yOf(bl[0]), hiY: yOf(bl[1]),
+      loLabel: 'min ' + bl[0].toFixed(1), hiLabel: 'max ' + bl[1].toFixed(1),
+      loTextY: yOf(bl[0]) - 5, hiTextY: yOf(bl[1]) - 5
+    } : { x: 0, w: 0, y: 0, h: 0, loY: 0, hiY: 0, loLabel: '', hiLabel: '', loTextY: 0, hiTextY: 0 };
+    const chartLines = series.map((s, i) => {
+      const st = self.SERIES_STYLE[i % 6], l = limOf(s.e, key);
+      return {
+        id: s.e.id, name: s.e.id + ' · ' + s.e.name,
+        points: s.vals.map((v, j) => xOf(j) + ',' + yOf(v)).join(' '),
+        lineStyle: 'fill:none;stroke:' + st[0] + ';stroke-width:1.8;stroke-linejoin:round' +
+          (st[1] === 'none' ? '' : ';stroke-dasharray:' + st[1]),
+        swatchStyle: 'width:22px;height:0;border-top:' + (st[1] === 'none' ? '2px solid ' : '2px dashed ') + st[0],
+        last: s.vals[s.vals.length - 1].toFixed(1) + (key === 'conc' ? '%' : ''),
+        dots: s.vals.map((v, j) => ({
+          cx: xOf(j), cy: yOf(v),
+          style: 'r:3;fill:' + (v > l[1] || v < l[0] ? 'var(--color-accent-2)' : st[0])
+        }))
+      };
+    });
+    const ticks = [0, 1, 2, 3, 4].map(t => {
+      const v = dLo + ((dHi - dLo) * t) / 4;
+      return { y: yOf(v), ty: yOf(v) + 4, label: v.toFixed(1) };
+    });
+    const xLabels = this.ROUNDS.map((r, i) => ({ x: xOf(i), label: r }));
+
+    const alerts = [];
+    this.FLUID.forEach(e => {
+      ['conc', 'ph'].forEach(k => {
+        const st = stateOf(e, k);
+        if (st !== 'high' && st !== 'low') return;
+        const l = limOf(e, k), v = numVal(e, k);
+        const h = hist(e, k);
+        let runs = 0;
+        for (let i = h.length - 1; i >= 0; i--) { if (h[i] > l[1] || h[i] < l[0]) runs++; else break; }
+        const aid = e.id + ':' + k;
+        alerts.push({
+          aid, id: e.id, name: e.name, area: e.area, type: e.type,
+          param: k === 'conc' ? 'Concentration' : 'pH',
+          value: v.toFixed(1) + (k === 'conc' ? '%' : ''),
+          limit: st === 'high' ? 'max ' + l[1].toFixed(1) : 'min ' + l[0].toFixed(1),
+          dir: st === 'high' ? 'Above limit' : 'Below limit',
+          dirClass: 'tag tag-accent-2',
+          risk: self.RISK[e.type + ':' + st + ':' + k] || '',
+          runs: runs === 1 ? 'First round out of band' : runs + ' consecutive rounds out of band',
+          sent: !!dispatched[aid],
+          onDispatch: () => self.dispatchTech(aid, e.id),
+          showRequest: st === 'low' && k === 'conc',
+          onRequest: () => self.startSpot(e.sku)
+        });
+      });
+    });
+
+    // ── Today ─────────────────────────────────────────────
+    const can = k => allowed.indexOf(k) > -1;
+    const stockTodo = [], chemTodo = [], shipTodo = [];
+    if (can('inventory')) {
+      invRows.filter(r => r.statusLabel === 'Reorder needed' || r.statusLabel === 'At minimum').forEach(r => {
+        stockTodo.push({
+          kind: 'Stock', kindClass: 'tag tag-accent-2',
+          title: r.name, detail: r.qty + ' on hand · ' + r.range + ' · ' + r.location,
+          action: can('requisitions') ? 'Request reorder' : 'Open inventory',
+          onAction: can('requisitions') ? r.onReorder : (() => self.go('inventory'))
+        });
+      });
+    }
+    if (can('fluid')) {
+      alerts.forEach(a => {
+        chemTodo.push({
+          kind: 'Chemistry', kindClass: 'tag tag-accent-2',
+          title: a.id + ' — ' + a.name,
+          detail: a.param + ' ' + a.value + ' · ' + a.limit + ' · ' + a.risk,
+          action: a.sent ? 'Chemist dispatched' : 'Dispatch a chemist',
+          onAction: a.onDispatch
+        });
+      });
+    }
+    if (can('orders')) {
+      this.ORDERS.filter(o => o.status === 'Delayed').forEach(o => {
+        shipTodo.push({
+          kind: 'Delivery', kindClass: 'tag tag-accent-2',
+          title: o.id + ' — ' + self.mat(o.lines[0][0]).name,
+          detail: (o.exception || 'Delayed in transit') + ' · was due ' + self.fmt(o.expected),
+          action: 'Open order',
+          onAction: () => self.setState({ view: 'orderDetail', orderId: o.id, banner: null })
+        });
+      });
+    }
+    const todoRows = shipTodo.concat(chemTodo.slice(0, 3), stockTodo.slice(0, 3));
+    const moreBits = [];
+    if (chemTodo.length > 3) moreBits.push((chemTodo.length - 3) + ' more in Fluid Analytics');
+    if (stockTodo.length > 3) moreBits.push((stockTodo.length - 3) + ' more in Customer Inventory');
+    const totalTodo = shipTodo.length + chemTodo.length + stockTodo.length;
+    const inflight = [];
+    if (can('orders')) {
+      this.ORDERS.filter(o => o.status === 'In Transit' || o.status === 'Out for Delivery' || o.status === 'Placed').slice(0, 4).forEach(o => {
+        inflight.push({
+          id: o.id, what: self.mat(o.lines[0][0]).name,
+          meta: o.status + ' · due ' + self.fmt(o.expected),
+          statusClass: self.statusClass(o.status), status: o.status,
+          onOpen: () => self.setState({ view: 'orderDetail', orderId: o.id, banner: null })
+        });
+      });
+    }
+    const openReqs = [];
+    if (can('requisitions')) {
+      this.state.reqs.filter(r => r.status === 'Submitted' || r.status === 'Processing').slice(0, 4).forEach(r => {
+        openReqs.push({
+          id: r.id, what: self.mat(r.sku).name,
+          meta: r.status + ' · needed ' + self.fmt(r.neededBy),
+          statusClass: self.statusClass(r.status), status: r.status,
+          onOpen: () => self.go('requisitions')
+        });
+      });
+    }
+    const pulse = [];
+    if (can('fluid')) pulse.push({ k: 'Last chemistry round', v: '22 Aug 2026 · T. Voss' });
+    if (can('inventory')) pulse.push({ k: 'Last stock count', v: '18 Aug 2026 · crib kiosk' });
+    if (can('orders')) pulse.push({ k: 'Sage sync', v: '21 Aug 2026, 08:45' });
+
+    // ── Users & access ────────────────────────────────────
+    const aTab = S.adminTab || 'users';
+    const modLabels = {}; this.MODULES.forEach(m => { modLabels[m[0]] = m[1]; });
+    const siteShort = id => { const s = self.SITES.find(x => x.id === id); return s ? s.name.split('—').pop().trim() : id; };
+    const userRows = userList.map(u => ({
+      id: u.id, name: u.name, title: u.title, email: u.email,
+      initials: initials(u.name),
+      role: self.roleName(u.role),
+      sites: u.sites.map(siteShort).join(' · '),
+      siteCount: u.sites.length === 1 ? '1 site' : u.sites.length + ' sites',
+      modTags: u.mods.map(m => ({ label: modLabels[m] })),
+      modCount: u.mods.length + ' of 7',
+      status: u.status,
+      statusClass: u.status === 'Active' ? 'tag tag-accent' : (u.status === 'Invited' ? 'tag tag-outline' : 'tag tag-accent-2'),
+      seen: u.seen,
+      isActing: S.actingAs === u.id,
+      onEdit: () => self.openUser(u.id),
+      onActAs: () => self.actAs(u.id)
+    }));
+    const editing = S.editUser;
+    const draft = S.draft || {};
+    const draftMods = draft.mods || [];
+    const draftSites = draft.sites || [];
+    const roleTemplateMods = editing ? self.roleMods(draft.role || 'buyer') : [];
+    const editPanel = {
+      open: !!editing,
+      isNew: editing === 'new',
+      title: editing === 'new' ? 'Invite a user' : 'Edit access',
+      subtitle: editing === 'new'
+        ? 'Access starts from the role template; tick or untick modules to deviate.'
+        : (draft.name || '') + ' — changes take effect at their next page load.',
+      name: draft.name || '', title2: draft.title || '', email: draft.email || '',
+      role: draft.role || 'buyer',
+      roleOptions: this.ROLE_DEFS.map(r => ({ id: r.id, name: r.name, note: r.note, on: (draft.role || 'buyer') === r.id })),
+      siteBoxes: this.SITES.map(s => ({
+        id: s.id, name: s.name, on: draftSites.indexOf(s.id) > -1,
+        onToggle: () => self.toggleDraft('sites', s.id)
+      })),
+      modBoxes: this.MODULES.map(m => {
+        const on = draftMods.indexOf(m[0]) > -1;
+        const inTemplate = roleTemplateMods.indexOf(m[0]) > -1;
+        return {
+          key: m[0], label: m[1], on,
+          note: on && !inTemplate ? 'Added beyond role' : (!on && inTemplate ? 'Removed from role' : ''),
+          onToggle: () => self.toggleDraft('mods', m[0])
+        };
+      }),
+      count: draftMods.length + ' of 7 modules · ' + (draftSites.length || 0) + (draftSites.length === 1 ? ' site' : ' sites'),
+      canSave: draftMods.length > 0 && draftSites.length > 0,
+      saveLabel: editing === 'new' ? 'Send invite' : 'Save access',
+      onSave: () => self.saveUser(),
+      onCancel: () => self.setState({ editUser: null, draft: null }),
+      showSuspend: !!editing && editing !== 'new',
+      suspendLabel: (userList.find(u => u.id === editing) || {}).status === 'Suspended' ? 'Restore access' : 'Suspend user',
+      onSuspend: () => self.suspendUser(editing)
+    };
+    editPanel.roleOptions = editPanel.roleOptions.map(r => Object.assign(r, {
+      onPick: () => self.pickRole(r.id),
+      style: 'cursor:pointer;text-align:left;background:' + (r.on ? 'var(--color-accent-100)' : 'transparent') +
+        ';border:1px solid ' + (r.on ? 'var(--color-accent)' : 'var(--color-neutral-300)') +
+        ';border-radius:var(--radius-md);padding:11px 13px;font-family:var(--font-body);color:var(--color-text);width:100%'
+    }));
+    const box = on => 'width:19px;height:19px;flex:none;display:grid;place-items:center;border-radius:var(--radius-sm);font-size:12px;border:1px solid ' +
+      (on ? 'var(--color-accent)' : 'var(--color-neutral-300)') + ';background:' + (on ? 'var(--color-accent)' : 'transparent') +
+      ';color:var(--color-bg)';
+    editPanel.siteBoxes = editPanel.siteBoxes.map(s => Object.assign(s, { boxStyle: box(s.on), mark: s.on ? '✓' : '' }));
+    editPanel.modBoxes = editPanel.modBoxes.map(m => Object.assign(m, { boxStyle: box(m.on), mark: m.on ? '✓' : '' }));
+
+    const matrix = this.ROLE_DEFS.map(r => {
+      const mods = self.roleMods(r.id);
+      return {
+        id: r.id, name: r.name, note: r.note,
+        users: userList.filter(u => u.role === r.id).length + ' assigned',
+        cells: self.MODULES.map(m => {
+          const on = mods.indexOf(m[0]) > -1;
+          return {
+            key: m[0], on, mark: on ? '✓' : '·',
+            style: 'width:100%;cursor:pointer;border:0;background:' + (on ? 'var(--color-accent-100)' : 'transparent') +
+              ';color:' + (on ? 'var(--color-accent-800)' : 'color-mix(in srgb, var(--color-text) 30%, transparent)') +
+              ';font-family:var(--font-body);font-size:15px;padding:9px 0;border-radius:var(--radius-sm)',
+            onToggle: () => self.toggleRoleMod(r.id, m[0])
+          };
+        })
+      };
+    });
+
     return {
       companyName, siteName, showNotes, navItems,
-      accountNo: 'C-40218', userName: 'Marcus Okafor', userInitials: 'MO', userRole: 'Maintenance Supervisor',
+      isToday: view === 'today',
+      todoRows, todoEmpty: todoRows.length === 0,
+      todoCount: totalTodo === 0 ? 'Nothing needs you' : totalTodo + (totalTodo === 1 ? ' item needs you' : ' items need you') + (moreBits.length ? ' — showing the most urgent' : ''),
+      moreLine: moreBits.join(' · '), hasMore: moreBits.length > 0,
+      scopeLine: acting && acting.sites.length > 1
+        ? 'Only what is out of line across the ' + acting.sites.length + ' sites you cover — everything else lives in its module.'
+        : 'Only what is out of line at ' + siteName + ' — everything else lives in its module.',
+      inflight, openReqs, pulse,
+      hasInflight: inflight.length > 0, hasOpenReqs: openReqs.length > 0,
+      greeting: (acting ? acting.name.split(' ')[0] : 'Rachel') + ' — Saturday 22 August 2026',
+      isAdmin: view === 'admin',
+      aUsers: aTab === 'users', aRoles: aTab === 'roles',
+      onAUsers: () => self.setState({ adminTab: 'users' }),
+      onARoles: () => self.setState({ adminTab: 'roles' }),
+      userRows, userCount: userList.length + ' users · ' + this.SITES.length + ' sites',
+      onNewUser: () => self.newUser(),
+      editPanel, matrix,
+      onSaveLevels: () => self.saveMinMax(),
+      onDraftName: e => self.setDraft('name', e.target.value),
+      onDraftTitle: e => self.setDraft('title', e.target.value),
+      onDraftEmail: e => self.setDraft('email', e.target.value),
+      moduleHeads: this.MODULES.map(m => ({ label: m[1].replace('Reporting & ', '').replace('Customer ', '').replace('Material ', '').replace('Users & ', '') })),
+      actingLabel: acting ? acting.name + ' — ' + self.roleName(acting.role) : 'Rachel Sundberg — super admin',
+      isActing: !!acting,
+      onExitActing: () => self.actAs(null),
+      viewAsOptions: userList.filter(u => u.status !== 'Invited').map(u => ({ id: u.id, label: u.name + ' — ' + self.roleName(u.role), on: S.actingAs === u.id })),
+      onViewAs: e => self.actAs(e.target.value === 'super' ? null : e.target.value),
+      viewAsValue: S.actingAs || 'super',
+      isFluid: view === 'fluid',
+      fReadings: fTab === 'readings', fTrends: fTab === 'trends', fAlerts: fTab === 'alerts',
+      onFReadings: () => self.setState({ fluidTab: 'readings' }),
+      onFTrends: () => self.setState({ fluidTab: 'trends' }),
+      onFAlerts: () => self.setState({ fluidTab: 'alerts' }),
+      fArea, fType, fMetric,
+      fAreaOptions: ['All areas', 'Gen 5', 'CSS'],
+      fTypeOptions: ['All system types', 'Coolant systems', 'Washers'],
+      onFArea: e => self.setState({ fluidArea: e.target.value, fluidSel: null }),
+      onFType: e => self.setState({ fluidType: e.target.value, fluidSel: null }),
+      metricConc: fMetric === 'conc', metricPh: fMetric === 'ph',
+      onMetricConc: () => self.setState({ fluidMetric: 'conc' }),
+      onMetricPh: () => self.setState({ fluidMetric: 'ph' }),
+      readRows, fluidCount: fList.length, outCount,
+      roundLabel: 'Round of 22 Aug 2026 · logged by T. Voss, Chemico chemist',
+      roundDone: fDone,
+      onCompleteRound: () => self.setState({ roundDone: true, banner: 'Round of 22 Aug submitted — ' + fList.length + ' systems logged, ' + outCount + ' flagged to your Chemico chemist.' }),
+      chips, chartLines, ticks, xLabels, band, bandShown: sameLim,
+      chartTitle: (fMetric === 'conc' ? 'Concentration' : 'pH') + ' — ' + chartLines.length + (chartLines.length === 1 ? ' system' : ' systems') + ' on one chart',
+      selCount: chartLines.length,
+      selNote: fSel.length > 6 ? 'Showing the first six of ' + fSel.length + ' selected — six lines is the readable limit.' : 'Pick any systems below; up to six plot together against the shared control band.',
+      bandNote: sameLim ? '' : 'Selected systems have different control limits, so the band is hidden — each point still flags magenta when it is out of its own band.',
+      onSelectAll: () => self.setState({ fluidSel: fList.slice(0, 6).map(e => e.id) }),
+      onSelectNone: () => self.setState({ fluidSel: [] }),
+      alerts, alertCount: alerts.length, alertsEmpty: alerts.length === 0,
+      accountNo,
+      userName: acting ? acting.name : 'Rachel Sundberg',
+      userInitials: acting ? initials(acting.name) : 'RS',
+      userRole: acting ? self.roleName(acting.role) : 'Super admin — all sites',
       lastSync: '21 Aug 2026, 08:45', lastCount: '18 Aug 2026',
       isOrders: view === 'orders', isOrderDetail: view === 'orderDetail', isInventory: view === 'inventory',
       isReq: view === 'requisitions', isForm: view === 'form', isCat: view === 'catalogue', isAnalytics: view === 'analytics',
@@ -1084,6 +2098,11 @@ class Component extends DCLogic {
       onModeReorder: () => self.startReorder(f.ctx || self.INV.find(r => r.qty <= r.min)),
       onModeSpot: () => self.setState({ form: { mode: 'spot', sku: f.sku, qty: f.qty, date: f.date, notes: f.notes, ctx: null } }),
       hasPrefill: f.mode === 'reorder' && !!f.ctx, prefillMeta,
+      fBy: f.by || (acting ? acting.name : userList[0].name),
+      onFormBy: e => self.setState({ form: Object.assign({}, self.state.form, { by: e.target.value }) }),
+      requesterOptions: userList.filter(u => u.status === 'Active').map(u => ({
+        name: u.name, label: u.name + ' — ' + u.title
+      })),
       materialOptions: this.MAT.slice().sort((a, b) => a.name.localeCompare(b.name)).map(m => ({ sku: m.sku, label: m.name + ' — ' + m.sku })),
       fSku: f.sku, fQty: f.qty, fDate: f.date, fNotes: f.notes, fUom: fm ? fm.uom : 'units',
       onFormSku: e => setF('sku', e.target.value),

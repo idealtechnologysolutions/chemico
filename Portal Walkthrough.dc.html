@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/broadsheet-eded96bf-f87d-42a4-a6ab-aff3dd21e7fd/styles.css">
+<script src="_ds/broadsheet-eded96bf-f87d-42a4-a6ab-aff3dd21e7fd/_ds_bundle.js"></script>
+<script src="./doc-page.js"></script>
+<style>
+  doc-page:not(:defined) { visibility: hidden; }
+  h2 { break-after: avoid; }
+  .kept { break-inside: avoid; orphans: 3; widows: 3; }
+</style>
+</helmet>
+
+<template id="__bundler_thumbnail" data-bg-color="#0088b0">
+  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="120" fill="#0088b0"></rect>
+    <rect x="30" y="24" width="60" height="72" fill="#f3f2f2"></rect>
+    <rect x="40" y="38" width="40" height="4" fill="#0088b0"></rect>
+    <rect x="40" y="50" width="40" height="3" fill="#201e1d"></rect>
+    <rect x="40" y="58" width="40" height="3" fill="#201e1d"></rect>
+    <rect x="40" y="66" width="26" height="3" fill="#201e1d"></rect>
+    <rect x="40" y="78" width="18" height="3" fill="#d6006c"></rect>
+  </svg>
+</template>
+
+<doc-page margin="0.8in">
+  <div style="font-family:var(--font-body);color:var(--color-text);font-size:15px;line-height:1.62">
+
+    <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:8px">The Chemico Group · Customer portal prototype</div>
+    <h1 style="font-size:34px;line-height:1.15;margin:0 0 10px">Chemico Onsite — how each module works</h1>
+    <p style="font-size:15.5px;color:color-mix(in srgb, var(--color-text) 66%, transparent);margin:0 0 4px;max-width:60ch">A walkthrough of the eight screens in the clickable prototype: what each one replaces, what a user can do on it, and what is still a decision for Chemico.</p>
+    <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);margin:0 0 34px">Prepared 22 August 2026 · demo data is Ashcroft Forge &amp; Machine, Plant 4, Findlay OH</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">The shape of it</h2>
+    <p style="margin:0 0 14px">One portal per customer, opened by their own people. A super admin at Chemico — or a plant admin on the customer side — decides who can see which sites and which modules, so the same application serves a crib attendant, a buyer, a quality engineer and a Chemico rep without any of them seeing each other's work. Nothing in the portal shows pricing.</p>
+    <p style="margin:0 0 30px">Use the <b>Signed in as</b> control at the bottom of the sidebar to switch between people while demoing — the navigation, the facility line and the Today list all change with the role.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">00 · Today</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> the morning phone call. <b>Who lands here:</b> everyone.</p>
+    <p style="margin:0 0 14px">The landing screen shows only exceptions, drawn from the modules the signed-in user can reach: a late delivery, coolant systems outside their control band, items below minimum. Each row carries the action that resolves it — <i>Request reorder</i>, <i>Dispatch a chemist</i>, <i>Open order</i> — so the fix is one click from the front door. Below that sit orders arriving, open requests, and the timestamps that tell you whether the data is fresh: last chemistry round, last stock count, last Sage sync. Deliberately no spend charts; consumption analysis lives in Reporting.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">01 · Order Management</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> “where is my order?” emails to the branch. <b>Source:</b> Sage, synced every 15 minutes.</p>
+    <p style="margin:0 0 14px">Every order raised for the site, searchable by material or number and filterable by status and date. Each row names the person who asked for the material, not just the account — so a supervisor can see it was their own tech. Opening an order gives the four-stage progress line (placed, shipped, out for delivery, delivered), the lines on the order, the delivery exception if there is one, and a link back to the requisition that started it. Orders raised automatically by a low-stock trigger are flagged as such.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">02 · Customer Inventory</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> the crib spreadsheet and the clipboard count. <b>Two tabs:</b> stock on hand, and the scan log.</p>
+    <p style="margin:0 0 14px">Stock on hand shows quantity against a min/max bar, batch number, expiry and crib location, with a status flag when an item is at or below minimum. Min and max are editable inline and saved per item per location — changing them re-evaluates the reorder flags on the next scan. Anything flagged offers <i>Request reorder</i>, which opens the requisition already filled in.</p>
+    <p style="margin:0 0 14px">The scan log is the audit trail: every scan-in and scan-out with timestamp, batch, quantity, work-order reference and who scanned it. Chemico rep scans read as “T. Voss — Chemico rep · Zebra TC22”; crib scan-outs read as “Crib kiosk · Zebra DS2278 — badge 3098”. <b>Open decision:</b> whether techs also carry a TC22 for scan-outs, or whether the fixed kiosk is the only way material leaves the crib.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">03 · Requisitions</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> ordering by email. <b>Two routes in:</b> reorder and spot buy.</p>
+    <p style="margin:0 0 14px">A reorder starts from a min/max trigger and arrives pre-filled — material, the quantity that returns stock to max, and the context of the trigger. A spot buy is built by hand from the approved catalogue for anything one-off. Both name a requester chosen from the site's real user list, so the branch knows who to call. The history table shows every request with its status and the Sage order it became; anything still submitted or processing can be cancelled from the same row.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">04 · Material Catalogue</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> the PDF product list. <b>Scope:</b> what this site is approved to order.</p>
+    <p style="margin:0 0 14px">The approved list grouped by vertical — welding consumables, gases, fasteners, chemicals, abrasives, PPE, packaging — with unit of measure, pack size and where the item is used. Search or filter, then start a requisition directly from an item. No prices; commercial terms stay between Chemico and the buyer.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">05 · Reporting &amp; Analytics</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> the quarterly review deck built by hand.</p>
+    <p style="margin:0 0 14px">Consumption by category and period, stock health, and service performance — quantities and dates only. This is where a plant manager answers “are we using more abrasives than last quarter, and why”, and where Chemico evidences fill rate and on-time delivery at the review.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">06 · Fluid Analytics</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> the chemist's notebook and the monthly PDF report. <b>Three tabs:</b> readings, trends, alerts.</p>
+    <p style="margin:0 0 14px"><b>Readings</b> is the round sheet: every coolant system and washer on site with its product, tank volume, concentration and pH, each against its own control range. Values are typed in on the walk and flag the moment they fall outside the band; marking the round complete files it and raises the alerts.</p>
+    <p style="margin:0 0 14px"><b>Trends</b> is the chart the current tool cannot draw — up to six machines overlaid on one set of axes across nine rounds, with the shared control band tinted behind them and out-of-band points printed in magenta. Filter by area or system type, pick the machines, switch between concentration and pH.</p>
+    <p style="margin:0 0 14px"><b>Alerts</b> turns each breach into a consequence rather than a number: lean coolant means tool wear and corrosion on ways; a high washer pH means etching risk on aluminium; low pH means bacteria, odour and a tank about to turn over. Each alert shows how many consecutive rounds it has been drifting and offers <i>Dispatch a chemist</i>, plus <i>Request concentrate</i> where the fix is more product.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">07 · Users &amp; Access</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> shared logins. <b>Who sees it:</b> the super admin and plant admins only.</p>
+    <p style="margin:0 0 14px">The <b>Users</b> tab lists everyone with their sites, their role, the modules they hold and when they were last in. Editing a user sets their sites and ticks modules one by one; anything that deviates from the role template is marked, so exceptions are visible rather than hidden. Users can be invited, suspended and restored.</p>
+    <p style="margin:0 0 14px">The <b>Roles</b> tab is the matrix: five templates — site buyer, crib attendant, fluids &amp; quality, plant admin, Chemico rep — against the seven modules, each cell a toggle. Templates set the defaults for new users; existing users keep what they have until edited. <i>View as</i> on any user re-renders the whole portal under their permissions, which is the fastest way to prove the model in a demo.</p>
+
+    <h2 style="font-size:19px;margin:0 0 8px">Still open</h2>
+    <ul style="margin:0 0 8px;padding-left:20px">
+      <li style="margin-bottom:7px">Handheld or kiosk for crib scan-outs — this changes the scan-log wording and whether techs need devices.</li>
+      <li style="margin-bottom:7px">Whether requisitions need an approval step above a value or quantity threshold, or go straight to the branch.</li>
+      <li style="margin-bottom:7px">Escalation rules on fluid alerts: who is notified, and after how many consecutive rounds.</li>
+      <li style="margin-bottom:7px">Whether inventory and chemistry data are scoped per site in the pilot, or pooled across a customer's plants.</li>
+    </ul>
+
+  </div>
+</doc-page>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/broadsheet-eded96bf-f87d-42a4-a6ab-aff3dd21e7fd/styles.css">
+<script src="_ds/broadsheet-eded96bf-f87d-42a4-a6ab-aff3dd21e7fd/_ds_bundle.js"></script>
+</helmet>
+
+<template id="__bundler_thumbnail" data-bg-color="#0088b0">
+  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="120" fill="#0088b0"></rect>
+    <rect x="22" y="34" width="24" height="52" fill="#f3f2f2"></rect>
+    <rect x="52" y="34" width="24" height="52" fill="#f3f2f2"></rect>
+    <rect x="82" y="34" width="16" height="52" fill="#d6006c"></rect>
+    <path d="M46 60 h6 M76 60 h6" stroke="#f3f2f2" stroke-width="3"></path>
+  </svg>
+</template>
+
+<div style="width:1600px;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);padding:56px 60px 64px;box-sizing:border-box">
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:8px">The Chemico Group · Chemico Onsite prototype</div>
+      <h1 style="font-family:var(--font-heading);font-size:44px;line-height:1.1;margin:0;max-width:24ch">One portal, eight screens, two loops</h1>
+    </div>
+    <p style="font-size:15.5px;line-height:1.6;max-width:46ch;margin:0;color:color-mix(in srgb, var(--color-text) 66%, transparent)">Material and chemistry data arrives from the plant floor and from Sage, lands in eight role-scoped screens, and leaves as an action — a request, a dispatch, a delivery. Nothing here shows pricing.</p>
+  </div>
+
+  <div style="height:1px;background:var(--color-text);margin:34px 0 0"></div>
+  <div style="height:3px;background:var(--color-text);margin:3px 0 30px"></div>
+
+  <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:16px 34px;padding-bottom:26px">
+    <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);width:190px">Access layer</div>
+    <div style="font-size:15px;max-width:38ch">One super admin sets <b>sites × modules</b> for every person. Role templates give the defaults:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;flex:1">
+      <span class="tag tag-outline" style="white-space:nowrap">Site buyer · 3 modules</span>
+      <span class="tag tag-outline" style="white-space:nowrap">Crib attendant · 2</span>
+      <span class="tag tag-outline" style="white-space:nowrap">Fluids &amp; quality · 3</span>
+      <span class="tag tag-outline" style="white-space:nowrap">Plant admin · 7</span>
+      <span class="tag tag-outline" style="white-space:nowrap">Chemico rep · 5, all sites</span>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:340px 46px 1fr 46px 340px;gap:0;align-items:stretch;border-top:1px solid var(--color-neutral-300);padding-top:30px">
+
+    <div>
+      <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:20px">Data comes from</div>
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Sage ERP</div>
+          <div style="font-size:13.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Orders, delivery stages and document numbers, synced every 15 minutes.</div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Crib kiosk · Zebra DS2278</div>
+          <div style="font-size:13.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Badge-and-barcode scan-out at the crib: who took what, against which work order.</div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Chemico rep · Zebra TC22</div>
+          <div style="font-size:13.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Scan-in of delivered stock, and the chemistry round walked system by system.</div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Contracted material list</div>
+          <div style="font-size:13.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">The SKUs each site is approved to order, by vertical.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;place-items:center">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+        <path d="M6 15 h16 M16 9 l6 6 -6 6" fill="none" stroke="#0088b0" stroke-width="2"></path>
+      </svg>
+    </div>
+
+    <div style="padding:0 34px">
+      <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:20px">Eight screens, shown only to the roles that hold them</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px 30px">
+        <div style="display:flex;gap:12px">
+          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent);width:26px;flex:none">00</div>
+          <div><div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Today</div><div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Exceptions only, each with the action that clears it.</div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent);width:26px;flex:none">01</div>
+          <div><div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Order Management</div><div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Stages, exceptions, requester, link to the requisition.</div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent);width:26px;flex:none">02</div>
+          <div><div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Customer Inventory</div><div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Min/max levels, batch and expiry, plus the scan log.</div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent);width:26px;flex:none">03</div>
+          <div><div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Requisitions</div><div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Prefilled reorders and hand-built spot buys, with history.</div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent);width:26px;flex:none">04</div>
+          <div><div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Material Catalogue</div><div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">The approved list by vertical — start a request from an item.</div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent);width:26px;flex:none">05</div>
+          <div><div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Reporting</div><div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Consumption, stock health, fill rate and on-time delivery.</div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-2);width:26px;flex:none">06</div>
+          <div><div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Fluid Analytics</div><div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Concentration and pH per system, multi-machine trends, alerts.</div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent);width:26px;flex:none">07</div>
+          <div><div style="font-family:var(--font-heading);font-weight:600;font-size:16px">Users &amp; Access</div><div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 62%, transparent)">Roles, sites, module toggles, and view-as.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;place-items:center">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+        <path d="M6 15 h16 M16 9 l6 6 -6 6" fill="none" stroke="#0088b0" stroke-width="2"></path>
+      </svg>
+    </div>
+
+    <div>
+      <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:20px">What the plant gets</div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="font-size:15px;line-height:1.5">Stock held between its minimum and maximum — no line stop, no over-holding.</div>
+        <div style="font-size:15px;line-height:1.5">Every order traceable to the person who asked and the trigger that raised it.</div>
+        <div style="font-size:15px;line-height:1.5">Coolant and washers inside their control band, caught in the round that drifts.</div>
+        <div style="font-size:15px;line-height:1.5">One audit trail: scan, request, order, delivery, scan-in.</div>
+        <div style="font-size:15px;line-height:1.5">Evidence for the quarterly review, without anyone building a deck.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--color-neutral-300);margin-top:44px;padding-top:30px">
+    <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:24px">The two loops the prototype demonstrates</div>
+
+    <div style="margin-bottom:32px">
+      <div style="font-family:var(--font-heading);font-weight:600;font-size:18px;margin-bottom:14px">Stock loop <span style="font-size:13.5px;font-weight:400;color:color-mix(in srgb, var(--color-text) 58%, transparent)">— crib to crib, no email</span></div>
+      <div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:10px">
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Tech scans material out at the crib kiosk</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Quantity drops below the item’s minimum</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-accent-100);border:1px solid var(--color-accent);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45;color:var(--color-accent-900)">Flagged in Inventory and on Today</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Requisition opens prefilled to top of max</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Branch raises the Sage order; portal tracks it</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Rep scans it in — stock back in range</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-family:var(--font-heading);font-weight:600;font-size:18px;margin-bottom:14px">Chemistry loop <span style="font-size:13.5px;font-weight:400;color:color-mix(in srgb, var(--color-text) 58%, transparent)">— drift caught before it becomes scrap</span></div>
+      <div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:10px">
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Chemist walks the round on a TC22</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent-2);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Concentration and pH logged per system</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent-2);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-accent-2-100);border:1px solid var(--color-accent-2);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45;color:var(--color-accent-2-900)">Reading falls outside its control band</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent-2);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Alert names the risk: tool wear, staining, bacteria</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent-2);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Chemist dispatched, or concentrate requested</div>
+        <div style="display:grid;place-items:center;color:var(--color-accent-2);font-size:20px">→</div>
+        <div style="flex:1;min-width:150px;padding:14px 16px;background:var(--color-surface);border:1px solid var(--color-neutral-200);border-radius:var(--radius-md);font-size:13.5px;line-height:1.45">Next round shows the trend recovering</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:30px;margin-top:38px;padding-top:22px;border-top:1px solid var(--color-neutral-300);font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+    <div>Prototype · 22 August 2026</div>
+    <div>Demo site: Ashcroft Forge &amp; Machine, Plant 4, Findlay OH</div>
+    <div>Verticals: welding · gases · fasteners · chemicals · abrasives · PPE · packaging</div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>
