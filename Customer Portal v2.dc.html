@@ -27,40 +27,21 @@
   </svg>
 </template>
 
-<div style="display:flex;min-height:100vh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+<div style="min-height:100vh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
 
-  <aside style="width:250px;flex:none;padding:28px 24px 24px 30px;display:flex;flex-direction:column;gap:28px;border-right:1px solid color-mix(in srgb, var(--color-text) 10%, transparent);position:sticky;top:0;height:100vh">
-    <div>
-      <img src="chemico-logo.png" alt="The Chemico Group" style="width:152px;height:auto">
-      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-top:10px">Customer Portal</div>
-    </div>
-
-    <div>
-      <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:3px">Facility</div>
-      <div style="font-size:14px;line-height:1.35">{{ siteName }}</div>
-      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Account {{ accountNo }}</div>
-    </div>
-
-    <nav style="display:flex;flex-direction:column;gap:2px;margin-left:-10px">
-      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="5">
-        <button type="button" onClick="{{ item.onClick }}" style="{{ item.style }}">
-          <i class="{{ item.icon }}" style="font-size:19px"></i>
-          <span>{{ item.label }}</span>
-        </button>
-      </sc-for>
-    </nav>
-
-    <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:34px;height:34px;flex:none;border-radius:50%;background:var(--color-accent-200);color:var(--color-accent-800);display:grid;place-items:center;font-family:var(--font-heading);font-weight:600;font-size:13px">{{ userInitials }}</div>
-        <div style="min-width:0">
+  <header style="padding:26px 56px 0;max-width:1560px;margin:0 auto">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap">
+      <div style="display:flex;align-items:flex-end;gap:20px">
+        <img src="chemico-logo.png" alt="The Chemico Group" style="width:148px;height:auto">
+        <div style="font-family:var(--font-heading);font-size:27px;line-height:1;letter-spacing:-0.01em">Onsite</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="text-align:right">
           <div style="font-size:13px;line-height:1.2">{{ userName }}</div>
           <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ userRole }}</div>
         </div>
-      </div>
-      <div class="field" style="margin:0">
-        <label style="font-size:9.5px">Signed in as</label>
-        <select class="input" style="font-size:12px;padding:6px 8px" value="{{ viewAsValue }}" onChange="{{ onViewAs }}">
+        <div style="width:36px;height:36px;flex:none;border-radius:50%;background:var(--color-accent-200);color:var(--color-accent-800);display:grid;place-items:center;font-family:var(--font-heading);font-weight:600;font-size:13px">{{ userInitials }}</div>
+        <select class="input" style="font-size:12px;padding:7px 9px;width:210px" value="{{ viewAsValue }}" onChange="{{ onViewAs }}">
           <option value="super">Rachel Sundberg — super admin</option>
           <sc-for list="{{ viewAsOptions }}" as="v" hint-placeholder-count="6">
             <option value="{{ v.id }}">{{ v.label }}</option>
@@ -68,9 +49,31 @@
         </select>
       </div>
     </div>
-  </aside>
 
-  <main style="flex:1;min-width:0;overflow-x:auto;padding:34px 48px 72px;max-width:1340px">
+    <div style="height:3px;background:var(--color-text);margin-top:20px"></div>
+    <div style="height:1px;background:var(--color-text);margin-top:3px"></div>
+
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 30px;padding:9px 0 10px;font-size:12px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">
+      <span style="font-variant-numeric:tabular-nums">Saturday 22 August 2026</span>
+      <span>{{ siteName }}</span>
+      <span style="font-variant-numeric:tabular-nums">Account {{ accountNo }}</span>
+      <span style="margin-left:auto;font-variant-numeric:tabular-nums">Sage sync {{ lastSync }}</span>
+    </div>
+
+    <div style="height:1px;background:var(--color-text)"></div>
+
+    <nav style="display:flex;flex-wrap:wrap;gap:0 4px;padding:6px 0 0">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+        <button type="button" onClick="{{ item.onClick }}" style="{{ item.style }}">
+          <span style="{{ item.numStyle }}">{{ item.num }}</span>
+          <span>{{ item.label }}</span>
+        </button>
+      </sc-for>
+    </nav>
+    <div style="height:1px;background:var(--color-neutral-300)"></div>
+  </header>
+
+  <main style="min-width:0;overflow-x:auto;padding:38px 56px 88px;max-width:1560px;margin:0 auto">
 
     <sc-if value="{{ hasBanner }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;align-items:center;gap:12px;background:var(--color-accent-100);color:var(--color-accent-800);padding:12px 16px;border-radius:var(--radius-md);margin-bottom:26px;font-size:14px">
@@ -83,11 +86,29 @@
     <!-- ══ TODAY ══ -->
     <sc-if value="{{ isToday }}" hint-placeholder-val="{{ false }}">
       <div>
-        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">{{ greeting }}</div>
-        <h1 style="font-size:40px;margin:0 0 6px">Today</h1>
-        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:62ch">{{ scopeLine }}</p>
+        <div style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,0.65fr);gap:56px;align-items:start;padding-bottom:34px;border-bottom:3px solid var(--color-text)">
+          <div>
+            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:10px">{{ greeting }}</div>
+            <h1 style="font-size:62px;line-height:1.02;letter-spacing:-0.015em;margin:0 0 14px;max-width:15ch">Today</h1>
+            <p style="font-size:19px;line-height:1.5;margin:0;max-width:44ch;color:color-mix(in srgb, var(--color-text) 72%, transparent)">{{ scopeLine }}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:18px;padding-top:8px">
+            <div style="display:flex;align-items:baseline;gap:14px;border-top:1px solid var(--color-neutral-300);padding-top:12px">
+              <span style="font-family:var(--font-heading);font-size:38px;line-height:1;color:var(--color-accent-2);font-variant-numeric:tabular-nums">{{ countChem }}</span>
+              <span style="font-size:14px;line-height:1.35;color:color-mix(in srgb, var(--color-text) 66%, transparent)">systems outside their control band</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:14px;border-top:1px solid var(--color-neutral-300);padding-top:12px">
+              <span style="font-family:var(--font-heading);font-size:38px;line-height:1;color:var(--color-accent-2);font-variant-numeric:tabular-nums">{{ countStock }}</span>
+              <span style="font-size:14px;line-height:1.35;color:color-mix(in srgb, var(--color-text) 66%, transparent)">items at or below minimum</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:14px;border-top:1px solid var(--color-neutral-300);padding-top:12px">
+              <span style="font-family:var(--font-heading);font-size:38px;line-height:1;color:var(--color-accent);font-variant-numeric:tabular-nums">{{ countShip }}</span>
+              <span style="font-size:14px;line-height:1.35;color:color-mix(in srgb, var(--color-text) 66%, transparent)">deliveries running late</span>
+            </div>
+          </div>
+        </div>
 
-        <h4 style="margin:40px 0 4px">Needs you now</h4>
+        <h4 style="margin:38px 0 4px;font-size:21px">Needs you now</h4>
         <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 20px">{{ todoCount }}</p>
 
         <sc-if value="{{ todoEmpty }}" hint-placeholder-val="{{ false }}">
@@ -165,8 +186,8 @@
     <sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}">
       <div>
         <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 01 — Sage ERP</div>
-        <h1 style="font-size:40px;margin:0 0 6px">Order Management</h1>
-        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:60ch">Orders placed on behalf of {{ siteName }}. Synced from Sage every 15 minutes — last sync {{ lastSync }}.</p>
+        <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">Order Management</h1>
+        <p style="font-size:17px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 66%, transparent);max-width:60ch">Orders placed on behalf of {{ siteName }}. Synced from Sage every 15 minutes — last sync {{ lastSync }}.</p>
 
         <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;margin:26px 0 8px">
           <div class="field" style="width:270px">
@@ -314,8 +335,8 @@
     <sc-if value="{{ isInventory }}" hint-placeholder-val="{{ false }}">
       <div>
         <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 02 — On-site stock</div>
-        <h1 style="font-size:40px;margin:0 0 6px">Customer Inventory</h1>
-        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:64ch">Material {{ companyName }} holds and manages at your facility. Every movement is barcode-scanned on a Zebra device — scanned in by your on-site rep on a TC22 handheld, scanned out by your techs at the crib kiosk.</p>
+        <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">Customer Inventory</h1>
+        <p style="font-size:17px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 66%, transparent);max-width:64ch">Material {{ companyName }} holds and manages at your facility. Every movement is barcode-scanned on a Zebra device — scanned in by your on-site rep on a TC22 handheld, scanned out by your techs at the crib kiosk.</p>
 
         <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:26px 0 20px">
           <div class="seg">
@@ -432,8 +453,8 @@
         <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">
           <div style="flex:1;min-width:340px">
             <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 03 — Requests</div>
-            <h1 style="font-size:40px;margin:0 0 6px">Requisitions</h1>
-            <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:60ch">Every request you have raised, and what happened to it. No more emailing the branch.</p>
+            <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">Requisitions</h1>
+            <p style="font-size:17px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 66%, transparent);max-width:60ch">Every request you have raised, and what happened to it. No more emailing the branch.</p>
           </div>
           <button type="button" class="btn btn-primary" onClick="{{ onNewSpot }}" style="margin-top:30px"><i class="ph-duotone ph-plus"></i> New request</button>
         </div>
@@ -509,7 +530,7 @@
       <div style="max-width:900px">
         <button type="button" class="btn btn-ghost" onClick="{{ onCancelForm }}" style="margin:0 0 18px -5px"><i class="ph-duotone ph-arrow-left"></i> Back</button>
         <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 03 — New request</div>
-        <h1 style="font-size:40px;margin:0 0 6px">{{ formTitle }}</h1>
+        <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">{{ formTitle }}</h1>
         <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:58ch">{{ formBlurb }}</p>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0 34px">
@@ -582,8 +603,8 @@
     <sc-if value="{{ isCat }}" hint-placeholder-val="{{ false }}">
       <div>
         <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 04 — Approved list</div>
-        <h1 style="font-size:40px;margin:0 0 6px">Material Catalogue</h1>
-        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:62ch">Everything {{ siteName }} is approved to order. Pick an item to start a requisition.</p>
+        <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">Material Catalogue</h1>
+        <p style="font-size:17px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 66%, transparent);max-width:62ch">Everything {{ siteName }} is approved to order. Pick an item to start a requisition.</p>
 
         <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;margin:26px 0 16px">
           <div class="field" style="width:290px">
@@ -643,8 +664,8 @@
     <sc-if value="{{ isAnalytics }}" hint-placeholder-val="{{ false }}">
       <div>
         <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 05 — Reporting</div>
-        <h1 style="font-size:40px;margin:0 0 6px">Reporting &amp; Analytics</h1>
-        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:64ch">Consumption, stock health and service performance for {{ siteName }} — quantities and days only, never cost.</p>
+        <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">Reporting &amp; Analytics</h1>
+        <p style="font-size:17px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 66%, transparent);max-width:64ch">Consumption, stock health and service performance for {{ siteName }} — quantities and days only, never cost.</p>
 
         <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;margin:26px 0 30px">
           <div class="field" style="width:190px">
@@ -753,8 +774,8 @@
     <sc-if value="{{ isFluid }}" hint-placeholder-val="{{ false }}">
       <div>
         <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 06 — Chemical Management</div>
-        <h1 style="font-size:40px;margin:0 0 6px">Fluid Analytics</h1>
-        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:66ch">Concentration and pH for every coolant system and washer on site — logged by your Chemico chemist on the walk, charted against control limits, and alerting before a drift becomes damage to tooling or parts.</p>
+        <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">Fluid Analytics</h1>
+        <p style="font-size:17px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 66%, transparent);max-width:66ch">Concentration and pH for every coolant system and washer on site — logged by your Chemico chemist on the walk, charted against control limits, and alerting before a drift becomes damage to tooling or parts.</p>
 
         <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:26px 0 20px">
           <div class="seg">
@@ -849,7 +870,7 @@
               </div>
             </div>
             <h4 style="margin:26px 0 4px">{{ chartTitle }}</h4>
-            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 6px;max-width:70ch">Nine rounds, 2 May to 22 Aug 2026. The tinted band is the control range; any point outside its own band prints magenta.</p>
+            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 6px;max-width:70ch">Nine rounds, 2 May to 22 Aug 2026. The tinted band is the control range; any point outside its own band is flagged in the alert colour.</p>
             <p style="font-size:12.5px;color:var(--color-accent-2-800);margin:0 0 18px;max-width:70ch">{{ bandNote }}</p>
 
             <svg width="760" height="288" viewBox="0 0 760 288" preserveAspectRatio="xMidYMid meet" style="max-width:100%;display:block">
@@ -951,8 +972,8 @@
     <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
       <div>
         <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 07 — Administration</div>
-        <h1 style="font-size:40px;margin:0 0 6px">Users &amp; Access</h1>
-        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:68ch">One super admin decides who sees what. Every user is scoped to the sites they work at and the modules their job needs — a crib attendant counts stock, a quality engineer keeps the coolant in band, a buyer raises requisitions. Nobody sees a site that isn’t theirs.</p>
+        <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">Users &amp; Access</h1>
+        <p style="font-size:17px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 66%, transparent);max-width:68ch">One super admin decides who sees what. Every user is scoped to the sites they work at and the modules their job needs — a crib attendant counts stock, a quality engineer keeps the coolant in band, a buyer raises requisitions. Nobody sees a site that isn’t theirs.</p>
 
         <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:26px 0 22px">
           <div class="seg">
@@ -1127,7 +1148,7 @@
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;companyName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;The Chemico Group&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;siteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ashcroft Forge &amp; Machine — Plant 4, Findlay OH&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;today&quot;,&quot;orders&quot;,&quot;inventory&quot;,&quot;requisitions&quot;,&quot;catalogue&quot;,&quot;analytics&quot;,&quot;fluid&quot;,&quot;admin&quot;],&quot;default&quot;:&quot;today&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showStateNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;palette&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[[&quot;#1d5c7a&quot;,&quot;#b8471f&quot;],[&quot;#0088b0&quot;,&quot;#d6006c&quot;],[&quot;#3b4a5a&quot;,&quot;#b47612&quot;],[&quot;#2c5f4f&quot;,&quot;#a8442a&quot;]],&quot;default&quot;:[&quot;#1d5c7a&quot;,&quot;#b8471f&quot;],&quot;tsType&quot;:&quot;string[]&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;companyName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;The Chemico Group&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;siteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ashcroft Forge &amp; Machine — Plant 4, Findlay OH&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;today&quot;,&quot;orders&quot;,&quot;inventory&quot;,&quot;requisitions&quot;,&quot;catalogue&quot;,&quot;analytics&quot;,&quot;fluid&quot;,&quot;admin&quot;],&quot;default&quot;:&quot;today&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showStateNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -1352,6 +1373,33 @@ class Component extends DCLogic {
     if (s === 'Placed' || s === 'Submitted') return 'tag tag-outline';
     return 'tag tag-accent';
   }
+  palettes() {
+    return {
+      'Steel & rust': ['#1d5c7a', '#b8471f'],
+      'Chemico cyan & magenta': ['#0088b0', '#d6006c'],
+      'Graphite & amber': ['#3b4a5a', '#b47612'],
+      'Pine & clay': ['#2c5f4f', '#a8442a']
+    };
+  }
+  applyPalette() {
+    const raw = this.props.palette;
+    const all = this.palettes();
+    let p = all['Steel & rust'];
+    if (Array.isArray(raw) && raw.length) p = [raw[0], raw[1] || p[1]];
+    else if (typeof raw === 'string' && raw) p = all[raw] || (raw.charAt(0) === '#' ? [raw, p[1]] : p);
+    const root = document.documentElement;
+    const steps = [[100, 'white', 88], [200, 'white', 72], [300, 'white', 56], [400, 'white', 32],
+      [600, 'black', 12], [700, 'black', 26], [800, 'black', 42], [900, 'black', 56]];
+    [['--color-accent', p[0]], ['--color-accent-2', p[1]]].forEach(([v, hex]) => {
+      root.style.setProperty(v, hex);
+      root.style.setProperty(v + '-500', hex);
+      steps.forEach(([n, mixer, amt]) => {
+        root.style.setProperty(v + '-' + n, 'color-mix(in oklch, ' + hex + ' ' + (100 - amt) + '%, ' + mixer + ')');
+      });
+    });
+  }
+  componentDidMount() { this.applyPalette(); }
+  componentDidUpdate(prev) { if (prev.palette !== this.props.palette) this.applyPalette(); }
   go(view) { this.setState({ view, orderId: null, banner: null }); }
   users() { return this.state.users || this.USERS; }
   roleName(id) { const r = this.ROLE_DEFS.find(x => x.id === id); return r ? r.name : id; }
@@ -1483,15 +1531,17 @@ class Component extends DCLogic {
       ['admin', 'Users & Access', 'ph-duotone ph-shield-check']
     ].filter(n => n[0] === 'today' || allowed.indexOf(n[0]) > -1);
     const active = view === 'orderDetail' ? 'orders' : (view === 'form' ? 'requisitions' : view);
-    const navItems = nav.map(([key, label, icon]) => {
+    const navItems = nav.map(([key, label, icon], i) => {
       const on = key === active;
+      const short = { 'Order Management': 'Orders', 'Customer Inventory': 'Inventory', 'Material Catalogue': 'Catalogue', 'Reporting & Analytics': 'Reporting', 'Fluid Analytics': 'Fluids', 'Users & Access': 'Access' };
       return {
-        key, label, icon,
-        style: 'display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;background:' +
-          (on ? 'color-mix(in srgb, var(--color-accent) 12%, transparent)' : 'transparent') +
-          ';border:0;border-left:2px solid ' + (on ? 'var(--color-accent)' : 'transparent') +
-          ';padding:9px 10px;border-radius:0 var(--radius-md) var(--radius-md) 0;font-family:var(--font-heading);font-weight:600;font-size:14px;color:' +
-          (on ? 'var(--color-accent-800)' : 'color-mix(in srgb, var(--color-text) 74%, transparent)'),
+        key, label: short[label] || label, icon,
+        num: String(i).padStart(2, '0'),
+        numStyle: 'font-size:10.5px;font-variant-numeric:tabular-nums;color:' + (on ? 'var(--color-accent)' : 'color-mix(in srgb, var(--color-text) 38%, transparent)'),
+        style: 'display:flex;align-items:baseline;gap:7px;cursor:pointer;background:transparent;border:0;' +
+          'border-bottom:2px solid ' + (on ? 'var(--color-accent)' : 'transparent') +
+          ';padding:9px 16px 9px 0;margin-right:14px;font-family:var(--font-heading);font-weight:600;font-size:15.5px;color:' +
+          (on ? 'var(--color-text)' : 'color-mix(in srgb, var(--color-text) 58%, transparent)'),
         onClick: () => self.go(key)
       };
     });
@@ -1882,10 +1932,12 @@ class Component extends DCLogic {
       });
     }
     const todoRows = shipTodo.concat(chemTodo.slice(0, 3), stockTodo.slice(0, 3));
+    const chemUnits = new Set(chemTodo.map(t => t.eqId)).size;
+    const chemShown = new Set(chemTodo.slice(0, 3).map(t => t.eqId)).size;
     const moreBits = [];
-    if (chemTodo.length > 3) moreBits.push((chemTodo.length - 3) + ' more in Fluid Analytics');
+    if (chemUnits > chemShown) moreBits.push((chemUnits - chemShown) + ' more in Fluid Analytics');
     if (stockTodo.length > 3) moreBits.push((stockTodo.length - 3) + ' more in Customer Inventory');
-    const totalTodo = shipTodo.length + chemTodo.length + stockTodo.length;
+    const totalTodo = shipTodo.length + chemUnits + stockTodo.length;
     const inflight = [];
     if (can('orders')) {
       this.ORDERS.filter(o => o.status === 'In Transit' || o.status === 'Out for Delivery' || o.status === 'Placed').slice(0, 4).forEach(o => {
@@ -2003,6 +2055,7 @@ class Component extends DCLogic {
       companyName, siteName, showNotes, navItems,
       isToday: view === 'today',
       todoRows, todoEmpty: todoRows.length === 0,
+      countChem: chemUnits, countStock: stockTodo.length, countShip: shipTodo.length,
       todoCount: totalTodo === 0 ? 'Nothing needs you' : totalTodo + (totalTodo === 1 ? ' item needs you' : ' items need you') + (moreBits.length ? ' — showing the most urgent' : ''),
       moreLine: moreBits.join(' · '), hasMore: moreBits.length > 0,
       scopeLine: acting && acting.sites.length > 1
@@ -2050,7 +2103,7 @@ class Component extends DCLogic {
       chartTitle: (fMetric === 'conc' ? 'Concentration' : 'pH') + ' — ' + chartLines.length + (chartLines.length === 1 ? ' system' : ' systems') + ' on one chart',
       selCount: chartLines.length,
       selNote: fSel.length > 6 ? 'Showing the first six of ' + fSel.length + ' selected — six lines is the readable limit.' : 'Pick any systems below; up to six plot together against the shared control band.',
-      bandNote: sameLim ? '' : 'Selected systems have different control limits, so the band is hidden — each point still flags magenta when it is out of its own band.',
+      bandNote: sameLim ? '' : 'Selected systems have different control limits, so the band is hidden — each point is still flagged when it falls outside its own band.',
       onSelectAll: () => self.setState({ fluidSel: fList.slice(0, 6).map(e => e.id) }),
       onSelectNone: () => self.setState({ fluidSel: [] }),
       alerts, alertCount: alerts.length, alertsEmpty: alerts.length === 0,
