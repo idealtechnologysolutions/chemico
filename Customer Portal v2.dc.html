@@ -1462,8 +1462,9 @@ class Component extends DCLogic {
     e[id + ':' + k] = v;
     this.setState({ fluidEdits: e, roundDone: false });
   }
+  defaultFluidSel() { return this.FLUID.filter(x => x.type === 'Coolant system').slice(0, 4).map(x => x.id); }
   toggleFluid(id) {
-    const cur = this.state.fluidSel || this.FLUID.filter(x => x.type === 'Coolant system').slice(0, 4).map(x => x.id);
+    const cur = this.state.fluidSel || this.defaultFluidSel();
     const next = cur.indexOf(id) > -1 ? cur.filter(x => x !== id) : cur.concat([id]);
     this.setState({ fluidSel: next });
   }
@@ -1815,7 +1816,7 @@ class Component extends DCLogic {
     });
     const outCount = readRows.filter(r => r.status !== 'In control').length;
 
-    const fSel = S.fluidSel || this.FLUID.filter(e => e.type === 'Coolant system').slice(0, 4).map(e => e.id);
+    const fSel = S.fluidSel || this.defaultFluidSel();
     const chips = fList.map(e => {
       const on = fSel.indexOf(e.id) > -1;
       return {

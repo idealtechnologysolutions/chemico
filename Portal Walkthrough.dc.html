@@ -67,11 +67,13 @@
     <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> the quarterly review deck built by hand.</p>
     <p style="margin:0 0 14px">Consumption by category and period, stock health, and service performance — quantities and dates only. This is where a plant manager answers “are we using more abrasives than last quarter, and why”, and where Chemico evidences fill rate and on-time delivery at the review.</p>
 
-    <h2 style="font-size:19px;margin:0 0 8px">06 · Fluid Analytics</h2>
-    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> the chemist's notebook and the monthly PDF report. <b>Three tabs:</b> readings, trends, alerts.</p>
-    <p style="margin:0 0 14px"><b>Readings</b> is the round sheet: every coolant system and washer on site with its product, tank volume, concentration and pH, each against its own control range. Values are typed in on the walk and flag the moment they fall outside the band; marking the round complete files it and raises the alerts.</p>
-    <p style="margin:0 0 14px"><b>Trends</b> is the chart the current tool cannot draw — up to six machines overlaid on one set of axes across nine rounds, with the shared control band tinted behind them and out-of-band points printed in magenta. Filter by area or system type, pick the machines, switch between concentration and pH.</p>
-    <p style="margin:0 0 14px"><b>Alerts</b> turns each breach into a consequence rather than a number: lean coolant means tool wear and corrosion on ways; a high washer pH means etching risk on aluminium; low pH means bacteria, odour and a tank about to turn over. Each alert shows how many consecutive rounds it has been drifting and offers <i>Dispatch a chemist</i>, plus <i>Request concentrate</i> where the fix is more product.</p>
+    <h2 style="font-size:19px;margin:0 0 8px">06 · Water &amp; Fluid Analytics</h2>
+    <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> the chemist's notebook and the monthly PDF report. <b>Four tabs:</b> readings, trends, exceptions, scorecard.</p>
+    <p style="margin:0 0 14px">The module covers every treated system on site — cooling towers, steam boilers, closed loops, coolant sumps and washers — and judges each on the parameters that matter to it. A tower is scored on conductivity, pH, free halogen and cycles of concentration; a boiler on conductivity, pH, sulfite and total hardness; a closed loop on molybdate, pH and nitrite; a machining sump on concentration and pH.</p>
+    <p style="margin:0 0 14px"><b>Readings</b> is the round sheet, grouped by system type so the columns always match what is being tested. Values are typed in on the walk and flag the moment they fall outside that system's control range. Marking the round complete files it and moves every out-of-range value onto the ladder.</p>
+    <p style="margin:0 0 14px"><b>Trends</b> overlays up to six systems on one set of axes across nine rounds, with the shared control band tinted behind them and out-of-band points flagged. The parameter buttons follow the selection — pick two towers and halogen is available; add a boiler and only the shared parameters remain.</p>
+    <p style="margin:0 0 14px"><b>Exceptions</b> is the escalation ladder, and it is the heart of the module. A reading out of range for the first time is corrected on the visit. The same reading out two or three rounds running becomes an <b>exception</b> — the fix is not holding, so a revisit is booked. Four rounds and it becomes an <b>escalation</b>: management is notified and an action plan with a cost case is owed, not another site visit. Every entry states the consequence in plain language rather than a number — lean coolant means tool wear; no halogen residual means biofilm and Legionella risk; hardness breakthrough means scale forming on the fireside tubes now.</p>
+    <p style="margin:0 0 14px"><b>Scorecard</b> is the quarterly review page: percent in control, plus scale, corrosion and biological protection scores cut from the parameters that cause each failure mode, and a before-and-since comparison of out-of-range rate. Systems are listed worst first, so the review starts where the loss is.</p>
 
     <h2 style="font-size:19px;margin:0 0 8px">07 · Users &amp; Access</h2>
     <p class="kept" style="margin:0 0 12px"><b>Replaces:</b> shared logins. <b>Who sees it:</b> the super admin and plant admins only.</p>
@@ -82,7 +84,7 @@
     <ul style="margin:0 0 8px;padding-left:20px">
       <li style="margin-bottom:7px">Handheld or kiosk for crib scan-outs — this changes the scan-log wording and whether techs need devices.</li>
       <li style="margin-bottom:7px">Whether requisitions need an approval step above a value or quantity threshold, or go straight to the branch.</li>
-      <li style="margin-bottom:7px">Escalation rules on fluid alerts: who is notified, and after how many consecutive rounds.</li>
+      <li style="margin-bottom:7px">Escalation thresholds: the prototype escalates after four consecutive rounds out of band — confirm the number and who is notified at each step.</li>
       <li style="margin-bottom:7px">Whether inventory and chemistry data are scoped per site in the pilot, or pooled across a customer's plants.</li>
     </ul>
 

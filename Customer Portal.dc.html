@@ -749,23 +749,24 @@
       </div>
     </sc-if>
 
-    <!-- ══ FLUID ANALYTICS ══ -->
+    <!-- ══ WATER & FLUID ANALYTICS ══ -->
     <sc-if value="{{ isFluid }}" hint-placeholder-val="{{ false }}">
       <div>
-        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 06 — Chemical Management</div>
-        <h1 style="font-size:40px;margin:0 0 6px">Fluid Analytics</h1>
-        <p style="font-size:15px;color:color-mix(in srgb, var(--color-text) 62%, transparent);max-width:66ch">Concentration and pH for every coolant system and washer on site — logged by your Chemico chemist on the walk, charted against control limits, and alerting before a drift becomes damage to tooling or parts.</p>
+        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Module 06 — Water &amp; Chemical Management</div>
+        <h1 style="font-size:52px;line-height:1.04;letter-spacing:-0.015em;margin:0 0 10px">Water &amp; Fluid Analytics</h1>
+        <p style="font-size:17px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 66%, transparent);max-width:66ch">Cooling towers, steam boilers, closed loops, coolant sumps and washers — every parameter logged against its own control limits, charted across rounds, and escalated on a ladder rather than buried in a monthly report.</p>
 
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:26px 0 20px">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:30px 0 22px">
           <div class="seg">
             <label class="seg-opt"><input type="radio" name="fltab" checked="{{ fReadings }}" onChange="{{ onFReadings }}">Readings</label>
             <label class="seg-opt"><input type="radio" name="fltab" checked="{{ fTrends }}" onChange="{{ onFTrends }}">Trends</label>
-            <label class="seg-opt"><input type="radio" name="fltab" checked="{{ fAlerts }}" onChange="{{ onFAlerts }}">Alerts</label>
+            <label class="seg-opt"><input type="radio" name="fltab" checked="{{ fAlerts }}" onChange="{{ onFAlerts }}">Exceptions</label>
+            <label class="seg-opt"><input type="radio" name="fltab" checked="{{ fScores }}" onChange="{{ onFScores }}">Scorecard</label>
           </div>
           <div class="field" style="width:150px;margin:0">
             <label>Area</label>
             <select class="input" value="{{ fArea }}" onChange="{{ onFArea }}">
-              <sc-for list="{{ fAreaOptions }}" as="a" hint-placeholder-count="3">
+              <sc-for list="{{ fAreaOptions }}" as="a" hint-placeholder-count="4">
                 <option value="{{ a }}">{{ a }}</option>
               </sc-for>
             </select>
@@ -773,83 +774,90 @@
           <div class="field" style="width:190px;margin:0">
             <label>System type</label>
             <select class="input" value="{{ fType }}" onChange="{{ onFType }}">
-              <sc-for list="{{ fTypeOptions }}" as="t" hint-placeholder-count="3">
+              <sc-for list="{{ fTypeOptions }}" as="t" hint-placeholder-count="6">
                 <option value="{{ t }}">{{ t }}</option>
               </sc-for>
             </select>
           </div>
-          <div style="margin-left:auto;font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ fluidCount }} systems in view · <span style="color:var(--color-accent-2-800)">{{ outCount }} out of band</span></div>
+          <div style="margin-left:auto;font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ fluidCount }} systems in view · <span style="color:var(--color-accent-2-800)">{{ outSummary }}</span></div>
         </div>
 
         <sc-if value="{{ fReadings }}" hint-placeholder-val="{{ true }}">
           <div>
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:16px">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:8px">
               <div style="font-size:13.5px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">{{ roundLabel }}</div>
               <sc-if value="{{ roundDone }}" hint-placeholder-val="{{ false }}">
                 <span class="tag tag-accent">Round complete — submitted</span>
               </sc-if>
             </div>
-            <table class="table" style="max-width:1180px">
-              <thead>
-                <tr>
-                  <th style="width:200px">Equipment</th>
-                  <th>Product in tank</th>
-                  <th style="width:110px;text-align:right">Tank volume</th>
-                  <th style="width:150px;text-align:right">Concentration</th>
-                  <th style="width:140px;text-align:right">pH</th>
-                  <th style="width:130px">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <sc-for list="{{ readRows }}" as="r" hint-placeholder-count="8">
-                  <tr>
-                    <td>
-                      <div style="font-variant-numeric:tabular-nums">{{ r.id }}</div>
-                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ r.area }} · {{ r.type }}</div>
-                    </td>
-                    <td>
-                      <div style="font-size:14px">{{ r.product }}</div>
-                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums">{{ r.sku }}</div>
-                    </td>
-                    <td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.vol }}</td>
-                    <td style="text-align:right">
-                      <input type="text" value="{{ r.conc }}" onChange="{{ r.onConc }}" style="{{ r.concStyle }}">
-                      <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-top:4px;font-variant-numeric:tabular-nums">{{ r.concRange }}</div>
-                    </td>
-                    <td style="text-align:right">
-                      <input type="text" value="{{ r.ph }}" onChange="{{ r.onPh }}" style="{{ r.phStyle }}">
-                      <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-top:4px;font-variant-numeric:tabular-nums">{{ r.phRange }}</div>
-                    </td>
-                    <td><span class="{{ r.statusClass }}">{{ r.status }}</span></td>
-                  </tr>
-                </sc-for>
-              </tbody>
-            </table>
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:24px">
-              <button type="button" class="btn btn-primary" onClick="{{ onCompleteRound }}"><i class="ph-duotone ph-check-square-offset"></i> Mark round complete</button>
-              <span style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);max-width:62ch">Completing the round files the readings, redraws the trend charts and raises an alert on every system outside its band.</span>
+
+            <sc-for list="{{ readGroups }}" as="g" hint-placeholder-count="3">
+              <div style="margin-top:34px">
+                <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:10px">
+                  <h4 style="margin:0;font-size:19px">{{ g.plural }}</h4>
+                  <span style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ g.count }}</span>
+                </div>
+                <table class="table" style="max-width:1240px">
+                  <thead>
+                    <tr>
+                      <th style="width:190px">System</th>
+                      <th style="width:220px">Product in service</th>
+                      <sc-for list="{{ g.heads }}" as="h" hint-placeholder-count="4">
+                        <th style="width:126px;text-align:right">{{ h.label }}</th>
+                      </sc-for>
+                      <th style="width:130px">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+                      <tr>
+                        <td>
+                          <div style="font-variant-numeric:tabular-nums">{{ r.id }}</div>
+                          <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ r.name }}</div>
+                          <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 45%, transparent);font-variant-numeric:tabular-nums">{{ r.area }} · {{ r.vol }}</div>
+                        </td>
+                        <td>
+                          <div style="font-size:14px">{{ r.product }}</div>
+                          <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent);font-variant-numeric:tabular-nums">{{ r.sku }}</div>
+                        </td>
+                        <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="4">
+                          <td style="text-align:right">
+                            <input type="text" value="{{ c.val }}" onChange="{{ c.onChange }}" style="{{ c.style }}">
+                            <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-top:4px;font-variant-numeric:tabular-nums">{{ c.range }}</div>
+                          </td>
+                        </sc-for>
+                        <td><span class="{{ r.statusClass }}" style="white-space:nowrap">{{ r.status }}</span></td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </sc-for>
+
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:34px">
+              <button type="button" class="btn btn-primary" style="white-space:nowrap" onClick="{{ onCompleteRound }}"><i class="ph-duotone ph-check-square-offset"></i> Mark round complete</button>
+              <span style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);max-width:62ch">Completing the round files the readings, redraws the trends and moves every out-of-range value onto the exception ladder.</span>
             </div>
             <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
-              <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Try it — type a value outside the range under any field and the row flags immediately. On a handheld this sheet is one system per screen with the last reading pre-filled. <b>Empty:</b> “No systems configured for this area yet.”</p>
+              <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Columns follow the system type — a tower is judged on conductivity, pH, halogen and cycles; a boiler on sulfite and hardness. Type a value outside the range under any field and the row flags immediately. On a handheld this is one system per screen with the last reading pre-filled. <b>Empty:</b> “No systems configured for this area yet.”</p>
             </sc-if>
           </div>
         </sc-if>
 
         <sc-if value="{{ fTrends }}" hint-placeholder-val="{{ false }}">
           <div>
-            <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px;margin-bottom:8px">
-              <div class="seg">
-                <label class="seg-opt"><input type="radio" name="flmetric" checked="{{ metricConc }}" onChange="{{ onMetricConc }}">Concentration</label>
-                <label class="seg-opt"><input type="radio" name="flmetric" checked="{{ metricPh }}" onChange="{{ onMetricPh }}">pH</label>
-              </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+              <sc-for list="{{ metricBtns }}" as="m" hint-placeholder-count="4">
+                <button type="button" style="{{ m.style }}" onClick="{{ m.onPick }}">{{ m.label }}</button>
+              </sc-for>
               <div style="margin-left:auto;display:flex;gap:8px">
                 <button type="button" class="btn btn-ghost" style="white-space:nowrap" onClick="{{ onSelectAll }}">Plot six</button>
                 <button type="button" class="btn btn-ghost" style="white-space:nowrap" onClick="{{ onSelectNone }}">Clear</button>
                 <button type="button" class="btn btn-secondary" style="white-space:nowrap"><i class="ph-duotone ph-download-simple"></i> Export report</button>
               </div>
             </div>
-            <h4 style="margin:26px 0 4px">{{ chartTitle }}</h4>
-            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 6px;max-width:70ch">Nine rounds, 2 May to 22 Aug 2026. The tinted band is the control range; any point outside its own band prints magenta.</p>
+            <h4 style="margin:30px 0 4px;font-size:21px">{{ chartTitle }}</h4>
+            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 6px;max-width:70ch">Nine rounds, 2 May to 22 Aug 2026. The tinted band is the control range; any point outside its own band is flagged in the alert colour.</p>
             <p style="font-size:12.5px;color:var(--color-accent-2-800);margin:0 0 18px;max-width:70ch">{{ bandNote }}</p>
 
             <svg width="760" height="288" viewBox="0 0 760 288" preserveAspectRatio="xMidYMid meet" style="max-width:100%;display:block">
@@ -891,7 +899,7 @@
               </sc-for>
             </div>
 
-            <h4 style="margin:44px 0 4px">Systems on the chart</h4>
+            <h4 style="margin:44px 0 4px;font-size:19px">Systems on the chart</h4>
             <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 16px">{{ selNote }} Equipment names are on the chart legend above.</p>
             <div style="display:flex;flex-wrap:wrap;gap:10px;max-width:1000px">
               <sc-for list="{{ chips }}" as="c" hint-placeholder-count="10">
@@ -899,48 +907,134 @@
               </sc-for>
             </div>
             <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
-              <p style="margin-top:30px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">This is the chart the current tool cannot draw — several machines overlaid on one set of axes, grouped however the plant wants to group them. Saved groupings (“Gen 5 coolant”, “CSS washers”) come next.</p>
+              <p style="margin-top:30px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">This is the chart the current tool cannot draw — several systems overlaid on one set of axes, grouped however the plant wants to group them. The parameter buttons change with what is selected: pick two towers and you can plot halogen; add a boiler and only the shared parameters stay. Saved groupings (“Utilities towers”, “Gen 5 coolant”) come next.</p>
             </sc-if>
           </div>
         </sc-if>
 
         <sc-if value="{{ fAlerts }}" hint-placeholder-val="{{ false }}">
           <div>
-            <p style="font-size:13.5px;color:color-mix(in srgb, var(--color-text) 62%, transparent);margin:0 0 26px;max-width:70ch">{{ alertCount }} systems are outside their control band as of the 22 Aug round. Each alert already went to your Chemico chemist — dispatching here puts a site visit on the schedule and stamps the reading.</p>
-            <div style="display:flex;flex-direction:column;gap:0;max-width:1060px;border-top:1px solid var(--color-neutral-200)">
-              <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="4">
-                <div style="display:flex;flex-direction:column;gap:14px;padding:26px 0 30px;border-bottom:1px solid var(--color-neutral-200)">
-                  <div>
-                    <div style="font-size:16px;font-variant-numeric:tabular-nums">{{ a.id }}</div>
-                    <div style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ a.name }}</div>
-                    <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 48%, transparent);margin-top:2px">{{ a.area }} · {{ a.type }}</div>
-                  </div>
-                  <div>
-                    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
-                      <span style="font-family:var(--font-heading);font-size:26px;color:var(--color-accent-2-800);font-variant-numeric:tabular-nums">{{ a.value }}</span>
-                      <span style="font-size:13.5px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ a.param }} · {{ a.limit }}</span>
-                      <span class="{{ a.dirClass }}" style="white-space:nowrap">{{ a.dir }}</span>
-                    </div>
-                    <div style="font-size:14px;margin-top:8px;max-width:52ch">{{ a.risk }}</div>
-                    <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-top:4px">{{ a.runs }}</div>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center">
-                    <button type="button" class="btn btn-secondary" style="white-space:nowrap" onClick="{{ a.onDispatch }}"><i class="ph-duotone ph-user-focus"></i> Dispatch a chemist</button>
-                    <sc-if value="{{ a.showRequest }}" hint-placeholder-val="{{ false }}">
-                      <button type="button" class="btn btn-ghost" style="white-space:nowrap" onClick="{{ a.onRequest }}"><i class="ph-duotone ph-clipboard-text"></i> Request concentrate</button>
-                    </sc-if>
-                    <sc-if value="{{ a.sent }}" hint-placeholder-val="{{ false }}">
-                      <span class="tag tag-accent" style="white-space:nowrap">Chemist dispatched</span>
-                    </sc-if>
-                  </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:30px;max-width:1060px;border-top:1px solid var(--color-neutral-300);border-bottom:1px solid var(--color-neutral-300);padding:22px 0;margin-bottom:30px">
+              <sc-for list="{{ funnel }}" as="f" hint-placeholder-count="4">
+                <div>
+                  <div style="font-family:var(--font-heading);font-size:40px;line-height:1;font-variant-numeric:tabular-nums;color:{{ f.tone }}">{{ f.n }}</div>
+                  <div style="font-size:14px;margin-top:6px">{{ f.label }}</div>
+                  <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin-top:2px">{{ f.sub }}</div>
                 </div>
               </sc-for>
             </div>
+            <p style="font-size:15px;line-height:1.55;margin:0 0 34px;max-width:66ch">{{ ladderNote }}</p>
+
+            <sc-for list="{{ tierGroups }}" as="g" hint-placeholder-count="2">
+              <div style="margin-bottom:44px">
+                <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:4px">
+                  <h4 style="margin:0;font-size:19px">{{ g.label }}</h4>
+                  <span style="font-size:12.5px;font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ g.count }}</span>
+                </div>
+                <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 14px">{{ g.note }}</p>
+                <div style="display:flex;flex-direction:column;gap:0;max-width:1060px;border-top:1px solid var(--color-neutral-200)">
+                  <sc-for list="{{ g.rows }}" as="a" hint-placeholder-count="3">
+                    <div style="display:flex;flex-direction:column;gap:14px;padding:24px 0 28px;border-bottom:1px solid var(--color-neutral-200)">
+                      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px">
+                        <span style="font-size:16px;font-variant-numeric:tabular-nums">{{ a.id }}</span>
+                        <span style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ a.name }} · {{ a.area }} · {{ a.type }}</span>
+                      </div>
+                      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+                        <span style="font-family:var(--font-heading);font-size:26px;color:var(--color-accent-2-800);font-variant-numeric:tabular-nums">{{ a.value }}</span>
+                        <span style="font-size:13.5px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ a.param }} · {{ a.limit }}</span>
+                        <span class="{{ a.dirClass }}" style="white-space:nowrap">{{ a.dir }}</span>
+                      </div>
+                      <div style="font-size:15px;line-height:1.5;max-width:56ch">{{ a.risk }}</div>
+                      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 50%, transparent)">{{ a.runs }}</div>
+                      <div style="display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center">
+                        <button type="button" class="btn btn-secondary" style="white-space:nowrap" onClick="{{ a.onDispatch }}"><i class="ph-duotone ph-user-focus"></i> Dispatch a chemist</button>
+                        <sc-if value="{{ a.showRequest }}" hint-placeholder-val="{{ false }}">
+                          <button type="button" class="btn btn-ghost" style="white-space:nowrap" onClick="{{ a.onRequest }}"><i class="ph-duotone ph-clipboard-text"></i> Request product</button>
+                        </sc-if>
+                        <sc-if value="{{ a.sent }}" hint-placeholder-val="{{ false }}">
+                          <span class="tag tag-accent" style="white-space:nowrap">Chemist dispatched</span>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+
             <sc-if value="{{ alertsEmpty }}" hint-placeholder-val="{{ false }}">
               <p style="font-size:15px">Every system is inside its control band. Nothing needs attention today.</p>
             </sc-if>
             <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
-              <p style="margin-top:34px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Alerts fire on the round that breaches, not on a monthly report — the point is to catch a leak or an open valve before it stains a part or eats a tool. Escalation rules (who, after how many rounds) are configurable per site.</p>
+              <p style="margin-top:8px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">The ladder is the point. A single out-of-range reading is fixed on the visit. The same reading out two or three rounds running is an <b>exception</b> — the fix is not holding, so a revisit is booked. Four rounds and it becomes an <b>escalation</b>: management is notified and an action plan with a cost case is owed, not another site visit. Thresholds are configurable per site.</p>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ fScores }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <p style="font-size:15px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 66%, transparent);margin:0 0 32px;max-width:66ch">Every reading since the portal went live, scored. This is the page for the quarterly review — it answers whether the program is holding, and where the loss is.</p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:36px;max-width:1060px;margin-bottom:52px">
+              <sc-for list="{{ scoreCards }}" as="c" hint-placeholder-count="4">
+                <div>
+                  <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:8px">{{ c.k }}</div>
+                  <div style="font-family:var(--font-heading);font-size:46px;line-height:1;font-variant-numeric:tabular-nums;color:{{ c.tone }}">{{ c.v }}</div>
+                  <div style="background:var(--color-neutral-200);border-radius:999px;margin-top:12px">
+                    <div style="{{ c.barStyle }}"></div>
+                  </div>
+                  <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin-top:8px">{{ c.note }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <h4 style="margin:0 0 4px;font-size:21px">Before and since</h4>
+            <p style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin:0 0 20px;max-width:64ch">{{ benchmark.note }}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-end;max-width:1060px;border-top:1px solid var(--color-neutral-300);padding-top:22px;margin-bottom:52px">
+              <div>
+                <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:6px">Readings out of range — before</div>
+                <div style="font-family:var(--font-heading);font-size:44px;line-height:1;font-variant-numeric:tabular-nums;color:var(--color-accent-2-800)">{{ benchmark.preOut }}</div>
+              </div>
+              <div style="font-size:24px;color:var(--color-accent);padding-bottom:8px">→</div>
+              <div>
+                <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:6px">Since the portal</div>
+                <div style="font-family:var(--font-heading);font-size:44px;line-height:1;font-variant-numeric:tabular-nums;color:var(--color-accent-800)">{{ benchmark.postOut }}</div>
+              </div>
+              <div style="padding-bottom:8px">
+                <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent);margin-bottom:6px">Percent in control</div>
+                <div style="font-size:16px;font-variant-numeric:tabular-nums">{{ benchmark.pre }} → {{ benchmark.post }} <span style="color:var(--color-accent-700)">{{ benchmark.delta }}</span></div>
+              </div>
+            </div>
+
+            <h4 style="margin:0 0 16px;font-size:21px">Percent in control by system</h4>
+            <table class="table" style="max-width:1060px">
+              <thead>
+                <tr>
+                  <th style="width:170px">System</th>
+                  <th style="width:200px">Type</th>
+                  <th>Last five rounds</th>
+                  <th style="width:110px;text-align:right">In control</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ sysScores }}" as="r" hint-placeholder-count="8">
+                  <tr>
+                    <td>
+                      <div style="font-variant-numeric:tabular-nums">{{ r.id }}</div>
+                      <div style="font-size:11.5px;color:color-mix(in srgb, var(--color-text) 52%, transparent)">{{ r.name }}</div>
+                    </td>
+                    <td style="font-size:13.5px">{{ r.type }} · {{ r.area }}</td>
+                    <td>
+                      <div style="background:var(--color-neutral-200);border-radius:999px;max-width:340px">
+                        <div style="{{ r.barStyle }}"></div>
+                      </div>
+                    </td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:{{ r.tone }}">{{ r.v }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+              <p style="margin-top:26px;font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 48%, transparent);max-width:80ch">Sorted worst first — the review starts where the loss is. Scale, corrosion and biological scores are cut from the parameters that actually cause each failure mode, so a low corrosion score names the systems eating themselves. Multi-plant comparison sits on top of this once a second site is live.</p>
             </sc-if>
           </div>
         </sc-if>
@@ -1156,6 +1250,12 @@ class Component extends DCLogic {
       M('COT-THIN-PU-05', 'Polyurethane Thinner', 'Coatings', '5 gal pail', 'Contract', '2026-07-16', 5),
       M('COT-MARKPNT-12', 'Layout Marking Paint, White', 'Coatings', '12 × 17 oz', 'Spot buy', null, 0),
       M('CLN-ALK-WASH-275', 'Alkaline Wash Concentrate', 'Cleaning', '275 gal IBC', 'Contract', '2026-08-10', 8),
+      M('WTR-CT-INHIB-275', 'Cooling Tower Inhibitor, PTSA-traced', 'Water Treatment', '275 gal IBC', 'Contract', '2026-08-12', 7),
+      M('WTR-CT-BIO-55', 'Oxidising Microbiocide, Tower', 'Water Treatment', '55 gal drum', 'Contract', '2026-08-18', 11),
+      M('WTR-BLR-SULF-55', 'Sulfite Oxygen Scavenger', 'Water Treatment', '55 gal drum', 'Contract', '2026-08-15', 9),
+      M('WTR-BLR-ALK-55', 'Boiler Alkalinity Builder', 'Water Treatment', '55 gal drum', 'Contract', '2026-07-29', 5),
+      M('WTR-CL-MOLY-55', 'Molybdate Closed-Loop Inhibitor', 'Water Treatment', '55 gal drum', 'Contract', '2026-08-06', 4),
+      M('WTR-CL-NITR-55', 'Nitrite Closed-Loop Inhibitor', 'Water Treatment', '55 gal drum', 'Contract', '2026-07-24', 3),
       M('CLN-FLR-DEG-05', 'Industrial Floor Degreaser', 'Cleaning', '5 gal pail', 'Contract', '2026-08-19', 12),
       M('CLN-ABSORB-GRAN-40', 'Oil Absorbent Granules', 'Cleaning', '40 lb bag', 'Contract', '2026-08-17', 13),
       M('CLN-SPILLKIT-95', 'Universal Spill Kit, 95 gal', 'Cleaning', 'each', 'Contract', '2026-05-06', 3),
@@ -1198,7 +1298,7 @@ class Component extends DCLogic {
     ];
     this.MODULES = [
       ['orders', 'Order Management'], ['inventory', 'Customer Inventory'], ['requisitions', 'Requisitions'],
-      ['catalogue', 'Material Catalogue'], ['analytics', 'Reporting & Analytics'], ['fluid', 'Fluid Analytics'],
+      ['catalogue', 'Material Catalogue'], ['analytics', 'Reporting & Analytics'], ['fluid', 'Water & Fluid Analytics'],
       ['admin', 'Users & Access']
     ];
     this.ROLE_DEFS = [
@@ -1219,22 +1319,56 @@ class Component extends DCLogic {
       U('u6', 'T. Voss', 'Chemico rep & chemist', 't.voss@chemicogroup.com', ['s1', 's2', 's3'], 'rep', ['orders', 'inventory', 'catalogue', 'analytics', 'fluid'], 'Active', '22 Aug, 08:31'),
       U('u7', 'Ken Iwata', 'Reliability tech', 'k.iwata@ashcroftforge.com', ['s2'], 'crib', ['inventory'], 'Invited', 'Invite sent 21 Aug')
     ];
-    const FE = (id, name, area, type, sku, vol, conc, cmin, cmax, ph, pmin, pmax) =>
-      ({ id, name, area, type, sku, vol, conc, cmin, cmax, ph, pmin, pmax });
+    const P = (label, short, unit, dec) => ({ label, short, unit, dec });
+    this.PARAMS = {
+      cond: P('Conductivity', 'Cond', ' µS', 0),
+      ph: P('pH', 'pH', '', 1),
+      halogen: P('Free halogen', 'Halogen', ' ppm', 2),
+      cycles: P('Cycles of concentration', 'Cycles', '×', 1),
+      sulfite: P('Sulfite', 'Sulfite', ' ppm', 0),
+      hardness: P('Total hardness', 'Hardness', ' ppm', 0),
+      moly: P('Molybdate', 'Moly', ' ppm', 0),
+      nitrite: P('Nitrite', 'Nitrite', ' ppm', 0),
+      conc: P('Concentration', 'Conc', '%', 1)
+    };
+    this.TYPES = ['Cooling tower', 'Steam boiler', 'Closed loop', 'Coolant system', 'Washer'];
+    this.TYPE_PARAMS = {
+      'Cooling tower': ['cond', 'ph', 'halogen', 'cycles'],
+      'Steam boiler': ['cond', 'ph', 'sulfite', 'hardness'],
+      'Closed loop': ['moly', 'ph', 'nitrite'],
+      'Coolant system': ['conc', 'ph'],
+      'Washer': ['conc', 'ph']
+    };
+    const SY = (id, name, area, type, sku, vol, r) => ({ id, name, area, type, sku, vol, r });
     this.FLUID = [
-      FE('BT-474027', 'Head line — rough mill', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 1850, 7.2, 6.0, 9.0, 8.9, 8.5, 9.5),
-      FE('BT-474028', 'Block line — finish bore', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 2100, 5.4, 6.0, 9.0, 8.4, 8.5, 9.5),
-      FE('BT-474031', 'Crank grind cell 3', 'Gen 5', 'Coolant system', 'CLT-SYNTH-05', 900, 8.1, 6.0, 9.0, 9.1, 8.5, 9.5),
-      FE('BT-474035', 'Rod mill cell 1', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 1400, 9.6, 6.0, 9.0, 9.7, 8.5, 9.5),
-      FE('BT-474042', 'Valve seat machining', 'Gen 5', 'Coolant system', 'CLT-SYNTH-05', 620, 7.6, 6.0, 9.0, 8.8, 8.5, 9.5),
-      FE('BT-474048', 'Cam line — transfer', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 1150, 6.9, 6.0, 9.0, 8.7, 8.5, 9.5),
-      FE('BT-474055', 'Gear hob cell 2', 'Gen 5', 'Coolant system', 'CLT-SYNTH-05', 780, 7.4, 6.0, 9.0, 8.6, 8.5, 9.5),
-      FE('WS-2210', 'Block washer 1', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 640, 2.8, 2.0, 4.0, 10.2, 9.5, 11.0),
-      FE('WS-2211', 'Block washer 2', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 640, 3.1, 2.0, 4.0, 10.4, 9.5, 11.0),
-      FE('WS-2214', 'Head washer', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 520, 1.7, 2.0, 4.0, 9.3, 9.5, 11.0),
-      FE('WS-2219', 'Final wash — pre-assembly', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 880, 3.6, 2.0, 4.0, 10.8, 9.5, 11.0),
-      FE('WS-2223', 'Rotor wash', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 410, 4.3, 2.0, 4.0, 11.2, 9.5, 11.0),
-      FE('WS-2227', 'Parts washer — repair bay', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 300, 2.5, 2.0, 4.0, 10.1, 9.5, 11.0)
+      SY('CT-101', 'Tower 1 — main condenser', 'Utilities', 'Cooling tower', 'WTR-CT-INHIB-275', 21000,
+        { cond: [2450, 1800, 2800], ph: [8.4, 8.2, 9.0], halogen: [0.42, 0.2, 1.0], cycles: [5.2, 4.0, 6.5] }),
+      SY('CT-102', 'Tower 2 — process chillers', 'Utilities', 'Cooling tower', 'WTR-CT-INHIB-275', 18500,
+        { cond: [2960, 1800, 2800], ph: [8.8, 8.2, 9.0], halogen: [0.09, 0.2, 1.0], cycles: [6.1, 4.0, 6.5] }),
+      SY('CT-103', 'Tower 3 — compressor loop', 'Utilities', 'Cooling tower', 'WTR-CT-INHIB-275', 9200,
+        { cond: [2100, 1800, 2800], ph: [8.6, 8.2, 9.0], halogen: [0.55, 0.2, 1.0], cycles: [4.6, 4.0, 6.5] }),
+      SY('BLR-1', 'Boiler 1 — 250 hp', 'Utilities', 'Steam boiler', 'WTR-BLR-SULF-55', 1400,
+        { cond: [3200, 2000, 3500], ph: [11.1, 10.5, 11.8], sulfite: [38, 30, 60], hardness: [1, 0, 2] }),
+      SY('BLR-2', 'Boiler 2 — 150 hp', 'Utilities', 'Steam boiler', 'WTR-BLR-SULF-55', 900,
+        { cond: [3300, 2000, 3500], ph: [10.9, 10.5, 11.8], sulfite: [16, 30, 60], hardness: [4, 0, 2] }),
+      SY('CL-CHW', 'Chilled water loop', 'Utilities', 'Closed loop', 'WTR-CL-MOLY-55', 4800,
+        { moly: [142, 100, 250], ph: [9.1, 8.5, 10.0], nitrite: [620, 500, 1200] }),
+      SY('CL-HW', 'Hot water loop', 'Utilities', 'Closed loop', 'WTR-CL-NITR-55', 3600,
+        { moly: [78, 100, 250], ph: [8.8, 8.5, 10.0], nitrite: [430, 500, 1200] }),
+      SY('BT-474027', 'Head line — rough mill', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 1850,
+        { conc: [7.2, 6.0, 9.0], ph: [8.9, 8.5, 9.5] }),
+      SY('BT-474028', 'Block line — finish bore', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 2100,
+        { conc: [5.4, 6.0, 9.0], ph: [8.4, 8.5, 9.5] }),
+      SY('BT-474035', 'Rod mill cell 1', 'Gen 5', 'Coolant system', 'CLT-SEMI-SS-275', 1400,
+        { conc: [9.6, 6.0, 9.0], ph: [9.7, 8.5, 9.5] }),
+      SY('BT-474042', 'Valve seat machining', 'Gen 5', 'Coolant system', 'CLT-SYNTH-05', 620,
+        { conc: [7.6, 6.0, 9.0], ph: [8.8, 8.5, 9.5] }),
+      SY('WS-2214', 'Head washer', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 520,
+        { conc: [1.7, 2.0, 4.0], ph: [9.3, 9.5, 11.0] }),
+      SY('WS-2219', 'Final wash — pre-assembly', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 880,
+        { conc: [3.6, 2.0, 4.0], ph: [10.8, 9.5, 11.0] }),
+      SY('WS-2223', 'Rotor wash', 'CSS', 'Washer', 'CLN-ALK-WASH-275', 410,
+        { conc: [4.3, 2.0, 4.0], ph: [11.2, 9.5, 11.0] })
     ];
     this.ROUNDS = ['2 May', '16 May', '30 May', '13 Jun', '27 Jun', '11 Jul', '25 Jul', '8 Aug', '22 Aug'];
     this.SERIES_STYLE = [
@@ -1242,6 +1376,28 @@ class Component extends DCLogic {
       ['var(--color-accent)', '7 4'], ['var(--color-accent-800)', '2 3'], ['var(--color-neutral-700)', '7 4']
     ];
     this.RISK = {
+      'Cooling tower:high:cond': 'Cycling past the scaling limit — deposit on condenser tubes and lost heat transfer.',
+      'Cooling tower:low:cond': 'Bleeding off too hard; makeup water and inhibitor going down the drain.',
+      'Cooling tower:high:ph': 'Scale-forming conditions; inhibitor drops out of solution.',
+      'Cooling tower:low:ph': 'Acid attack on mild steel and copper in the condenser.',
+      'Cooling tower:high:halogen': 'Halogen overfeed — corrosion of tower internals and fill degradation.',
+      'Cooling tower:low:halogen': 'No biocide residual — biofilm, fouling and Legionella risk.',
+      'Cooling tower:high:cycles': 'Concentrated past the saturation limit to save water.',
+      'Cooling tower:low:cycles': 'Over-bleeding — wasting makeup water and treated chemistry.',
+      'Steam boiler:high:cond': 'Carryover into the steam header; wet steam and deposits downstream.',
+      'Steam boiler:low:cond': 'Blowing down more than needed — fuel and treated water lost.',
+      'Steam boiler:high:ph': 'Caustic attack at tube welds and stressed seams.',
+      'Steam boiler:low:ph': 'Acid corrosion of boiler tubes and condensate return lines.',
+      'Steam boiler:high:sulfite': 'Scavenger overfeed raising dissolved solids for no benefit.',
+      'Steam boiler:low:sulfite': 'Dissolved oxygen unscavenged — pitting in the boiler and feedlines.',
+      'Steam boiler:high:hardness': 'Hardness breakthrough from the softener — scale forming on the fireside tubes now.',
+      'Steam boiler:low:hardness': 'Below detection; no action needed.',
+      'Closed loop:high:moly': 'Inhibitor overfeed — cost with no added protection.',
+      'Closed loop:low:moly': 'Inhibitor below film-forming level — corrosion starting in the loop.',
+      'Closed loop:high:ph': 'Alkaline attack on aluminium components in the loop.',
+      'Closed loop:low:ph': 'Corrosive conditions on mild steel piping and pump bodies.',
+      'Closed loop:high:nitrite': 'Overfeed — surplus nitrite feeds the bacteria that consume it.',
+      'Closed loop:low:nitrite': 'Reserve spent; pitting risk and possible microbial reduction in the loop.',
       'Coolant system:high:conc': 'Residue and staining on machined surfaces; filter loading.',
       'Coolant system:low:conc': 'Running lean — tool wear and corrosion on ways.',
       'Coolant system:high:ph': 'Paint and seal attack; operator skin irritation.',
@@ -1250,6 +1406,11 @@ class Component extends DCLogic {
       'Washer:low:conc': 'Cleanliness failures at final inspection.',
       'Washer:high:ph': 'Etching risk on wash-sensitive aluminium.',
       'Washer:low:ph': 'Soil redeposition — tank turning over.'
+    };
+    this.TIERS = {
+      range: { label: 'Out of range', note: 'Corrected on this visit', rank: 0 },
+      exception: { label: 'Exception', note: 'Recurring — revisit scheduled', rank: 1 },
+      escalation: { label: 'Escalation', note: 'Unresolved — management notified, action plan required', rank: 2 }
     };
     const I = (sku, lot, qty, min, max, expires, location, wk) => ({ sku, lot, qty, min, max, expires, location, wk });
     this.INV = [
@@ -1414,8 +1575,9 @@ class Component extends DCLogic {
     e[id + ':' + k] = v;
     this.setState({ fluidEdits: e, roundDone: false });
   }
+  defaultFluidSel() { return this.FLUID.filter(x => x.type === 'Cooling tower').map(x => x.id); }
   toggleFluid(id) {
-    const cur = this.state.fluidSel || this.FLUID.filter(x => x.type === 'Coolant system').slice(0, 4).map(x => x.id);
+    const cur = this.state.fluidSel || this.defaultFluidSel();
     const next = cur.indexOf(id) > -1 ? cur.filter(x => x !== id) : cur.concat([id]);
     this.setState({ fluidSel: next });
   }
@@ -1479,7 +1641,7 @@ class Component extends DCLogic {
       ['requisitions', 'Requisitions', 'ph-duotone ph-clipboard-text'],
       ['catalogue', 'Material Catalogue', 'ph-duotone ph-books'],
       ['analytics', 'Reporting & Analytics', 'ph-duotone ph-chart-line-up'],
-      ['fluid', 'Fluid Analytics', 'ph-duotone ph-test-tube'],
+      ['fluid', 'Water & Fluid Analytics', 'ph-duotone ph-test-tube'],
       ['admin', 'Users & Access', 'ph-duotone ph-shield-check']
     ].filter(n => n[0] === 'today' || allowed.indexOf(n[0]) > -1);
     const active = view === 'orderDetail' ? 'orders' : (view === 'form' ? 'requisitions' : view);
@@ -1713,59 +1875,92 @@ class Component extends DCLogic {
     const fTab = S.fluidTab || 'readings';
     const fArea = S.fluidArea || 'All areas';
     const fType = S.fluidType || 'All system types';
-    const fMetric = S.fluidMetric || 'conc';
     const fEdits = S.fluidEdits || {};
     const fDone = !!S.roundDone;
     const dispatched = S.dispatched || {};
-    const rawVal = (e, k) => { const v = fEdits[e.id + ':' + k]; return v === undefined ? String(e[k]) : v; };
+    const PAR = this.PARAMS;
+    const paramsOf = e => self.TYPE_PARAMS[e.type] || [];
+    const rawVal = (e, k) => { const v = fEdits[e.id + ':' + k]; return v === undefined ? String(e.r[k][0]) : v; };
     const numVal = (e, k) => { const v = parseFloat(rawVal(e, k)); return isNaN(v) ? null : v; };
-    const limOf = (e, k) => k === 'conc' ? [e.cmin, e.cmax] : [e.pmin, e.pmax];
+    const limOf = (e, k) => [e.r[k][1], e.r[k][2]];
+    const showP = (v, k) => v.toFixed(PAR[k].dec) + PAR[k].unit;
     const stateOf = (e, k) => {
       const v = numVal(e, k); if (v === null) return 'none';
       const l = limOf(e, k);
       return v > l[1] ? 'high' : (v < l[0] ? 'low' : 'ok');
     };
     const hist = (e, k) => {
-      const l = limOf(e, k), mid = (l[0] + l[1]) / 2, span = l[1] - l[0];
-      let h = 0; const seed = e.id + k;
+      const l = limOf(e, k), mid = (l[0] + l[1]) / 2, span = Math.max(l[1] - l[0], 0.1);
+      let h = 0; const seed = e.id + ':' + k;
       for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 99991;
-      let v = numVal(e, k); if (v === null) v = mid;
-      const out = new Array(this.ROUNDS.length);
-      for (let i = out.length - 1; i >= 0; i--) {
-        out[i] = Math.round(v * 100) / 100;
-        h = (h * 1103515 + 12345) % 2147483647;
-        v = v + (mid - v) * 0.24 + (((h % 1000) / 1000) - 0.5) * span * 0.13;
+      const rnd = () => { h = (h * 1103515 + 12345) % 2147483647; return (h % 1000) / 1000; };
+      let cur = numVal(e, k); if (cur === null) cur = mid;
+      const out = new Array(self.ROUNDS.length), last = out.length - 1;
+      const dir = cur >= mid ? 1 : -1;
+      const bad = cur > l[1] || cur < l[0];
+      const chronic = bad ? 1 + Math.floor(rnd() * 5) : 0;
+      const clamp = v => (l[0] === 0 && v < 0) ? 0 : v;
+      for (let i = last; i >= 0; i--) {
+        if (i === last) { out[i] = Math.round(cur * 100) / 100; continue; }
+        let v;
+        if (last - i < chronic) {
+          v = (dir > 0 ? l[1] : l[0]) + dir * span * (0.06 + rnd() * 0.3);
+        } else {
+          const amp = 0.08 + 0.5 * ((last - i) / last);
+          v = mid + (rnd() < 0.5 ? -1 : 1) * span * amp * (0.5 + rnd() * 0.9);
+        }
+        out[i] = Math.round(clamp(v) * 100) / 100;
       }
       return out;
     };
+    const runsOf = (e, k) => {
+      const l = limOf(e, k), h = hist(e, k);
+      let n = 0;
+      for (let i = h.length - 1; i >= 0; i--) { if (h[i] > l[1] || h[i] < l[0]) n++; else break; }
+      return n;
+    };
+    const tierOf = n => n === 0 ? null : (n === 1 ? 'range' : (n < 4 ? 'exception' : 'escalation'));
     const fList = this.FLUID.filter(e =>
       (fArea === 'All areas' || e.area === fArea) &&
       (fType === 'All system types' || e.type + 's' === fType));
-    const rowStyle = st => 'width:74px;text-align:right;font-variant-numeric:tabular-nums;padding:6px 8px;' +
+
+    // Readings — one block per system type, columns follow the type
+    const cellStyle = st => 'width:82px;text-align:right;font-variant-numeric:tabular-nums;padding:6px 8px;' +
       'font-family:var(--font-body);font-size:14px;border-radius:var(--radius-sm);color:' +
       (st === 'ok' ? 'var(--color-text)' : 'var(--color-accent-2-800)') + ';background:' +
       (st === 'ok' ? 'var(--color-surface)' : 'var(--color-accent-2-100)') + ';border:1px solid ' +
       (st === 'ok' ? 'var(--color-neutral-200)' : 'var(--color-accent-2)');
-    const readRows = fList.map(e => {
-      const cs = stateOf(e, 'conc'), ps = stateOf(e, 'ph');
-      const bad = [cs, ps].filter(s => s === 'high' || s === 'low');
+    const readGroups = this.TYPES.filter(t => fList.some(e => e.type === t)).map(t => {
+      const keys = self.TYPE_PARAMS[t];
+      const rows = fList.filter(e => e.type === t);
       return {
-        id: e.id, name: e.name, area: e.area, type: e.type,
-        product: self.mat(e.sku).name, sku: e.sku,
-        vol: e.vol.toLocaleString() + ' gal',
-        conc: rawVal(e, 'conc'), ph: rawVal(e, 'ph'),
-        concRange: e.cmin.toFixed(1) + '–' + e.cmax.toFixed(1) + '%',
-        phRange: e.pmin.toFixed(1) + '–' + e.pmax.toFixed(1),
-        concStyle: rowStyle(cs), phStyle: rowStyle(ps),
-        status: bad.length === 0 ? 'In control' : (bad.indexOf('high') > -1 ? 'Above limit' : 'Below limit'),
-        statusClass: bad.length === 0 ? 'tag tag-accent' : 'tag tag-accent-2',
-        onConc: ev => self.setFluid(e.id, 'conc', ev.target.value),
-        onPh: ev => self.setFluid(e.id, 'ph', ev.target.value)
+        type: t, plural: t + 's',
+        count: rows.length + (rows.length === 1 ? ' system' : ' systems'),
+        heads: keys.map(k => ({ label: PAR[k].label })),
+        rows: rows.map(e => {
+          const bad = keys.map(k => stateOf(e, k)).filter(x => x === 'high' || x === 'low');
+          return {
+            id: e.id, name: e.name, area: e.area,
+            product: self.mat(e.sku).name, sku: e.sku,
+            vol: e.vol.toLocaleString() + ' gal',
+            status: bad.length === 0 ? 'In control' : bad.length + ' out of range',
+            statusClass: bad.length === 0 ? 'tag tag-accent' : 'tag tag-accent-2',
+            cells: keys.map(k => ({
+              val: rawVal(e, k),
+              range: limOf(e, k)[0].toFixed(PAR[k].dec) + '–' + limOf(e, k)[1].toFixed(PAR[k].dec) + PAR[k].unit,
+              style: cellStyle(stateOf(e, k)),
+              onChange: ev => self.setFluid(e.id, k, ev.target.value)
+            }))
+          };
+        })
       };
     });
-    const outCount = readRows.filter(r => r.status !== 'In control').length;
+    let pointCount = 0, outCount = 0;
+    fList.forEach(e => paramsOf(e).forEach(k => { pointCount++; if (stateOf(e, k) !== 'ok') outCount++; }));
+    const outSystems = fList.filter(e => paramsOf(e).some(k => stateOf(e, k) !== 'ok')).length;
 
-    const fSel = S.fluidSel || this.FLUID.filter(e => e.type === 'Coolant system').slice(0, 4).map(e => e.id);
+    // Trends
+    const fSel = S.fluidSel || this.defaultFluidSel();
     const chips = fList.map(e => {
       const on = fSel.indexOf(e.id) > -1;
       return {
@@ -1777,37 +1972,50 @@ class Component extends DCLogic {
         onToggle: () => self.toggleFluid(e.id)
       };
     });
-    const plotted = fSel.map(id => self.FLUID.find(e => e.id === id)).filter(Boolean).slice(0, 6);
-    const key = fMetric === 'conc' ? 'conc' : 'ph';
+    const picked = fSel.map(id => self.FLUID.find(e => e.id === id)).filter(Boolean);
+    const metricKeys = [];
+    picked.forEach(e => paramsOf(e).forEach(k => { if (metricKeys.indexOf(k) < 0) metricKeys.push(k); }));
+    const key = metricKeys.indexOf(S.fluidMetric) > -1 ? S.fluidMetric : (metricKeys[0] || 'ph');
+    const metricBtns = metricKeys.map(k => {
+      const on = k === key;
+      return {
+        k, label: PAR[k].label, on,
+        style: 'cursor:pointer;white-space:nowrap;font-family:var(--font-heading);font-weight:600;font-size:14px;padding:7px 14px;border-radius:var(--radius-sm);' +
+          'background:' + (on ? 'var(--color-accent)' : 'transparent') + ';color:' + (on ? 'var(--color-bg)' : 'var(--color-text)') +
+          ';border:1px solid ' + (on ? 'var(--color-accent)' : 'var(--color-neutral-300)'),
+        onPick: () => self.setState({ fluidMetric: k })
+      };
+    });
+    const plotted = picked.filter(e => paramsOf(e).indexOf(key) > -1).slice(0, 6);
+    const series = plotted.map(e => ({ e, vals: hist(e, key) }));
     const allVals = [];
-    const series = plotted.map((e, i) => ({ e, vals: hist(e, key) }));
-    series.forEach(s => { s.vals.forEach(v => allVals.push(v)); limOf(s.e, key).forEach(v => allVals.push(v)); });
+    series.forEach(s2 => { s2.vals.forEach(v => allVals.push(v)); limOf(s2.e, key).forEach(v => allVals.push(v)); });
     const lo0 = allVals.length ? Math.min.apply(null, allVals) : 0;
     const hi0 = allVals.length ? Math.max.apply(null, allVals) : 1;
     const pad = Math.max((hi0 - lo0) * 0.16, 0.2);
     const dLo = lo0 - pad, dHi = hi0 + pad;
     const X0 = 52, X1 = 748, Y0 = 20, Y1 = 254;
     const yOf = v => Y1 - ((v - dLo) / (dHi - dLo)) * (Y1 - Y0);
-    const xOf = i => X0 + (i * (X1 - X0)) / (this.ROUNDS.length - 1);
+    const xOf = i => X0 + (i * (X1 - X0)) / (self.ROUNDS.length - 1);
     const sameLim = plotted.length > 0 && plotted.every(e =>
       limOf(e, key)[0] === limOf(plotted[0], key)[0] && limOf(e, key)[1] === limOf(plotted[0], key)[1]);
     const bl = plotted.length ? limOf(plotted[0], key) : [0, 0];
     const band = sameLim ? {
       x: X0, w: X1 - X0, y: yOf(bl[1]), h: Math.max(2, yOf(bl[0]) - yOf(bl[1])),
       loY: yOf(bl[0]), hiY: yOf(bl[1]),
-      loLabel: 'min ' + bl[0].toFixed(1), hiLabel: 'max ' + bl[1].toFixed(1),
+      loLabel: 'min ' + showP(bl[0], key), hiLabel: 'max ' + showP(bl[1], key),
       loTextY: yOf(bl[0]) - 5, hiTextY: yOf(bl[1]) - 5
     } : { x: 0, w: 0, y: 0, h: 0, loY: 0, hiY: 0, loLabel: '', hiLabel: '', loTextY: 0, hiTextY: 0 };
-    const chartLines = series.map((s, i) => {
-      const st = self.SERIES_STYLE[i % 6], l = limOf(s.e, key);
+    const chartLines = series.map((s2, i) => {
+      const st = self.SERIES_STYLE[i % 6], l = limOf(s2.e, key);
       return {
-        id: s.e.id, name: s.e.id + ' · ' + s.e.name,
-        points: s.vals.map((v, j) => xOf(j) + ',' + yOf(v)).join(' '),
+        id: s2.e.id, name: s2.e.id + ' · ' + s2.e.name,
+        points: s2.vals.map((v, j) => xOf(j) + ',' + yOf(v)).join(' '),
         lineStyle: 'fill:none;stroke:' + st[0] + ';stroke-width:1.8;stroke-linejoin:round' +
           (st[1] === 'none' ? '' : ';stroke-dasharray:' + st[1]),
         swatchStyle: 'width:22px;height:0;border-top:' + (st[1] === 'none' ? '2px solid ' : '2px dashed ') + st[0],
-        last: s.vals[s.vals.length - 1].toFixed(1) + (key === 'conc' ? '%' : ''),
-        dots: s.vals.map((v, j) => ({
+        last: showP(s2.vals[s2.vals.length - 1], key),
+        dots: s2.vals.map((v, j) => ({
           cx: xOf(j), cy: yOf(v),
           style: 'r:3;fill:' + (v > l[1] || v < l[0] ? 'var(--color-accent-2)' : st[0])
         }))
@@ -1815,36 +2023,105 @@ class Component extends DCLogic {
     });
     const ticks = [0, 1, 2, 3, 4].map(t => {
       const v = dLo + ((dHi - dLo) * t) / 4;
-      return { y: yOf(v), ty: yOf(v) + 4, label: v.toFixed(1) };
+      return { y: yOf(v), ty: yOf(v) + 4, label: v.toFixed(PAR[key].dec) };
     });
     const xLabels = this.ROUNDS.map((r, i) => ({ x: xOf(i), label: r }));
 
+    // Exceptions — out of range, recurring, unresolved
     const alerts = [];
     this.FLUID.forEach(e => {
-      ['conc', 'ph'].forEach(k => {
+      paramsOf(e).forEach(k => {
         const st = stateOf(e, k);
         if (st !== 'high' && st !== 'low') return;
         const l = limOf(e, k), v = numVal(e, k);
-        const h = hist(e, k);
-        let runs = 0;
-        for (let i = h.length - 1; i >= 0; i--) { if (h[i] > l[1] || h[i] < l[0]) runs++; else break; }
+        const runs = runsOf(e, k), tier = tierOf(runs) || 'range';
         const aid = e.id + ':' + k;
         alerts.push({
-          aid, id: e.id, name: e.name, area: e.area, type: e.type,
-          param: k === 'conc' ? 'Concentration' : 'pH',
-          value: v.toFixed(1) + (k === 'conc' ? '%' : ''),
-          limit: st === 'high' ? 'max ' + l[1].toFixed(1) : 'min ' + l[0].toFixed(1),
+          aid, id: e.id, name: e.name, area: e.area, type: e.type, tier,
+          tierRank: self.TIERS[tier].rank,
+          tierLabel: self.TIERS[tier].label,
+          param: PAR[k].label,
+          value: showP(v, k),
+          limit: st === 'high' ? 'max ' + showP(l[1], k) : 'min ' + showP(l[0], k),
           dir: st === 'high' ? 'Above limit' : 'Below limit',
           dirClass: 'tag tag-accent-2',
           risk: self.RISK[e.type + ':' + st + ':' + k] || '',
           runs: runs === 1 ? 'First round out of band' : runs + ' consecutive rounds out of band',
           sent: !!dispatched[aid],
           onDispatch: () => self.dispatchTech(aid, e.id),
-          showRequest: st === 'low' && k === 'conc',
+          showRequest: st === 'low' && (k === 'conc' || k === 'moly' || k === 'nitrite' || k === 'sulfite' || k === 'halogen'),
           onRequest: () => self.startSpot(e.sku)
         });
       });
     });
+    alerts.sort((x, y) => y.tierRank - x.tierRank);
+    const tierGroups = ['escalation', 'exception', 'range'].map(t => ({
+      key: t, label: self.TIERS[t].label, note: self.TIERS[t].note,
+      rows: alerts.filter(a => a.tier === t),
+      any: alerts.some(a => a.tier === t),
+      count: alerts.filter(a => a.tier === t).length
+    })).filter(g => g.any);
+    const nEsc = alerts.filter(a => a.tier === 'escalation').length;
+    const nExc = alerts.filter(a => a.tier === 'exception').length;
+    const nRange = alerts.filter(a => a.tier === 'range').length;
+    const pct = (n, d) => d === 0 ? '0%' : (Math.round((n / d) * 1000) / 10) + '%';
+    const funnel = [
+      { n: String(pointCount), label: 'readings logged this round', sub: 'across ' + fList.length + ' systems', tone: 'var(--color-text)' },
+      { n: String(outCount), label: 'out of range', sub: pct(outCount, pointCount) + ' of readings this round', tone: 'var(--color-accent-800)' },
+      { n: String(nExc), label: 'exceptions', sub: 'recurring — a revisit is scheduled', tone: 'var(--color-accent-2-800)' },
+      { n: String(nEsc), label: 'escalations', sub: 'unresolved — management notified', tone: 'var(--color-accent-2)' }
+    ];
+
+    // Scorecard — percent in control and protection scores
+    const SCOPE = { scale: ['hardness', 'cond', 'cycles'], corrosion: ['sulfite', 'moly', 'nitrite', 'ph'], bio: ['halogen'] };
+    const HALF = Math.floor(self.ROUNDS.length / 2);
+    const tally = (systems, keys) => {
+      let n = 0, ok = 0;
+      systems.forEach(e => paramsOf(e).forEach(k => {
+        if (keys && keys.indexOf(k) < 0) return;
+        const l = limOf(e, k), h = hist(e, k);
+        for (let i = HALF; i < h.length; i++) { n++; if (h[i] >= l[0] && h[i] <= l[1]) ok++; }
+      }));
+      return n === 0 ? null : Math.round((ok / n) * 100);
+    };
+    const window = (systems, from, to) => {
+      let n = 0, ok = 0;
+      systems.forEach(e => paramsOf(e).forEach(k => {
+        const l = limOf(e, k), h = hist(e, k);
+        for (let i = from; i < to; i++) { n++; if (h[i] >= l[0] && h[i] <= l[1]) ok++; }
+      }));
+      return n === 0 ? 0 : Math.round((ok / n) * 100);
+    };
+    const scoreCards = [
+      { k: 'Percent in control', v: tally(fList, null), note: 'Every reading, last five rounds' },
+      { k: 'Scale protection', v: tally(fList, SCOPE.scale), note: 'Hardness, conductivity, cycles' },
+      { k: 'Corrosion protection', v: tally(fList, SCOPE.corrosion), note: 'Sulfite, molybdate, nitrite, pH' },
+      { k: 'Biological control', v: tally(fList, SCOPE.bio), note: 'Free halogen residual' }
+    ].filter(c => c.v !== null).map(c => ({
+      k: c.k, note: c.note, v: c.v + '%',
+      tone: c.v >= 95 ? 'var(--color-accent-800)' : (c.v >= 85 ? 'var(--color-text)' : 'var(--color-accent-2-800)'),
+      barStyle: 'height:5px;border-radius:999px;width:' + c.v + '%;background:' +
+        (c.v >= 95 ? 'var(--color-accent)' : (c.v >= 85 ? 'var(--color-neutral-500)' : 'var(--color-accent-2)'))
+    }));
+    const preV = window(fList, 0, HALF), postV = window(fList, HALF, self.ROUNDS.length);
+    const benchmark = {
+      pre: preV + '%', post: postV + '%',
+      preOut: (100 - preV) + '%', postOut: (100 - postV) + '%',
+      delta: (postV - preV >= 0 ? '+' : '') + (postV - preV) + ' pts',
+      note: 'The four rounds logged on paper before this site went live, against the five since.',
+      better: postV >= preV
+    };
+    const sysScores = fList.map(e => {
+      const v = tally([e], null);
+      return {
+        id: e.id, name: e.name, type: e.type, area: e.area,
+        v: v + '%',
+        tone: v >= 95 ? 'var(--color-text)' : 'var(--color-accent-2-800)',
+        barStyle: 'height:5px;border-radius:999px;width:' + v + '%;background:' +
+          (v >= 95 ? 'var(--color-accent)' : (v >= 85 ? 'var(--color-neutral-500)' : 'var(--color-accent-2)')),
+        raw: v
+      };
+    }).sort((a, b) => a.raw - b.raw);
 
     // ── Today ─────────────────────────────────────────────
     const can = k => allowed.indexOf(k) > -1;
@@ -1862,9 +2139,10 @@ class Component extends DCLogic {
     if (can('fluid')) {
       alerts.forEach(a => {
         chemTodo.push({
-          kind: 'Chemistry', kindClass: 'tag tag-accent-2', eqId: a.id,
+          kind: a.tier === 'escalation' ? 'Escalation' : (a.tier === 'exception' ? 'Exception' : 'Chemistry'),
+          kindClass: 'tag tag-accent-2', eqId: a.id,
           title: a.id + ' · ' + (a.param === 'pH' ? 'pH' : a.param.toLowerCase()) + ' — ' + a.name,
-          detail: a.param + ' ' + a.value + ' · ' + a.limit + ' · ' + a.risk,
+          detail: a.value + ' against ' + a.limit + ' · ' + a.risk,
           action: a.sent ? 'Chemist dispatched' : 'Dispatch a chemist',
           onAction: a.onDispatch
         });
@@ -1883,7 +2161,7 @@ class Component extends DCLogic {
     }
     const todoRows = shipTodo.concat(chemTodo.slice(0, 3), stockTodo.slice(0, 3));
     const moreBits = [];
-    if (chemTodo.length > 3) moreBits.push((chemTodo.length - 3) + ' more in Fluid Analytics');
+    if (chemTodo.length > 3) moreBits.push((chemTodo.length - 3) + ' more in Water & Fluid Analytics');
     if (stockTodo.length > 3) moreBits.push((stockTodo.length - 3) + ' more in Customer Inventory');
     const totalTodo = shipTodo.length + chemTodo.length + stockTodo.length;
     const inflight = [];
@@ -2030,30 +2308,36 @@ class Component extends DCLogic {
       onViewAs: e => self.actAs(e.target.value === 'super' ? null : e.target.value),
       viewAsValue: S.actingAs || 'super',
       isFluid: view === 'fluid',
-      fReadings: fTab === 'readings', fTrends: fTab === 'trends', fAlerts: fTab === 'alerts',
+      fReadings: fTab === 'readings', fTrends: fTab === 'trends', fAlerts: fTab === 'alerts', fScores: fTab === 'scores',
       onFReadings: () => self.setState({ fluidTab: 'readings' }),
       onFTrends: () => self.setState({ fluidTab: 'trends' }),
       onFAlerts: () => self.setState({ fluidTab: 'alerts' }),
-      fArea, fType, fMetric,
-      fAreaOptions: ['All areas', 'Gen 5', 'CSS'],
-      fTypeOptions: ['All system types', 'Coolant systems', 'Washers'],
+      onFScores: () => self.setState({ fluidTab: 'scores' }),
+      fArea, fType,
+      fAreaOptions: ['All areas', 'Utilities', 'Gen 5', 'CSS'],
+      fTypeOptions: ['All system types', 'Cooling towers', 'Steam boilers', 'Closed loops', 'Coolant systems', 'Washers'],
       onFArea: e => self.setState({ fluidArea: e.target.value, fluidSel: null }),
       onFType: e => self.setState({ fluidType: e.target.value, fluidSel: null }),
-      metricConc: fMetric === 'conc', metricPh: fMetric === 'ph',
-      onMetricConc: () => self.setState({ fluidMetric: 'conc' }),
-      onMetricPh: () => self.setState({ fluidMetric: 'ph' }),
-      readRows, fluidCount: fList.length, outCount,
+      metricBtns, readGroups, fluidCount: fList.length, outCount, outSystems, pointCount,
+      outSummary: outCount + ' of ' + pointCount + ' readings out of range',
       roundLabel: 'Round of 22 Aug 2026 · logged by T. Voss, Chemico chemist',
       roundDone: fDone,
-      onCompleteRound: () => self.setState({ roundDone: true, banner: 'Round of 22 Aug submitted — ' + fList.length + ' systems logged, ' + outCount + ' flagged to your Chemico chemist.' }),
+      onCompleteRound: () => self.setState({ roundDone: true, banner: 'Round of 22 Aug submitted — ' + fList.length + ' systems logged, ' + outCount + ' readings flagged to your Chemico chemist.' }),
       chips, chartLines, ticks, xLabels, band, bandShown: sameLim,
-      chartTitle: (fMetric === 'conc' ? 'Concentration' : 'pH') + ' — ' + chartLines.length + (chartLines.length === 1 ? ' system' : ' systems') + ' on one chart',
+      chartTitle: PAR[key].label + ' — ' + chartLines.length + (chartLines.length === 1 ? ' system' : ' systems') + ' on one chart',
       selCount: chartLines.length,
-      selNote: fSel.length > 6 ? 'Showing the first six of ' + fSel.length + ' selected — six lines is the readable limit.' : 'Pick any systems below; up to six plot together against the shared control band.',
-      bandNote: sameLim ? '' : 'Selected systems have different control limits, so the band is hidden — each point still flags magenta when it is out of its own band.',
+      selNote: picked.length > plotted.length
+        ? 'Showing ' + plotted.length + ' of ' + picked.length + ' selected — six lines is the readable limit, and systems without this parameter drop out.'
+        : 'Pick any systems below; up to six plot together against the shared control band.',
+      bandNote: sameLim ? '' : 'Selected systems have different control limits, so the band is hidden — each point is still flagged when it falls outside its own band.',
       onSelectAll: () => self.setState({ fluidSel: fList.slice(0, 6).map(e => e.id) }),
       onSelectNone: () => self.setState({ fluidSel: [] }),
       alerts, alertCount: alerts.length, alertsEmpty: alerts.length === 0,
+      tierGroups, funnel, nEsc, nExc, nRange,
+      ladderNote: nEsc > 0
+        ? nEsc + (nEsc === 1 ? ' reading has' : ' readings have') + ' gone unresolved long enough to escalate — an action plan is required, not another visit.'
+        : 'Nothing has escalated. Exceptions are recurring readings a single visit has not fixed.',
+      scoreCards, benchmark, sysScores,
       accountNo,
       userName: acting ? acting.name : 'Rachel Sundberg',
       userInitials: acting ? initials(acting.name) : 'RS',
